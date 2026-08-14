@@ -1,8 +1,9 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LANDMARK_NODES, SplineLandmark, createCameraSpline, getInterpolatedCameraState } from '../../../lib/three/splineNetwork';
 import { calculateProgressiveTier, PROGRESSIVE_TIERS, ProgressiveTier } from '../../../lib/three/progressiveDelivery';
+import { PlayerController, NavigationMode } from '../../../lib/three/PlayerController';
 import { MalpeTerrain } from './environment/MalpeTerrain';
 import { OceanWater } from './environment/OceanWater';
 import { VegetationSystem } from './environment/VegetationSystem';
@@ -23,6 +24,7 @@ interface CameraControllerProps {
   lookOffsetRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   isDraggingRef: React.MutableRefObject<boolean>;
   onCameraUpdate?: (pos: THREE.Vector3, currentTier: ProgressiveTier) => void;
+  playerController: PlayerController;
 }
 
 const CameraController: React.FC<CameraControllerProps> = ({
@@ -30,20 +32,24 @@ const CameraController: React.FC<CameraControllerProps> = ({
   onProjectDiscoveries,
   lookOffsetRef,
   isDraggingRef,
-  onCameraUpdate
+  onCameraUpdate,
+  playerController
 }) => {
   const { camera } = useThree();
   const spline = useMemo(() => createCameraSpline(LANDMARK_NODES), []);
   const currentLookTarget = useRef(new THREE.Vector3(0, 1.7, 25));
   const isFirstFrame = useRef(true);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const time = state.clock.getElapsedTime();
     const { position, lookAt, fov, currentLandmark } = getInterpolatedCameraState(
       spline,
       splineProgress,
       LANDMARK_NODES
     );
+
+    // Update PlayerController physics
+    playerController.update(delta);
 
     const targetPos = position.clone();
 
@@ -99,6 +105,24 @@ const CameraController: React.FC<CameraControllerProps> = ({
       currentLookTarget.current.copy(targetLookAt);
       camera.lookAt(currentLookTarget.current);
       isFirstFrame.current = false;
+
+      // Sync player controller initial position
+      playerController.setPosition(targetPos.x, targetPos.y, targetPos.z);
+    } else if (playerController.state.mode === 'free-roam') {
+      // Free-roam mode: blend from guided spline toward player controller
+      const blendSpeed = 0.08;
+      const blendTarget = 1.0;
+      const currentBlend = THREE.MathUtils.lerp(0, blendTarget, blendSpeed);
+      playerController.blendWithGuided(camera, targetPos, targetLookAt, currentBlend);
+      camera.position.lerp(playerController.state.position, 0.12);
+
+      const playerLookAt = new THREE.Vector3(
+        playerController.state.position.x + Math.sin(playerController.state.yaw) * 10,
+        playerController.state.position.y + Math.tan(playerController.state.pitch) * 10,
+        playerController.state.position.z + Math.cos(playerController.state.yaw) * 10
+      );
+      currentLookTarget.current.lerp(playerLookAt, 0.08);
+      camera.lookAt(currentLookTarget.current);
     } else {
       camera.position.lerp(targetPos, 0.05);
       currentLookTarget.current.lerp(targetLookAt, 0.06);
@@ -189,11 +213,48 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
   const isDraggingRef = useRef(false);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
   const [currentTier, setCurrentTier] = useState<ProgressiveTier>(1);
+  const [navMode, setNavMode] = useState<NavigationMode>('guided');
+
+  // Singleton PlayerController instance
+  const playerControllerRef = useRef<PlayerController>(new PlayerController());
+  const playerController = playerControllerRef.current;
 
   useEffect(() => {
     setMounted(true);
     setHasWebGL(checkWebGLSupport());
   }, []);
+
+  // WASD keyboard event listeners for player controller
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Tab toggles between guided and free-roam
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const newMode = playerController.toggleMode();
+        setNavMode(newMode);
+        return;
+      }
+
+      playerController.handleKeyDown(e.key);
+      if (playerController.state.mode === 'free-roam' && navMode !== 'free-roam') {
+        setNavMode('free-roam');
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      playerController.handleKeyUp(e.key);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [playerController, navMode]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     isDraggingRef.current = true;
@@ -225,6 +286,11 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
 
     lookOffsetRef.current.yaw -= deltaX * 0.0025;
     lookOffsetRef.current.pitch -= deltaY * 0.0025;
+
+    // Also feed mouse look to player controller for free-roam camera rotation
+    if (playerController.state.mode === 'free-roam') {
+      playerController.handleMouseLook(deltaX, deltaY);
+    }
   };
 
   const handleCameraUpdate = (_pos: THREE.Vector3, tier: ProgressiveTier) => {
@@ -271,6 +337,7 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
               lookOffsetRef={lookOffsetRef}
               isDraggingRef={isDraggingRef}
               onCameraUpdate={handleCameraUpdate}
+              playerController={playerController}
             />
 
             {/* 1. Atmospheric Lighting, Sky & St. Mary's Basalt Silhouette */}
