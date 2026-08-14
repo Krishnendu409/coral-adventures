@@ -243,15 +243,8 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
             {/* 7. Layer 2 & 3 (Living Craft): Malpe Fishing Trawlers, Jet Skis & 25.90M Catamaran */}
             <MarineCraft />
 
-            {/* 8. Restrained Postprocessing Pipeline: SSAO, Bloom & Editorial Vignette */}
-            <EffectComposer>
-              <SSAO
-                samples={21}
-                radius={0.15}
-                intensity={25}
-                luminanceInfluence={0.6}
-                color={new THREE.Color('#1A120B')}
-              />
+            {/* 8. Restrained Postprocessing Pipeline: Bloom & Editorial Vignette */}
+            <EffectComposer multisampling={0}>
               <Bloom
                 luminanceThreshold={0.15}
                 luminanceSmoothing={0.85}
