@@ -459,42 +459,125 @@ export const PavilionArchitecture: React.FC = () => {
             <torusGeometry args={[0.05, 0.012, 8, 16]} />
           </mesh>
 
-          {/* Warm Amber Point Light Illuminating Counter, Map & Lounge */}
+          {/* Warm Incandescent Point Light (#FFB85C) Illuminating Desk & Chart */}
           <pointLight 
             position={[0, 0.32, 0]} 
-            color="#FFD59E" 
-            intensity={2.6} 
-            distance={11} 
+            color="#FFB85C" 
+            intensity={2.8} 
+            distance={12} 
             decay={2} 
             castShadow
           />
         </group>
 
         {/* ----------------------------------------------------------------------- */}
-        {/* Diegetic Expedition Route Navigational Chart Table                      */}
+        {/* Diegetic Inhabited Navigational Chart Table & Storytelling Props        */}
         {/* ----------------------------------------------------------------------- */}
-        <group position={[-0.45, 1.18, -0.05]} rotation={[-Math.PI / 2 + 0.12, 0, 0.08]}>
-          {/* Navigational Parchment Map Sheet */}
-          <mesh material={materials.mapMat} receiveShadow>
-            <planeGeometry args={[1.35, 0.85]} />
-          </mesh>
-          {/* Brass Corner Chart Weights */}
-          <mesh position={[-0.62, -0.38, 0.02]} material={materials.brassMat}>
-            <cylinderGeometry args={[0.035, 0.035, 0.03, 8]} />
-          </mesh>
-          <mesh position={[0.62, -0.38, 0.02]} material={materials.brassMat}>
-            <cylinderGeometry args={[0.035, 0.035, 0.03, 8]} />
-          </mesh>
-          <mesh position={[-0.62, 0.38, 0.02]} material={materials.brassMat}>
-            <cylinderGeometry args={[0.035, 0.035, 0.03, 8]} />
-          </mesh>
-          <mesh position={[0.62, 0.38, 0.02]} material={materials.brassMat}>
-            <cylinderGeometry args={[0.035, 0.035, 0.03, 8]} />
-          </mesh>
+        <group position={[-0.45, 1.18, -0.05]} name="Navigational_ChartTable">
+          {/* Weathered Nautical Parchment Chart of St. Mary's Archipelago & Malpe Continental Shelf */}
+          <group position={[0, 0.005, 0]} rotation={[-Math.PI / 2 + 0.12, 0, 0.08]}>
+            <mesh material={materials.mapMat} receiveShadow>
+              <planeGeometry args={[1.38, 0.88]} />
+            </mesh>
+            {/* Brass Corner Scrollweights */}
+            <mesh position={[-0.64, -0.39, 0.02]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.038, 0.038, 0.035, 10]} />
+            </mesh>
+            <mesh position={[0.64, -0.39, 0.02]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.038, 0.038, 0.035, 10]} />
+            </mesh>
+            <mesh position={[-0.64, 0.39, 0.02]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.038, 0.038, 0.035, 10]} />
+            </mesh>
+            <mesh position={[0.64, 0.39, 0.02]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.038, 0.038, 0.035, 10]} />
+            </mesh>
+          </group>
+
+          {/* Brass Navigation Dividers (Calipers resting on sea chart) */}
+          <group position={[-0.2, 0.02, 0.1]} rotation={[0, 0.45, 0]} name="Navigation_Dividers">
+            <mesh position={[-0.04, 0, 0]} rotation={[0, 0, 0.15]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.006, 0.003, 0.22, 6]} />
+            </mesh>
+            <mesh position={[0.04, 0, 0]} rotation={[0, 0, -0.15]} material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.006, 0.003, 0.22, 6]} />
+            </mesh>
+            <mesh position={[0, 0.10, 0]} material={materials.brassMat}>
+              <sphereGeometry args={[0.012, 8, 8]} />
+            </mesh>
+          </group>
+
+          {/* Brass & Teak Parallel Ruler */}
+          <group position={[0.25, 0.02, -0.15]} rotation={[0, -0.22, 0]} name="Parallel_Ruler">
+            <mesh position={[0, 0, -0.025]} material={materials.darkTeakMat} castShadow>
+              <boxGeometry args={[0.32, 0.01, 0.035]} />
+            </mesh>
+            <mesh position={[0, 0, 0.025]} material={materials.darkTeakMat} castShadow>
+              <boxGeometry args={[0.32, 0.01, 0.035]} />
+            </mesh>
+            {/* Brass Hinge Linkage Bars */}
+            <mesh position={[-0.1, 0.008, 0]} rotation={[0, 0.6, 0]} material={materials.brassMat}>
+              <boxGeometry args={[0.06, 0.006, 0.012]} />
+            </mesh>
+            <mesh position={[0.1, 0.008, 0]} rotation={[0, 0.6, 0]} material={materials.brassMat}>
+              <boxGeometry args={[0.06, 0.006, 0.012]} />
+            </mesh>
+          </group>
+
+          {/* Gimballed Marine Brass Pocket Compass */}
+          <group position={[0.42, 0.025, 0.22]} name="Marine_Compass">
+            <mesh material={materials.brassMat} castShadow>
+              <cylinderGeometry args={[0.07, 0.075, 0.035, 16]} />
+            </mesh>
+            <mesh position={[0, 0.018, 0]} material={materials.lanternGlassMat}>
+              <cylinderGeometry args={[0.065, 0.065, 0.005, 16]} />
+            </mesh>
+            {/* Compass Needle */}
+            <mesh position={[0, 0.015, 0]} rotation={[0, 0.78, 0]} material={materials.filamentMat}>
+              <boxGeometry args={[0.09, 0.004, 0.01]} />
+            </mesh>
+          </group>
+
+          {/* Weather Ledger & Logbook (Open leather binder) */}
+          <group position={[-0.75, 0.02, 0.32]} rotation={[0, -0.18, 0]} name="Weather_Ledger">
+            <mesh material={materials.darkTeakMat} castShadow>
+              <boxGeometry args={[0.38, 0.03, 0.28]} />
+            </mesh>
+            {/* Open Parchment Pages */}
+            <mesh position={[0, 0.018, 0]} material={materials.cushionMat}>
+              <boxGeometry args={[0.36, 0.01, 0.26]} />
+            </mesh>
+            {/* Brass Bookmark Ribbon Accent */}
+            <mesh position={[0.02, 0.024, 0.05]} material={materials.brassMat}>
+              <boxGeometry args={[0.015, 0.003, 0.18]} />
+            </mesh>
+          </group>
+
+          {/* Folded Parchment Coastal Tide Table */}
+          <group position={[-0.78, 0.015, -0.22]} rotation={[0, 0.35, 0]} name="Tide_Table">
+            <mesh material={materials.cushionMat} castShadow>
+              <boxGeometry args={[0.26, 0.012, 0.18]} />
+            </mesh>
+            {/* Grid Line Accents */}
+            <mesh position={[0, 0.008, 0]} material={materials.darkTeakMat}>
+              <boxGeometry args={[0.24, 0.002, 0.16]} />
+            </mesh>
+          </group>
+
+          {/* Rolled Vessel Manifest with Brass Clip */}
+          <group position={[0.72, 0.03, -0.28]} rotation={[0.1, -0.5, 0]} name="Vessel_Manifest">
+            <mesh material={materials.cushionMat} castShadow>
+              <cylinderGeometry args={[0.035, 0.035, 0.42, 10]} />
+            </mesh>
+            {/* Brass Binding Clip Band */}
+            <mesh position={[0, 0.05, 0]} material={materials.brassMat}>
+              <cylinderGeometry args={[0.038, 0.038, 0.04, 10]} />
+            </mesh>
+          </group>
         </group>
 
-        {/* Rolled Nautical Parchment Map Scrolls in Brass Holder */}
-        <group position={[-1.4, 1.18, 0.4]}>
+        {/* Rolled Nautical Parchment Map Scrolls in Brass Stand Holder */}
+        <group position={[-1.45, 1.18, 0.42]} name="Map_ScrollHolder">
           <mesh position={[0, 0.15, 0]} material={materials.brassMat} castShadow>
             <cylinderGeometry args={[0.12, 0.10, 0.30, 12]} />
           </mesh>
@@ -506,11 +589,6 @@ export const PavilionArchitecture: React.FC = () => {
             <cylinderGeometry args={[0.035, 0.035, 0.50, 8]} />
           </mesh>
         </group>
-
-        {/* Naturalist Leather Logbook on Desk */}
-        <mesh position={[0.6, 1.18, 0.35]} rotation={[0, -0.2, 0]} material={materials.darkTeakMat} castShadow>
-          <boxGeometry args={[0.38, 0.04, 0.28]} />
-        </mesh>
       </group>
 
       {/* ------------------------------------------------------------------------- */}
