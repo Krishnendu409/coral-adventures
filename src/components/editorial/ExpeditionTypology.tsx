@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { WashiTape, BrassPaperClip, TornPaperEdge } from "./ephemera/ScrapbookEphemera";
 
 interface TypologyOption {
   id: string;
@@ -82,14 +83,16 @@ export function ExpeditionTypology() {
   return (
     <section 
       id="typology" 
-      className="relative w-full bg-gradient-to-br from-[#2D7D5F] via-[#1E5E48] to-[#0F3828] text-[#FAF6EE] py-24 sm:py-32 overflow-hidden border-b border-white/15"
+      className="relative w-full bg-gradient-to-br from-[#2D7D5F] via-[#1E5E48] to-[#0F3828] text-[#FAF6EE] py-24 sm:py-32 overflow-hidden"
     >
+      <TornPaperEdge color="#FAF6EE" className="absolute top-0 left-0 right-0" />
+
       {/* Botanical Sunlight Dapple Effect */}
       <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#52B788]/25 via-[#1E5E48]/10 to-transparent blur-2xl pointer-events-none" />
       <div className="absolute -bottom-20 left-10 w-96 h-96 bg-[#D97706]/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Telemetry */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20 pt-8">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
@@ -128,12 +131,13 @@ export function ExpeditionTypology() {
                     key={item.id}
                     onClick={() => setSelectedId(item.id)}
                     className={cn(
-                      "text-left group flex items-baseline justify-between py-3.5 px-4 sm:px-6 transition-all duration-300 rounded-xs cursor-pointer border",
+                      "text-left group flex items-baseline justify-between py-3.5 px-4 sm:px-6 transition-all duration-300 rounded-xs cursor-pointer border relative",
                       isCurrent
-                        ? "bg-[#FAF6EE] text-[#0A2540] postcard-shadow border-white translate-x-2"
+                        ? "bg-[#FAF6EE] text-[#0A2540] shadow-xl border-white translate-x-2"
                         : "border-white/10 hover:bg-white/10 text-white/80 hover:text-white hover:translate-x-1"
                     )}
                   >
+                    {isCurrent && <WashiTape angle={-4} className="-top-3 right-4" color="amber" />}
                     <div className="flex items-baseline gap-4 sm:gap-6">
                       <span className={cn(
                         "text-xs font-mono font-bold",
@@ -164,10 +168,9 @@ export function ExpeditionTypology() {
 
           {/* Right Column: Tilted Polaroid Preview & Narrative Plate */}
           <div className="col-span-12 lg:col-span-5 relative mt-8 lg:mt-0">
-            {/* Masking Tape Visual Detail */}
-            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#EFE8D8]/95 border border-[#D5CBB9] rotate-[-2deg] z-30 shadow-md pointer-events-none backdrop-blur-xs" />
+            <BrassPaperClip className="-top-5 left-8" angle={-15} />
 
-            <div className="relative w-full bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-8 postcard-shadow border border-white rotate-[2deg] transition-all duration-500">
+            <div className="relative w-full bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-8 shadow-2xl border border-[#E8DFD0] rotate-[2deg] transition-all duration-500">
               
               {/* Photo Frame */}
               <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F2ECE1] border border-[#0A2540]/10">
@@ -206,7 +209,8 @@ export function ExpeditionTypology() {
             </div>
 
             {/* Pinned Note on Green Botanical Canvas */}
-            <div className="mt-6 p-4 bg-black/25 border-l-2 border-[#F59E0B] text-[11px] font-mono text-white/90 tracking-wide backdrop-blur-xs">
+            <div className="mt-6 p-4 bg-black/25 border-l-2 border-[#F59E0B] text-[11px] font-mono text-white/90 tracking-wide backdrop-blur-xs relative">
+              <WashiTape angle={2} className="-bottom-3 right-4" color="cream" />
               "A tailored voyage means no waiting, no tourist crowds, and complete privacy on the water."
             </div>
 
@@ -214,6 +218,8 @@ export function ExpeditionTypology() {
 
         </div>
       </div>
+
+      <TornPaperEdge flip color="#0D9488" className="absolute bottom-0 left-0 right-0" />
     </section>
   );
 }

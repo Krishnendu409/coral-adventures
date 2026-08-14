@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { WashiTape, BrassPaperClip, PolaroidFrame, TornPaperEdge } from "./ephemera/ScrapbookEphemera";
 
 interface MemoryPolaroid {
   id: string;
@@ -11,9 +12,9 @@ interface MemoryPolaroid {
   location: string;
   quote: string;
   author: string;
-  rotation: string;
+  rotationAngle: number;
   stampText: string;
-  stampColor: string;
+  tapeColor: "amber" | "sage" | "coral" | "cream";
 }
 
 const MEMORIES: MemoryPolaroid[] = [
@@ -24,20 +25,20 @@ const MEMORIES: MemoryPolaroid[] = [
     location: "(St. Mary's Archipelago)",
     quote: "Stepping onto the volcanic basalt rocks straight from the catamaran tender was surreal. The water was crystalline turquoise, unlike anything on the mainland coast.",
     author: "— Vikram & Shweta, Bangalore",
-    rotation: "rotate-[-3deg]",
+    rotationAngle: -3,
     stampText: "ST. MARY'S · 13°22′N",
-    stampColor: "border-[#1E5E48] text-[#1E5E48]",
+    tapeColor: "sage",
   },
   {
     id: "02",
     imageSrc: "/images/sunset_catamaran.jpg",
     imageAlt: "Sunset sailing on sky lounge",
     location: "(Arabian Horizon)",
-    quote: "We charted the vessel for my mother's 60th birthday. The golden hour west of Malpe, with chilled drinks and the sun dissolving into the sea, was unforgettable.",
+    quote: "We chartered the vessel for my mother's 60th birthday. The golden hour west of Malpe, with chilled drinks and the sun dissolving into the sea, was unforgettable.",
     author: "— The Kulkarni Family, Mumbai",
-    rotation: "rotate-[2deg]",
+    rotationAngle: 2,
     stampText: "SUNSET · 284° WNW",
-    stampColor: "border-[#E05A36] text-[#E05A36]",
+    tapeColor: "coral",
   },
   {
     id: "03",
@@ -46,9 +47,9 @@ const MEMORIES: MemoryPolaroid[] = [
     location: "(Malpe Outer Harbor)",
     quote: "Dining on open teak tables with candlelight and no walls — only the calm sound of waves beneath us. The coastal seafood tasting was world-class.",
     author: "— Ananya & Marc, London",
-    rotation: "rotate-[-2deg]",
+    rotationAngle: -2,
     stampText: "GASTRONOMY · 19:30",
-    stampColor: "border-[#F59E0B] text-[#F59E0B]",
+    tapeColor: "amber",
   },
   {
     id: "04",
@@ -57,17 +58,19 @@ const MEMORIES: MemoryPolaroid[] = [
     location: "(Turquoise Shallows)",
     quote: "Jet skiing in open water right off the catamaran platform. Complete freedom, top-tier safety gear, and zero tourist crowds.",
     author: "— Rahul & Friends, Goa",
-    rotation: "rotate-[3deg]",
+    rotationAngle: 3,
     stampText: "ACTIVE · 24 KNOTS",
-    stampColor: "border-[#0D9488] text-[#0D9488]",
+    tapeColor: "cream",
   },
 ];
 
 export function GuestMemoriesScrapbook() {
   return (
     <section className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-24 sm:py-32 overflow-hidden border-b border-[#E8DFD0]">
+      <TornPaperEdge color="#FAF6EE" className="absolute top-0 left-0 right-0" />
+
       {/* 1. Header Telemetry */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20 pt-6">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-[#0A2540]/15 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#E05A36]" />
@@ -94,28 +97,14 @@ export function GuestMemoriesScrapbook() {
       <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10">
         <div className="editorial-grid items-start gap-8 lg:gap-6">
           {MEMORIES.map((memory, idx) => (
-            <div
-              key={idx}
-              className={cn(
-                "col-span-12 sm:col-span-6 lg:col-span-3 bg-[#FAF6EE] p-4 pb-6 border border-[#E8DFD0] postcard-shadow transition-all duration-500 hover:rotate-0 hover:scale-105 relative group",
-                memory.rotation
-              )}
-            >
-              {/* Masking Tape Graphic */}
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#EFE8D8]/95 border border-[#D5CBB9] rotate-[-1deg] z-20 shadow-xs pointer-events-none" />
-
-              {/* Postal Stamp Badge */}
-              <div
-                className={cn(
-                  "absolute top-2 right-2 border border-dashed rounded-full px-2 py-0.5 text-[7px] font-mono tracking-widest uppercase z-20 bg-[#FAF6EE]/95",
-                  memory.stampColor
-                )}
+            <div key={idx} className="col-span-12 sm:col-span-6 lg:col-span-3 relative">
+              {idx === 0 && <BrassPaperClip className="-top-6 right-8" angle={15} />}
+              
+              <PolaroidFrame
+                caption={memory.author}
+                stamp={memory.stampText}
+                angle={memory.rotationAngle}
               >
-                {memory.stampText}
-              </div>
-
-              {/* Photo Frame */}
-              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F2ECE1] border border-[#E8DFD0]/80 mb-3.5">
                 <Image
                   src={memory.imageSrc}
                   alt={memory.imageAlt}
@@ -123,24 +112,22 @@ export function GuestMemoriesScrapbook() {
                   sizes="(max-width: 768px) 100vw, 25vw"
                   className="object-cover object-center"
                 />
-              </div>
+              </PolaroidFrame>
 
-              {/* Location Tag */}
-              <span className="text-[9px] font-mono tracking-[0.18em] text-[#E05A36] font-semibold block mb-2">
-                {memory.location}
-              </span>
-
-              {/* Quote & Author */}
-              <p className="font-serif italic text-xs sm:text-sm text-[#0A2540]/85 leading-relaxed mb-3">
+              {/* Memory Body Note below Polaroid */}
+              <div className="mt-3 p-3 bg-[#F7F3E9] border border-[#E2D9C8] text-xs font-serif italic text-[#4A3B32] leading-relaxed relative">
+                <WashiTape angle={-2} color={memory.tapeColor} className="-top-3 left-4" />
+                <span className="text-[9.5px] font-mono not-italic uppercase tracking-[0.18em] text-[#C2410C] font-semibold block mb-1">
+                  {memory.location}
+                </span>
                 "{memory.quote}"
-              </p>
-              <div className="text-[8.5px] font-mono text-[#0A2540]/60 uppercase tracking-widest border-t border-[#0A2540]/10 pt-2">
-                {memory.author}
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      <TornPaperEdge flip color="#FAF6EE" className="absolute bottom-0 left-0 right-0" />
     </section>
   );
 }
