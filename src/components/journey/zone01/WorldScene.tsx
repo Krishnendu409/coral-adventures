@@ -128,16 +128,22 @@ export interface WorldSceneProps {
 }
 
 class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
+  { children: React.ReactNode; fallback: React.ReactNode; onError?: (error: Error) => void },
   { hasError: boolean }
 > {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode; onError?: (error: Error) => void }) {
     super(props);
     this.state = { hasError: false };
   }
 
   static getDerivedStateFromError() {
     return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    if (this.props.onError) {
+      this.props.onError(error);
+    }
   }
 
   render() {
@@ -153,7 +159,9 @@ function checkWebGLSupport(): boolean {
   try {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-    return !!(window.WebGLRenderingContext && gl);
+    if (!gl) return false;
+    const attrs = typeof gl.getContextAttributes === 'function' ? gl.getContextAttributes() : null;
+    return !!(window.WebGLRenderingContext && attrs && typeof attrs.alpha !== 'undefined');
   } catch {
     return false;
   }
@@ -228,7 +236,10 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
       data-testid="world-scene-container"
     >
       {mounted && hasWebGL && !isHeadless && process.env.NODE_ENV !== 'test' ? (
-        <ErrorBoundary fallback={<div data-testid="world-scene-fallback" className="w-full h-full flex items-center justify-center bg-[#071A2B] text-[#FAF6EE]/60 font-mono text-xs uppercase tracking-widest">WebGL not supported</div>}>
+        <ErrorBoundary
+          onError={() => setHasWebGL(false)}
+          fallback={<div data-testid="world-scene-fallback" className="w-full h-full flex items-center justify-center bg-[#071A2B] text-[#FAF6EE]/60 font-mono text-xs uppercase tracking-widest">WebGL not supported</div>}
+        >
           <Canvas
             shadows
             dpr={[1, 1.5]}

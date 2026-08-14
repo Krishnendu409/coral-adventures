@@ -38,6 +38,28 @@ describe('WorldScene & Spline Camera Integration', () => {
     vi.unstubAllEnvs();
   });
 
+  it('safely catches THREE.WebGLRenderer instantiation errors and renders fallback', () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    // Simulate a context where getContext returns an object without attributes, causing WebGLRenderer constructor to throw
+    HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((type) => {
+      if (type === 'webgl2' || type === 'webgl') {
+        return {
+          getExtension: () => null,
+          getParameter: () => 0,
+          getContextAttributes: () => null // Will cause gl.getContextAttributes().alpha to throw TypeError
+        };
+      }
+      return null;
+    }) as any;
+
+    render(<WorldScene splineProgress={0.13} isHeadless={false} />);
+    expect(screen.getByTestId('world-scene-fallback')).toBeInTheDocument();
+
+    HTMLCanvasElement.prototype.getContext = originalGetContext;
+    vi.unstubAllEnvs();
+  });
+
   it('invokes discovery projection handlers across traversal points', () => {
     const onProjectDiscoveries = vi.fn();
     render(
