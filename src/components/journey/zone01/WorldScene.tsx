@@ -13,6 +13,7 @@ import { SeaWalkway } from './environment/SeaWalkway';
 import { CatamaranHero } from './environment/CatamaranHero';
 import { StMarysIsland } from './environment/StMarysIsland';
 import { AtmosphereSky } from './environment/AtmosphereSky';
+import { WildlifeSystem } from './environment/WildlifeSystem';
 import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 
@@ -46,11 +47,13 @@ const CameraController: React.FC<CameraControllerProps> = ({
 
     const targetPos = position.clone();
 
-    // Add subtle cinematic micro-breathing to target position for organic realism
+    // Add subtle cinematic micro-breathing across 3D axes for organic handheld/drone realism
     const breathY = Math.sin(time * 1.2) * 0.015;
     const breathX = Math.cos(time * 0.8) * 0.012;
+    const breathZ = Math.sin(time * 0.6) * 0.008;
     targetPos.y += breathY;
     targetPos.x += breathX;
+    targetPos.z += breathZ;
 
     // Calculate current progressive delivery tier relative to target landmark node position
     const landmarkPos = currentLandmark ? currentLandmark.position : targetPos;
@@ -299,6 +302,9 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
 
             {/* 10. Layer 4 (Geological Payoff): St. Mary's Island Hexagonal Columnar Basalt Formations (Z=1150m) */}
             <StMarysIsland />
+
+            {/* 11. Native Arabian Sea Wildlife: Soaring Birds, Leaping Dolphins & Fish Schools */}
+            <WildlifeSystem />
 
             {/* 8. Restrained Postprocessing Pipeline: Bloom & Editorial Vignette */}
             <EffectComposer multisampling={0}>

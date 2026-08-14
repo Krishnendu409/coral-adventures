@@ -34,18 +34,36 @@ describe('AtmosphereSky Component', () => {
     expect(container.querySelector('[name="GroundContactShadows"]')).toBeDefined();
   });
 
-  it('verifies 5500K golden sunlight and atmospheric color tokens', () => {
-    const goldenSun5500K = new THREE.Color('#FFF4E0');
-    const skyHemisphere = new THREE.Color('#9AC5DB');
-    const groundBounce = new THREE.Color('#5A4535');
-    const horizonFogMist = new THREE.Color('#C9DDE8');
-    const basaltVolcanic = new THREE.Color('#3A4750');
+  it('verifies 5200K coastal golden hour sunset color tokens and sky dome gradient stops', () => {
+    const zenithNavy = new THREE.Color('#1B3B6F');
+    const tropicalSky = new THREE.Color('#3B629B');
+    const goldenAmber = new THREE.Color('#E07A5F');
+    const horizonCrimsonPink = new THREE.Color('#F4A261');
+    const goldenSun5200K = new THREE.Color('#FFD7A8');
+    const groundBounce = new THREE.Color('#5A3525');
 
-    expect(goldenSun5500K.getHexString().toLowerCase()).toBe('fff4e0');
-    expect(skyHemisphere.getHexString().toLowerCase()).toBe('9ac5db');
-    expect(groundBounce.getHexString().toLowerCase()).toBe('5a4535');
-    expect(horizonFogMist.getHexString().toLowerCase()).toBe('c9dde8');
-    expect(basaltVolcanic.getHexString().toLowerCase()).toBe('3a4750');
+    expect(zenithNavy.getHexString().toLowerCase()).toBe('1b3b6f');
+    expect(tropicalSky.getHexString().toLowerCase()).toBe('3b629b');
+    expect(goldenAmber.getHexString().toLowerCase()).toBe('e07a5f');
+    expect(horizonCrimsonPink.getHexString().toLowerCase()).toBe('f4a261');
+    expect(goldenSun5200K.getHexString().toLowerCase()).toBe('ffd7a8');
+    expect(groundBounce.getHexString().toLowerCase()).toBe('5a3525');
+  });
+
+  it('validates 5200K golden sun directional light angle (12° altitude above horizon, azimuth 248°)', () => {
+    // Light position vector in AtmosphereSky: [-227, 52, -92]
+    const sunPos = new THREE.Vector3(-227, 52, -92);
+    const horizonDistance = Math.sqrt(sunPos.x * sunPos.x + sunPos.z * sunPos.z); // ~244.9m
+    const altitudeRad = Math.atan2(sunPos.y, horizonDistance);
+    const altitudeDeg = (altitudeRad * 180) / Math.PI;
+
+    // Solar altitude angle check: should be ~12° above horizon for golden hour sunset
+    expect(altitudeDeg).toBeCloseTo(12.0, 0);
+
+    // Solar azimuth angle check: arctan2(-x, -z) should be ~248° (West-South-West sunset)
+    let azimuthDeg = (Math.atan2(sunPos.x, sunPos.z) * 180) / Math.PI;
+    if (azimuthDeg < 0) azimuthDeg += 360;
+    expect(azimuthDeg).toBeCloseTo(248.0, 0);
   });
 
   it('renders StMarysBasaltFormation complex with hexagonal columns and wind-blown palm silhouettes', () => {
@@ -69,3 +87,4 @@ describe('AtmosphereSky Component', () => {
     expect(transmittance).toBeCloseTo(0.397, 2);
   });
 });
+

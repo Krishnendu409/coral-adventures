@@ -7,26 +7,27 @@ import { JOURNEY_ASSETS } from '@/data/journeyAssets';
 /**
  * AtmosphereSky Component - Malpe Waterfront Digital Twin
  * 
- * Atmospheric Architecture:
- * 1. 5500K Golden Sunlight & Ambient Lighting Rig:
- *    - Main directional sun (#FFF4E0, intensity 2.2, high-res cascaded shadow frustum).
- *    - Hemispheric ambient light (#9AC5DB sky to #5A4535 warm laterite ground bounce, intensity 0.85).
- *    - Secondary ocean-reflected fill light (#D8EEF8).
- *    - Canopy-dappled warm luminescence around Arrival Gardens, Pavilion, and Jetty.
+ * Coastal Golden Hour Sunset Atmosphere Architecture:
+ * 1. 5200K Sunset Golden Solar & Ambient Lighting Rig:
+ *    - Main 5200K directional golden sun (#FFD7A8, intensity 2.6, 12° solar altitude above horizon, 248° azimuth).
+ *    - Hemispheric ambient light (#3B629B tropical sky to #5A3525 warm laterite/sand ground bounce, intensity 0.90).
+ *    - Secondary ocean crimson-gold counter-bounce fill (#F4A261).
+ *    - Warm golden canopy-dappled luminescence across Arrival Gardens, Pavilion, and Promenade.
  * 
  * 2. Coastal Karnataka Horizon Atmosphere & Exponential Fog:
- *    - Calibrated FogExp2 (#F0DFCD, density 0.0022) seamlessly blending ocean into sky horizon at z: 320..450m.
- *    - Procedural 360° Panoramic Sky Dome with Rayleigh/Mie atmospheric scattering gradient.
+ *    - Calibrated FogExp2 (#F4A261 horizon crimson-pink, density 0.0022) seamlessly blending ocean into sky dome horizon at z: 320..450m.
+ *    - Procedural 360° Panoramic Sky Dome with Rayleigh/Mie golden hour scattering gradient:
+ *      Zenith Navy (#1B3B6F) -> Tropical Sky (#3B629B) -> Golden Amber (#E07A5F) -> Horizon Crimson-Pink (#F4A261).
  * 
  * 3. St. Mary's Island Columnar Basalt Silhouette (z: 420m, x: -60m):
  *    - Geologically accurate hexagonal columnar basalt formations (vertical 6-sided prisms with stepped cooling joints).
- *    - Crowned with miniature wind-sculpted coconut palm silhouettes.
- *    - Atmospheric aerial perspective depth desaturation with coastal breaker mist rings.
+ *    - Crowned with wind-sculpted miniature coconut palm silhouettes.
+ *    - Atmospheric aerial perspective depth desaturation under sunset mist.
  * 
  * 4. Dynamic Atmospheric Life:
- *    - High-altitude drifting coastal cloud layers.
+ *    - High-altitude drifting sunset cloud layers with golden rim highlights.
  *    - Flocking soaring Brahminy sea birds with aerodynamic wing articulation.
- *    - Golden afternoon atmospheric sun motes.
+ *    - Warm golden afternoon sun motes.
  */
 
 // ==========================================
@@ -44,25 +45,25 @@ function createSkyGradientTexture(): THREE.Texture {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.Texture();
 
-  // Multi-harmonic Rayleigh & Mie atmospheric scattering gradient
+  // Multi-stop Rayleigh & Mie golden hour atmospheric scattering gradient
+  // Zenith navy (#1B3B6F) -> Tropical sky (#3B629B) -> Golden amber (#E07A5F) -> Horizon crimson-pink (#F4A261)
   const grad = ctx.createLinearGradient(0, 0, 0, 1024);
-  grad.addColorStop(0.0, '#26527C');  // Deep maritime zenith navy-azure
-  grad.addColorStop(0.22, '#3E769E'); // Tropical upper sky
-  grad.addColorStop(0.48, '#6B9DC4'); // Coastal afternoon azure
-  grad.addColorStop(0.68, '#A8CDE2'); // Low-altitude maritime haze
-  grad.addColorStop(0.82, '#E8D2BB'); // 5500K Golden solar diffusion
-  grad.addColorStop(0.92, '#FBE6CD'); // Warm coastal horizon glow
-  grad.addColorStop(1.0, '#F0DFCD');  // Perfect match to FogExp2 base color
+  grad.addColorStop(0.0, '#1B3B6F');   // Zenith navy
+  grad.addColorStop(0.28, '#3B629B');  // Tropical sky blue
+  grad.addColorStop(0.55, '#D96B43');  // Transition golden amber
+  grad.addColorStop(0.76, '#E07A5F');  // Deep golden amber
+  grad.addColorStop(0.92, '#F4A261');  // Horizon crimson-pink
+  grad.addColorStop(1.0, '#F4A261');   // Perfect match to FogExp2 base color (#F4A261)
 
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 256, 1024);
 
-  // Subtle solar glow bloom overlay in upper-center
-  const sunGlow = ctx.createRadialGradient(180, 280, 10, 180, 280, 220);
-  sunGlow.addColorStop(0.0, 'rgba(255, 248, 230, 0.45)');
-  sunGlow.addColorStop(0.3, 'rgba(255, 235, 200, 0.22)');
-  sunGlow.addColorStop(0.7, 'rgba(250, 220, 185, 0.08)');
-  sunGlow.addColorStop(1.0, 'rgba(240, 223, 205, 0.0)');
+  // 5200K Solar glow bloom overlay positioned at sunset solar angle (azimuth 248°, altitude 12°)
+  const sunGlow = ctx.createRadialGradient(190, 780, 15, 190, 780, 280);
+  sunGlow.addColorStop(0.0, 'rgba(255, 226, 179, 0.65)');
+  sunGlow.addColorStop(0.25, 'rgba(244, 162, 97, 0.40)');
+  sunGlow.addColorStop(0.65, 'rgba(224, 122, 95, 0.18)');
+  sunGlow.addColorStop(1.0, 'rgba(27, 59, 111, 0.0)');
   ctx.fillStyle = sunGlow;
   ctx.fillRect(0, 0, 256, 1024);
 
@@ -89,7 +90,7 @@ export const AtmosphereSky: React.FC = () => {
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
-    // 1. High-altitude clouds drifting steadily eastward across the Malpe coastline
+    // 1. High-altitude sunset clouds drifting steadily eastward across the Malpe coastline
     if (cloudsGroupRef.current) {
       cloudsGroupRef.current.position.x = ((t * 0.9) % 400) - 200;
       cloudsGroupRef.current.position.z = 210 + Math.sin(t * 0.04) * 15;
@@ -115,7 +116,7 @@ export const AtmosphereSky: React.FC = () => {
       });
     }
 
-    // 3. Floating atmospheric golden sun motes & sea spray mist particles
+    // 3. Floating atmospheric warm golden sun motes & sea mist shimmer particles
     if (motesGroupRef.current) {
       motesGroupRef.current.children.forEach((mote, idx) => {
         const phase = idx * 0.9;
@@ -127,9 +128,9 @@ export const AtmosphereSky: React.FC = () => {
 
   return (
     <group name="Atmosphere_SkyLighting">
-      {/* 1. Coastal Karnataka Calibrated Exponential Sea-Mist Fog */}
-      {/* Blends distant ocean at z: 320..450m into the sky horizon with warm tropical haze */}
-      <fogExp2 attach="fog" args={['#C9DDE8', 0.0022]} />
+      {/* 1. Coastal Karnataka Sunset Calibrated Exponential Sea-Mist Fog */}
+      {/* Seamlessly matches horizon crimson-pink (#F4A261) sky dome at z: 320..450m */}
+      <fogExp2 attach="fog" args={['#F4A261', 0.0022]} />
 
       {/* 2. Drei HDRI Sky Fill & Environment Lighting */}
       <Environment
@@ -155,28 +156,28 @@ export const AtmosphereSky: React.FC = () => {
         <meshBasicMaterial map={skyTexture} side={THREE.BackSide} />
       </mesh>
 
-      {/* 3. Golden Sunlight & Coastal Karnataka Lighting Rig */}
+      {/* 5. 5200K Golden Sunset Solar & Coastal Karnataka Lighting Rig */}
       <CoastalLightingRig />
 
-      {/* 4. St. Mary's Island Columnar Basalt Silhouette (NW Horizon: z ~ 420m, x ~ -60m) */}
+      {/* 6. St. Mary's Island Columnar Basalt Silhouette (NW Horizon: z ~ 420m, x ~ -60m) */}
       <group position={[-60, 0, 420]} name="StMarysBasaltIsland">
         <StMarysBasaltFormation />
       </group>
 
-      {/* 5. Secondary Basalt Outer Reef Stack (z ~ 455m, x ~ -110m) */}
+      {/* 7. Secondary Basalt Outer Reef Stack (z ~ 455m, x ~ -110m) */}
       <group position={[-110, 0, 455]} scale={[0.65, 0.65, 0.65]} name="StMarysOuterReef">
         <StMarysBasaltFormation />
       </group>
 
-      {/* 6. High-Altitude Drifting Clouds */}
+      {/* 8. High-Altitude Drifting Clouds */}
       <group ref={cloudsGroupRef} position={[0, 85, 220]} name="AtmosphericClouds">
-        <CloudFormation position={[-90, 0, -50]} scale={38} opacity={0.42} />
-        <CloudFormation position={[25, 10, 15]} scale={46} opacity={0.38} />
-        <CloudFormation position={[130, -5, -70]} scale={34} opacity={0.44} />
-        <CloudFormation position={[-30, 14, 90]} scale={30} opacity={0.35} />
+        <CloudFormation position={[-90, 0, -50]} scale={38} opacity={0.48} />
+        <CloudFormation position={[25, 10, 15]} scale={46} opacity={0.42} />
+        <CloudFormation position={[130, -5, -70]} scale={34} opacity={0.46} />
+        <CloudFormation position={[-30, 14, 90]} scale={30} opacity={0.38} />
       </group>
 
-      {/* 7. Flocking Coastal Sea Birds (Brahminy Kites / Sea Gulls) */}
+      {/* 9. Flocking Coastal Sea Birds (Brahminy Kites / Sea Gulls) */}
       <group ref={birdsGroupRef} position={[0, 24, 250]} name="FlockingSeaBirds">
         <SeaBird position={[0, 0, 0]} scale={1.0} />
         <SeaBird position={[4.2, 1.0, -3.2]} scale={0.92} />
@@ -185,7 +186,7 @@ export const AtmosphereSky: React.FC = () => {
         <SeaBird position={[-7.0, -1.2, -9.0]} scale={0.82} />
       </group>
 
-      {/* 8. Golden Sun Motes & Sea Mist Shimmer Particles */}
+      {/* 10. Warm Golden Atmospheric Sun Motes */}
       <group ref={motesGroupRef} name="GoldenSunMotes">
         <AtmosphericSunMotes />
       </group>
@@ -194,58 +195,59 @@ export const AtmosphereSky: React.FC = () => {
 };
 
 // ==========================================
-// 3. 5500K GOLDEN SUNLIGHT & LIGHTING RIG
+// 3. 5200K GOLDEN SUNLIGHT & LIGHTING RIG
 // ==========================================
 
 const CoastalLightingRig: React.FC = () => {
   return (
     <group name="CoastalLightingRig">
-      {/* 1. Main 5500K Golden Sun Directional Light */}
+      {/* 1. Main 5200K Golden Sun Directional Light (12° Solar Altitude, Azimuth 248°) */}
+      {/* Positioned at [-227, 52, -92] for low-angle 12° golden sunset solar direction */}
       <directionalLight
-        name="Main5500KSun"
-        position={[85, 110, -60]}
-        intensity={2.2}
-        color="#FFF4E0"
+        name="Main5200KSun"
+        position={[-227, 52, -92]}
+        intensity={2.6}
+        color="#FFD7A8"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={1}
-        shadow-camera-far={600}
-        shadow-camera-left={-160}
-        shadow-camera-right={160}
-        shadow-camera-top={160}
-        shadow-camera-bottom={-160}
+        shadow-camera-far={700}
+        shadow-camera-left={-220}
+        shadow-camera-right={220}
+        shadow-camera-top={220}
+        shadow-camera-bottom={-220}
         shadow-bias={-0.00012}
       />
 
-      {/* 2. Hemispheric Ambient Light (Tropical Sky Blue to Warm Laterite/Sand Bounce) */}
+      {/* 2. Hemispheric Ambient Light (Tropical Sky Blue #3B629B to Warm Laterite/Sand Bounce #5A3525) */}
       <hemisphereLight
         name="HemisphereAmbient"
-        args={['#9AC5DB', '#5A4535', 0.85]}
+        args={['#3B629B', '#5A3525', 0.90]}
       />
 
-      {/* 3. Global Ambient Baseline Light */}
+      {/* 3. Global Ambient Baseline Light (Warm Golden Glow Fill) */}
       <ambientLight
         name="GlobalAmbientFill"
-        color="#EBF4F8"
-        intensity={0.4}
+        color="#E07A5F"
+        intensity={0.38}
       />
 
-      {/* 4. Secondary Ocean-Reflected Fill Light (Counter-Angle Bounce) */}
+      {/* 4. Secondary Ocean Sunset Crimson-Gold Counter-Bounce Fill Light */}
       <directionalLight
         name="OceanCounterBounce"
-        position={[-60, 40, 120]}
-        intensity={0.35}
-        color="#D8EEF8"
+        position={[120, 30, 180]}
+        intensity={0.32}
+        color="#F4A261"
       />
 
-      {/* 5. Canopy-Dappled & Garden Luminescence Warm Fill Lights */}
+      {/* 5. Canopy-Dappled & Garden Luminescence Warm Sunset Point Lights */}
       {/* Arrival Roadside & Garden Approach (z ~ 45m) */}
       <pointLight
         name="GardenApproachFill"
         position={[-12, 6.5, 45]}
-        color="#FFE2B8"
-        intensity={0.65}
+        color="#F4A261"
+        intensity={0.75}
         distance={38}
         decay={2}
       />
@@ -254,8 +256,8 @@ const CoastalLightingRig: React.FC = () => {
       <pointLight
         name="PavilionCourtyardFill"
         position={[10, 5.5, 95]}
-        color="#FFDFB0"
-        intensity={0.7}
+        color="#E07A5F"
+        intensity={0.80}
         distance={35}
         decay={2}
       />
@@ -264,8 +266,8 @@ const CoastalLightingRig: React.FC = () => {
       <pointLight
         name="CanopyThresholdFill"
         position={[-6, 7.0, 140]}
-        color="#FFE5C4"
-        intensity={0.6}
+        color="#FFD7A8"
+        intensity={0.70}
         distance={36}
         decay={2}
       />
@@ -274,8 +276,8 @@ const CoastalLightingRig: React.FC = () => {
       <pointLight
         name="JettyPromenadeFill"
         position={[4, 5.0, 210]}
-        color="#FFE8CC"
-        intensity={0.55}
+        color="#F4A261"
+        intensity={0.65}
         distance={42}
         decay={2}
       />
@@ -287,21 +289,11 @@ const CoastalLightingRig: React.FC = () => {
 // 4. ST. MARY'S ISLAND COLUMNAR BASALT
 // ==========================================
 
-/**
- * St. Mary's Island Columnar Basalt Geological Formation
- * National Geological Monument of India
- * Features:
- * - Characteristic 6-sided hexagonal polygonal basalt prisms
- * - Stepped cooling contraction joints and tiered fracture cliffs
- * - Crowned with miniature wind-sculpted coconut palm silhouettes
- * - Aerial perspective depth desaturation under coastal horizon fog
- * - Sea spray breaker foam rings at column roots
- */
 export const StMarysBasaltFormation: React.FC = () => {
   // Volcanic Basalt Material with subtle PBR roughness and volcanic sheen
   const basaltMat = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: '#3A4750', // Basalt volcanic stone (softened by fog into desaturated blue-gray)
+      color: '#3A4750', // Basalt volcanic stone (softened by sunset mist)
       roughness: 0.94,
       metalness: 0.08,
       flatShading: true // Enhances crisp hexagonal polygonal prism facets
@@ -318,10 +310,10 @@ export const StMarysBasaltFormation: React.FC = () => {
     });
   }, []);
 
-  // Breaker Foam / Shoreline Surf Material
+  // Sunset Shoreline Surf Material with warm reflection tint
   const surfMat = useMemo(() => {
     return new THREE.MeshBasicMaterial({
-      color: '#F4EAE0',
+      color: '#F4A261',
       transparent: true,
       opacity: 0.35,
       side: THREE.DoubleSide
@@ -478,7 +470,7 @@ interface CloudProps {
 const CloudFormation: React.FC<CloudProps> = ({ position, scale, opacity }) => {
   const cloudMat = useMemo(() => {
     return new THREE.MeshBasicMaterial({
-      color: '#FFFBF5',
+      color: '#FFE8D6',
       transparent: true,
       opacity: opacity,
       depthWrite: false
@@ -578,9 +570,9 @@ const AtmosphericSunMotes: React.FC = () => {
 
   const moteMat = useMemo(() => {
     return new THREE.MeshBasicMaterial({
-      color: '#FFECC8',
+      color: '#FFD7A8',
       transparent: true,
-      opacity: 0.55
+      opacity: 0.65
     });
   }, []);
 

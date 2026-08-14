@@ -20,7 +20,7 @@ vi.mock('@react-three/fiber', async () => {
   };
 });
 
-describe('MarineCraft Fleet & Vessels Component', () => {
+describe('MarineCraft Fleet & Active Watersports Component', () => {
   it('renders MarineCraft fleet structure cleanly in React/R3F tree', () => {
     const { container } = render(<MarineCraft />);
     expect(container).toBeDefined();
@@ -44,13 +44,33 @@ describe('MarineCraft Fleet & Vessels Component', () => {
     expect(saffronGold.getHexString().toLowerCase()).toBe('e5a93c');
   });
 
-  it('renders coastal watersports fleet (Jet Skis & Kayaks) and beach staging', () => {
+  it('renders staged coastal watersports fleet (Jet Skis, Kayaks & SUPs) on beach skids', () => {
     const { container } = render(<MarineCraft />);
     expect(container.querySelector('[name="JetSki_Coral"]')).toBeDefined();
     expect(container.querySelector('[name="JetSki_Aqua"]')).toBeDefined();
     expect(container.querySelector('[name="Kayak_Mango"]')).toBeDefined();
     expect(container.querySelector('[name="Kayak_Yellow"]')).toBeDefined();
+    expect(container.querySelector('[name="SUP_Turquoise"]')).toBeDefined();
+    expect(container.querySelector('[name="SUP_Coral"]')).toBeDefined();
     expect(container.querySelector('[name="BeachStagingInfrastructure"]')).toBeDefined();
+  });
+
+  it('renders 2 active Sea-Doo jet skis cutting waves at Z=260m with rider figures and roostertail spray wakes', () => {
+    const { container } = render(<MarineCraft />);
+    expect(container.querySelector('[name="Active_JetSki_1"]')).toBeDefined();
+    expect(container.querySelector('[name="Active_JetSki_2"]')).toBeDefined();
+    expect(container.querySelector('[name="Active_Rider_Figure_1"]')).toBeDefined();
+    expect(container.querySelector('[name="Active_Rider_Figure_2"]')).toBeDefined();
+    expect(container.querySelector('[name="Roostertail_Spray_1"]')).toBeDefined();
+    expect(container.querySelector('[name="Roostertail_Spray_2"]')).toBeDefined();
+  });
+
+  it('renders high-altitude colorful parasail canopy (Y=45m, Z=400m), speed boat, and dynamic tow line', () => {
+    const { container } = render(<MarineCraft />);
+    expect(container.querySelector('[name="Parasail_Speedboat"]')).toBeDefined();
+    expect(container.querySelector('[name="Parasail_Canopy"]')).toBeDefined();
+    expect(container.querySelector('[name="Parasail_Harness_Passengers"]')).toBeDefined();
+    expect(container.querySelector('[name="Parasail_Dynamic_TowLine"]')).toBeDefined();
   });
 
   it('renders flagship 25.90M expedition catamaran with twin hulls and flybridge', () => {
@@ -61,7 +81,7 @@ describe('MarineCraft Fleet & Vessels Component', () => {
     expect(container.querySelector('[name="Deck_Guardrails"]')).toBeDefined();
   });
 
-  it('validates wave bobbing physics calculations', () => {
+  it('validates wave bobbing, jet ski carving, and parasail tow line vector calculations', () => {
     const t = 3.0;
     // Primary trawler heave, roll, pitch
     const heave = -0.55 + Math.sin(t * 0.95) * 0.16 + Math.sin(t * 1.9) * 0.04;
@@ -72,5 +92,13 @@ describe('MarineCraft Fleet & Vessels Component', () => {
     expect(heave).toBeLessThan(-0.3);
     expect(Math.abs(roll)).toBeLessThan(0.1);
     expect(Math.abs(pitch)).toBeLessThan(0.1);
+
+    // Tow line vector calculations
+    const boatWinch = new THREE.Vector3(-35, 0.82, 400);
+    const parasailHarness = new THREE.Vector3(-35, 40.8, 400);
+    const diff = new THREE.Vector3().subVectors(parasailHarness, boatWinch);
+
+    expect(diff.length()).toBeGreaterThan(35);
+    expect(diff.length()).toBeLessThan(45);
   });
 });

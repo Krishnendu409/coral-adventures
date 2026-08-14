@@ -381,6 +381,9 @@ export const VegetationSystem: React.FC = () => {
           ))}
         </group>
 
+        {/* GPU Instanced Coconut Palm Groves Batching (570 GPU Instanced Trees Spanning Z = 0m -> 1200m) */}
+        <InstancedCoconutPalmBatch count={570} />
+
         {/* Coastal Undergrowth Layer */}
         <group ref={shrubGroupRef} name="UndergrowthLayer">
           {undergrowthPlacements.map((item, idx) => {
@@ -952,5 +955,129 @@ export const InstancedGroundDebrisBatch: React.FC = () => {
       <sphereGeometry args={[0.18, 6, 6]} />
       <meshStandardMaterial color="#5C4028" roughness={0.92} />
     </instancedMesh>
+  );
+};
+
+export const InstancedCoconutPalmBatch: React.FC<{ count?: number }> = ({ count = 570 }) => {
+  const trunksRef = useRef<THREE.InstancedMesh>(null!);
+  const crownsRef = useRef<THREE.InstancedMesh>(null!);
+
+  const instancesData = useMemo(() => {
+    const items: Array<{
+      pos: [number, number, number];
+      scale: number;
+      yaw: number;
+      variant: PalmVariantType;
+      height: number;
+      bendCurvature: number;
+      seawardLeanZ: number;
+    }> = [];
+
+    for (let i = 0; i < count; i++) {
+      const zFrac = i / count;
+      const z = 2.0 + zFrac * 1194.0 + Math.sin(i * 14.3) * 3.2;
+      const isLeft = i % 2 === 0;
+      const sideSign = isLeft ? -1 : 1;
+      const distFromCenter = 12.0 + ((i * 17.1) % 43);
+      const x = sideSign * distFromCenter;
+      const y = Math.max(0.0, Math.sin(z * 0.008) * 0.35 + (distFromCenter - 12.0) * 0.008);
+
+      const variantRoll = (i * 3.7 + Math.abs(x)) % 10;
+      let variant: PalmVariantType;
+      if (distFromCenter > 30 || z > 150) {
+        if (variantRoll < 4) variant = 'COASTAL_WIND_BOWED';
+        else if (variantRoll < 7) variant = 'TALL_MATURE_LEANING';
+        else if (variantRoll < 9) variant = 'MID_HEIGHT_UPRIGHT';
+        else variant = 'YOUNG_CLUSTER';
+      } else {
+        if (variantRoll < 4) variant = 'MID_HEIGHT_UPRIGHT';
+        else if (variantRoll < 7) variant = 'TALL_MATURE_LEANING';
+        else if (variantRoll < 9) variant = 'YOUNG_CLUSTER';
+        else variant = 'COASTAL_WIND_BOWED';
+      }
+
+      const scale = 0.85 + ((i * 1.7) % 35) * 0.01;
+      const yaw = (i * 1.37) % (Math.PI * 2);
+      const spec = PALM_VARIANT_SPECS[variant];
+      const height = spec.baseHeight * scale;
+      const { seawardLeanZ, bendCurvature } = calculateSeawardBowing([x, y, z], variant);
+
+      items.push({
+        pos: [Number(x.toFixed(2)), Number(y.toFixed(2)), Number(z.toFixed(2))],
+        scale,
+        yaw,
+        variant,
+        height,
+        bendCurvature,
+        seawardLeanZ,
+      });
+    }
+    return items;
+  }, [count]);
+
+  useLayoutEffect(() => {
+    if (!trunksRef.current || !crownsRef.current) return;
+    if (typeof trunksRef.current.setMatrixAt !== 'function') return;
+
+    const tempObj = new THREE.Object3D();
+
+    instancesData.forEach((inst, i) => {
+      const [x, y, z] = inst.pos;
+      const bendRad = (inst.bendCurvature * Math.PI) / 180;
+
+      // Trunk Instance Matrix
+      tempObj.position.set(x, y + inst.height * 0.5, z + inst.seawardLeanZ * inst.height * 0.4);
+      tempObj.rotation.set(inst.seawardLeanZ * 0.15, inst.yaw, bendRad * 0.2);
+      tempObj.scale.set(inst.scale * 0.32, inst.height, inst.scale * 0.32);
+      tempObj.updateMatrix();
+      trunksRef.current.setMatrixAt(i, tempObj.matrix);
+
+      // Crown Instance Matrix
+      const apexX = x + Math.cos(inst.yaw) * inst.scale * 0.3 + bendRad * 0.5;
+      const apexY = y + inst.height;
+      const apexZ = z + inst.seawardLeanZ * inst.height * 0.8;
+      tempObj.position.set(apexX, apexY, apexZ);
+      tempObj.rotation.set(0.1, inst.yaw, 0);
+      tempObj.scale.set(inst.scale * 3.2, inst.scale * 2.2, inst.scale * 3.2);
+      tempObj.updateMatrix();
+      crownsRef.current.setMatrixAt(i, tempObj.matrix);
+    });
+
+    if (trunksRef.current.instanceMatrix) trunksRef.current.instanceMatrix.needsUpdate = true;
+    if (crownsRef.current.instanceMatrix) crownsRef.current.instanceMatrix.needsUpdate = true;
+  }, [instancesData]);
+
+  const frondTexture = useMemo(() => createPalmFrondTexture(), []);
+
+  return (
+    <group name="InstancedCoconutPalmGroves" data-testid="instanced-coconut-palm-groves">
+      <instancedMesh
+        ref={trunksRef}
+        args={[undefined, undefined, count]}
+        data-testid="instanced-coconut-palms"
+        castShadow
+        receiveShadow
+      >
+        <cylinderGeometry args={[0.7, 1.1, 1, 8]} />
+        <meshStandardMaterial color="#4A3728" roughness={0.92} />
+      </instancedMesh>
+
+      <instancedMesh
+        ref={crownsRef}
+        args={[undefined, undefined, count]}
+        data-testid="instanced-palm-crowns"
+        castShadow
+      >
+        <coneGeometry args={[1.8, 1.2, 8]} />
+        <meshStandardMaterial
+          map={frondTexture}
+          color="#658C28"
+          transparent
+          alphaTest={0.2}
+          side={THREE.DoubleSide}
+          roughness={0.65}
+        />
+      </instancedMesh>
+    </group>
   );
 };

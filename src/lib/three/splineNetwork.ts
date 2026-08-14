@@ -419,10 +419,12 @@ export function getInterpolatedCameraState(
     const span = nextLandmark.splineProgress - currentLandmark.splineProgress;
     const progressInSpan = span > 0 ? (safeT - currentLandmark.splineProgress) / span : 0;
     const clampedProgress = Math.max(0, Math.min(1, progressInSpan));
-    
-    lookAt.lerp(nextLandmark.lookAt, clampedProgress);
-    fov = THREE.MathUtils.lerp(currentLandmark.fov, nextLandmark.fov, clampedProgress);
-    cameraHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, clampedProgress);
+    // Smoothstep cubic easing for ultra-smooth trajectory transitions between landmarks
+    const easedProgress = clampedProgress * clampedProgress * (3 - 2 * clampedProgress);
+
+    lookAt.lerp(nextLandmark.lookAt, easedProgress);
+    fov = THREE.MathUtils.lerp(currentLandmark.fov, nextLandmark.fov, easedProgress);
+    cameraHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, easedProgress);
   }
 
   return { position, lookAt, fov, cameraHeight, currentLandmark, nextLandmark };
