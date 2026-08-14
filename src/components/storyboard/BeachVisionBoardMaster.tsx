@@ -69,9 +69,9 @@ export function BeachVisionBoardMaster() {
       <div className="relative w-full max-w-7xl mx-auto px-3 sm:px-6 pt-16 z-20 pb-36">
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 01: ARRIVAL (Immediate Shoreline Cluster · Zero Empty Space) */}
+        {/* FRAME 01: ARRIVAL (Immediate Malpe Beach Shoreline Cluster) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1420px] pt-4">
+        <section className="relative min-h-[1480px] pt-4">
           {/* Chapter Title Badge pinned directly on sand */}
           <div className="absolute top-2 left-4 sm:left-10 z-25 max-w-md">
             <div className="inline-block px-3 py-1 bg-[#FAF6EE]/95 border border-[#0A2540]/15 rounded-xs font-mono text-[10px] sm:text-xs text-[#C2410C] uppercase tracking-widest mb-1.5 shadow-sm">
@@ -81,7 +81,7 @@ export function BeachVisionBoardMaster() {
               The Journey Starts on the Sand.
             </h1>
             <p className="font-serif italic text-base sm:text-lg text-[#C2410C] mt-0.5">
-              The complete expedition laid onto the beach.
+              Malpe Beach · Beachfront Hub · Arabian Sea
             </p>
           </div>
 
@@ -90,10 +90,10 @@ export function BeachVisionBoardMaster() {
             <RedPushPin shadowAngle="bottom" size={34} />
           </div>
 
-          {/* MASSIVE HERO POLAROID (55-70% Visual Field) */}
+          {/* MASSIVE HERO POLAROID (55-70% Visual Field): Real Malpe Beach Arrival */}
           <div className="absolute top-28 left-2 sm:left-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/malpe_coast.jpg"
+              imageSrc="/images/malpe_beach_arrival_hero.jpg"
               caption="Malpe Foreshore Arrival · High Sun"
               subcaption="13°21′02″ N · 74°42′08″ E · COASTAL KARNATAKA"
               annotation="STATION 01 · BEACH HEAD"
@@ -123,6 +123,18 @@ export function BeachVisionBoardMaster() {
               subcaption="High palms & salt breeze"
               size="sm"
               rotation={-4.5}
+              shadowIntensity="day"
+            />
+          </div>
+
+          {/* Supporting Polaroid: Malpe Shoreline Aerial */}
+          <div className="absolute top-[1140px] right-4 sm:right-20 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/malpe_coast.jpg"
+              caption="Malpe coastline & coconut palms"
+              subcaption="Arabian Sea coastal gateway"
+              size="sm"
+              rotation={3}
               shadowIntensity="day"
             />
           </div>
@@ -169,9 +181,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 02: WATERSPORTS (Mid-Right Active Surf Zone Cluster) */}
+        {/* FRAME 02: WATERSPORTS (Active Beach Surf Zone Cluster) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1420px] pt-12">
+        <section className="relative min-h-[1480px] pt-12">
           {/* 3D Pushpin 02 */}
           <div className="absolute top-[520px] right-[24%] sm:right-[38%] z-35">
             <RedPushPin shadowAngle="bottom" size={34} />
@@ -187,10 +199,10 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: Marine Activities */}
+          {/* Hero Polaroid: Real Malpe Watersports Action */}
           <div className="absolute top-28 right-2 sm:right-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/coral_marine_activities.png"
+              imageSrc="/images/malpe_watersports_hero.jpg"
               caption="High-Spray Jet Skis, Parasailing & Kayaks"
               subcaption="Turquoise shallows · Inshore surf zone · Active momentum"
               annotation="ACTIVE ZONE · 24 KNOTS"
@@ -223,11 +235,23 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Supporting Polaroid: Marine Equipment Hub */}
+          <div className="absolute top-[1140px] left-6 sm:left-24 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/coral_marine_activities.png"
+              caption="Water equipment staging & safety briefing"
+              subcaption="Kayaks, life vests & support boats"
+              size="sm"
+              rotation={-3}
+              shadowIntensity="day"
+            />
+          </div>
+
           {/* Torn Paper Note: Watersports */}
           <div className="absolute top-[1040px] right-8 sm:right-28 z-25">
             <PhysicalPaperNote
               tag="AIRBORNE GUIDE"
-              text="The water gets louder. The guide bird slices across the spray. Yellow kayaks cut through gentle swells toward the open sea."
+              text="THE WATER GETS LOUDER. The guide bird slices across the spray. Yellow kayaks cut through gentle swells toward the open sea."
               subtext="LEAVING THE SHALLOWS BEHIND →"
               theme="cream"
               rotation={-2.5}
@@ -243,9 +267,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 03: CATAMARAN REVEAL (Center-Left Dominant Flagship Vessel) */}
+        {/* FRAME 03: CATAMARAN REVEAL (25.90M Commercial Catamaran) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1450px] pt-12">
+        <section className="relative min-h-[1500px] pt-12">
           {/* 3D Pushpin 03 */}
           <div className="absolute top-[540px] left-[22%] sm:left-[28%] z-35">
             <RedPushPin shadowAngle="bottom" size={34} />
@@ -261,11 +285,11 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: Flagship Catamaran */}
+          {/* Hero Polaroid: Flagship 25.90M Commercial Catamaran */}
           <div className="absolute top-28 left-2 sm:left-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/vessel_catamaran.jpg"
-              caption="Flagship 25.90M Expedition Catamaran"
+              imageSrc="/images/coral_catamaran_flagship_hero.jpg"
+              caption="Flagship 25.90M Commercial Expedition Catamaran"
               subcaption="Twin wave-piercing demi-hulls · Three decks · Arabian Sea scale"
               annotation="FLAGSHIP 25.90M"
               rotation={-1}
@@ -297,6 +321,18 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Detail Polaroid: Twin Hulls Wake */}
+          <div className="absolute top-[1160px] right-6 sm:right-24 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/vessel_catamaran.jpg"
+              caption="Twin hull hydrodynamics"
+              subcaption="Wave-piercing commercial stability"
+              size="sm"
+              rotation={2.5}
+              shadowIntensity="day"
+            />
+          </div>
+
           {/* Brass Pocket Compass on Sand */}
           <div className="absolute top-[720px] left-10 sm:left-28 z-25">
             <BrassCompass rotation={22} />
@@ -318,9 +354,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 04: ONBOARD LIFE (Mid-Right Warm Golden Amber Cluster) */}
+        {/* FRAME 04: ONBOARD LIFE (Upper Teak Deck & Karavali Grill) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1420px] pt-12">
+        <section className="relative min-h-[1480px] pt-12">
           {/* 3D Pushpin 04 */}
           <div className="absolute top-[540px] right-[24%] sm:right-[38%] z-35">
             <RedPushPin shadowAngle="sunset" size={34} />
@@ -336,19 +372,19 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: Social Dining */}
+          {/* Hero Polaroid: Real Onboard Social Deck & Grill */}
           <div className="absolute top-28 right-2 sm:right-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/dining_deck.jpg"
-              caption="Upper Teak Deck · Social Dining & Music"
-              subcaption="Candlelit tables · Arabian Sea horizon · Karavali cuisine"
-              annotation="ONBOARD DINING"
+              imageSrc="/images/catamaran_onboard_life_hero.jpg"
+              caption="Upper Teak Deck · Live Karavali Grill & Music"
+              subcaption="Fresh sear fish rava fry, drinks, DJ & perched Brahminy kite"
+              annotation="ONBOARD SOCIAL DECK"
               rotation={1.5}
               shadowAngle="sunset"
             />
           </div>
 
-          {/* Detail Polaroid: Live Seafood Grill */}
+          {/* Detail Polaroid: Fresh Catch Grill */}
           <div className="absolute top-[540px] left-4 sm:left-16 z-25">
             <PhysicalPolaroid
               imageSrc="/images/curated_dining.jpg"
@@ -360,14 +396,26 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
-          {/* Detail Polaroid: Salon Chart Table */}
+          {/* Detail Polaroid: Social Dining Lounge */}
           <div className="absolute top-[900px] left-12 sm:left-40 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/dining_deck.jpg"
+              caption="Candlelit tables & ocean breeze"
+              subcaption="Open horizon social dining"
+              size="sm"
+              rotation={4.5}
+              shadowIntensity="sunset"
+            />
+          </div>
+
+          {/* Detail Polaroid: Salon Chart Table */}
+          <div className="absolute top-[1140px] left-6 sm:left-24 z-20">
             <PhysicalPolaroid
               imageSrc="/images/coral_dining_theatre.png"
               caption="Salon navigational chart table"
               subcaption="Brass dividers & acoustic music"
               size="sm"
-              rotation={4.5}
+              rotation={-2}
               shadowIntensity="sunset"
             />
           </div>
@@ -388,9 +436,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 05: BASALT ISLAND (Center-Left 88M-Yr-Old Columnar Basalt) */}
+        {/* FRAME 05: BASALT ISLAND (St. Mary's 88M-Yr Hexagonal Basalt) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1420px] pt-12">
+        <section className="relative min-h-[1480px] pt-12">
           {/* 3D Pushpin 05 */}
           <div className="absolute top-[540px] left-[24%] sm:left-[30%] z-35">
             <RedPushPin shadowAngle="sunset" size={34} />
@@ -406,12 +454,12 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: St. Mary's Basalt */}
+          {/* Hero Polaroid: True St. Mary's Columnar Basalt Island */}
           <div className="absolute top-28 left-2 sm:left-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/malpe_basalt_island_1786648030492.jpg"
+              imageSrc="/images/st_marys_basalt_island_hero.jpg"
               caption="St. Mary's 6-Sided Hexagonal Columnar Basalt"
-              subcaption="88 million years old · Geological monument · St. Mary's Archipelago"
+              subcaption="88 million years old · Geological monument · Distant Catamaran"
               annotation="GEOLOGICAL MONUMENT"
               rotation={-2}
               shadowAngle="sunset"
@@ -442,6 +490,18 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Detail Polaroid: Columnar Geology Close-up */}
+          <div className="absolute top-[1140px] right-6 sm:right-24 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/malpe_basalt_island_1786648030492.jpg"
+              caption="Geometric hexagonal pillars"
+              subcaption="Ancient Madagascar rifting geology"
+              size="sm"
+              rotation={3}
+              shadowIntensity="sunset"
+            />
+          </div>
+
           {/* Torn Paper Note: Geology */}
           <div className="absolute top-[1060px] left-10 sm:left-32 z-25">
             <PhysicalPaperNote
@@ -457,9 +517,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 06: SUNSET PAUSE (Center-Right Molten Gold Horizon) */}
+        {/* FRAME 06: SUNSET PAUSE (Golden Hour over St. Mary's Basalt) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1450px] pt-12">
+        <section className="relative min-h-[1480px] pt-12">
           {/* 3D Pushpin 06 */}
           <div className="absolute top-[560px] right-[24%] sm:right-[38%] z-35">
             <RedPushPin shadowAngle="sunset" size={34} />
@@ -475,12 +535,12 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: Grand Sunset */}
+          {/* Hero Polaroid: True St. Mary's Basalt Sunset Horizon */}
           <div className="absolute top-28 right-2 sm:right-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/sunset_catamaran.jpg"
-              caption="Westbound Arabian Sea Sunset"
-              subcaption="284° WNW · Molten gold horizon · Distant catamaran silhouette"
+              imageSrc="/images/st_marys_sunset_horizon_hero.jpg"
+              caption="Westbound Arabian Sea Sunset over Basalt Island"
+              subcaption="284° WNW · Molten gold horizon · Silhouetted Brahminy Kite"
               annotation="GOLDEN HOUR · 284°"
               rotation={0}
               shadowAngle="sunset"
@@ -502,11 +562,23 @@ export function BeachVisionBoardMaster() {
           {/* Detail Polaroid: Catamaran Silhouette */}
           <div className="absolute top-[920px] left-12 sm:left-40 z-20">
             <PhysicalPolaroid
-              imageSrc="/images/coral_golden_hour_deck.png"
+              imageSrc="/images/sunset_catamaran.jpg"
               caption="Distant vessel in sunset path"
-              subcaption="Silhouetted Brahminy kite"
+              subcaption="Silhouetted catamaran cruising west"
               size="sm"
               rotation={4}
+              shadowIntensity="sunset"
+            />
+          </div>
+
+          {/* Detail Polaroid: Sunset Deck Silhouette */}
+          <div className="absolute top-[1160px] left-6 sm:left-24 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/coral_golden_hour_deck.png"
+              caption="Observation deck at dusk"
+              subcaption="Silhouetted Brahminy kite"
+              size="sm"
+              rotation={-2.5}
               shadowIntensity="sunset"
             />
           </div>
@@ -526,9 +598,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 07: NIGHT (Center-Left Moonlit Midnight Sapphire) */}
+        {/* FRAME 07: NIGHT (Moonlit Basalt Island & Starry Arabian Sea) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1420px] pt-12">
+        <section className="relative min-h-[1480px] pt-12">
           {/* 3D Pushpin 07 */}
           <div className="absolute top-[540px] left-[24%] sm:left-[30%] z-35">
             <RedPushPin shadowAngle="night" size={34} />
@@ -544,12 +616,12 @@ export function BeachVisionBoardMaster() {
             </h2>
           </div>
 
-          {/* Hero Polaroid: Moonlit Basalt */}
+          {/* Hero Polaroid: True St. Mary's Moonlit Basalt Night */}
           <div className="absolute top-28 left-2 sm:left-8 z-20">
             <BeachPolaroidHero
-              imageSrc="/images/night_sapphire.jpg"
-              caption="Moonlit Basalt · Midnight Sapphire"
-              subcaption="Ambient starlight · Deep ocean calm · St. Mary's night"
+              imageSrc="/images/st_marys_night_sapphire_hero.jpg"
+              caption="Moonlit Basalt · Midnight Sapphire Arabian Sea"
+              subcaption="Milky Way starlight · Lantern pathway · St. Mary's night"
               annotation="NIGHT EXPEDITION"
               rotation={-1}
               shadowAngle="night"
@@ -568,14 +640,26 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
-          {/* Detail Polaroid: Nightfall Ocean */}
+          {/* Detail Polaroid: Moonlit Basalt */}
           <div className="absolute top-[900px] right-12 sm:right-40 z-20">
             <PhysicalPolaroid
-              imageSrc="/images/nightfall_ocean.jpg"
-              caption="The last light fades into the horizon"
+              imageSrc="/images/night_sapphire.jpg"
+              caption="Moonlit basalt rock formations"
               subcaption="13°21′02″ N · Midnight sea"
               size="sm"
               rotation={-3.5}
+              shadowIntensity="night"
+            />
+          </div>
+
+          {/* Detail Polaroid: Distant Horizon Light */}
+          <div className="absolute top-[1140px] right-6 sm:right-24 z-20">
+            <PhysicalPolaroid
+              imageSrc="/images/nightfall_ocean.jpg"
+              caption="The last light fades into the horizon"
+              subcaption="Distant navigation beacon"
+              size="sm"
+              rotation={2.5}
               shadowIntensity="night"
             />
           </div>
@@ -595,9 +679,9 @@ export function BeachVisionBoardMaster() {
 
 
         {/* ------------------------------------------------------------------ */}
-        {/* FRAME 08: DRONE SHOW (Celestial Climax & Finale on Sand) */}
+        {/* FRAME 08: DRONE SHOW (300-Drone Constellation over Basalt Island) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1600px] pt-12">
+        <section className="relative min-h-[1680px] pt-12">
           {/* Final 3D Pushpin 08 Termination */}
           <div className="absolute top-[540px] left-1/2 -translate-x-1/2 z-35">
             <RedPushPin shadowAngle="night" size={38} />
@@ -613,16 +697,16 @@ export function BeachVisionBoardMaster() {
               <span className="italic text-[#2DD4BF]">to the Sea.</span>
             </h2>
             <p className="font-sans text-xs sm:text-sm text-[#FAF6EE]/75 max-w-lg mx-auto mt-2">
-              Three hundred synchronized lights rise from the dark water into the open sky above St. Mary's.
+              Three hundred synchronized lights rise above St. Mary's basalt island into the open night sky.
             </p>
           </div>
 
-          {/* Hero Polaroid: 300-Drone Constellation */}
+          {/* Hero Polaroid: Real 300-Drone Constellation over St. Mary's Basalt */}
           <div className="max-w-4xl mx-auto z-20 relative flex justify-center">
             <BeachPolaroidHero
-              imageSrc="/images/hero_ocean.jpg"
-              caption="300-Drone Constellation over the Arabian Sea"
-              subcaption="Wave & Brahminy kite formations · Water reflections · St. Mary's sky"
+              imageSrc="/images/drone_constellation_finale_hero.jpg"
+              caption="300-Drone Constellation over St. Mary's Basalt"
+              subcaption="Glowing wave, nautical compass rose & soaring Brahminy kite lights"
               annotation="THE CELESTIAL FINALE"
               rotation={0}
               shadowAngle="night"
@@ -633,9 +717,9 @@ export function BeachVisionBoardMaster() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto mt-10 z-25 relative">
             <div className="flex justify-center sm:justify-start">
               <PhysicalPolaroid
-                imageSrc="/images/coral_event_spaces.png"
-                caption="The nautical compass rose formation"
-                subcaption="Synchronized celestial choreography"
+                imageSrc="/images/hero_ocean.jpg"
+                caption="Celestial starlight & ocean horizon"
+                subcaption="Midnight expanse over the Arabian Sea"
                 size="md"
                 rotation={-2.5}
                 shadowIntensity="night"
@@ -645,8 +729,8 @@ export function BeachVisionBoardMaster() {
             <div className="flex justify-center sm:justify-end">
               <PhysicalPolaroid
                 imageSrc="/images/underwater_marine.jpg"
-                caption="Fragmented wave reflections below"
-                subcaption="Glowing bioluminescent tones"
+                caption="Glowing wave reflections below"
+                subcaption="Bioluminescent water illumination"
                 size="md"
                 rotation={3}
                 shadowIntensity="night"
