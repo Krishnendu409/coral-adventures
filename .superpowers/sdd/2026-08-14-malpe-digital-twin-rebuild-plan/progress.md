@@ -8,3 +8,4 @@ Task 0: complete (commits 88fdf79, review clean - Drei/Postprocessing installed,
 Task 1: complete (commits 65e23e8, review clean - multi-mask PBR terrain engine, wagon cart ruts, wet intertidal specular reflections, 97/97 tests passing)
 Task 2: complete (commits 554788e, review clean - botanical vegetation population system, seaward wind bowing, undergrowth, organic ground debris, 99/99 tests passing)
 Task 3: complete (commits f2629c3, review clean - Malpe teak & laterite expedition portal, open-air pavilion, inhabited chart table with St. Mary's sea chart, dividers, compass, weather ledger, captain's lantern, 101/101 tests passing)
+Task 4: complete (commits bc5a664, review clean - living Gerstner wave ocean engine, cyan-to-sapphire depth gradient, caustics, intertidal surf foam swash, 25.90M catamaran, traditional Malpe wooden trawlers, Sea-Doos & kayaks, 101/101 tests passing)

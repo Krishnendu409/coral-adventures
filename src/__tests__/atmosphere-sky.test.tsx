@@ -12,6 +12,11 @@ vi.mock('@react-three/fiber', async () => {
   };
 });
 
+vi.mock('@react-three/drei', () => ({
+  Environment: (props: any) => <group name="DreiEnvironment" {...props} />,
+  ContactShadows: (props: any) => <group name="GroundContactShadows" {...props} />,
+}));
+
 describe('AtmosphereSky Component', () => {
   it('renders AtmosphereSky root group and major atmospheric layers in React/R3F tree', () => {
     const { container } = render(<AtmosphereSky />);
@@ -26,19 +31,20 @@ describe('AtmosphereSky Component', () => {
     expect(container.querySelector('[name="AtmosphericClouds"]')).toBeDefined();
     expect(container.querySelector('[name="FlockingSeaBirds"]')).toBeDefined();
     expect(container.querySelector('[name="GoldenSunMotes"]')).toBeDefined();
+    expect(container.querySelector('[name="GroundContactShadows"]')).toBeDefined();
   });
 
   it('verifies 5500K golden sunlight and atmospheric color tokens', () => {
     const goldenSun5500K = new THREE.Color('#FFF4E0');
     const skyHemisphere = new THREE.Color('#9AC5DB');
     const groundBounce = new THREE.Color('#5A4535');
-    const horizonFogMist = new THREE.Color('#F0DFCD');
+    const horizonFogMist = new THREE.Color('#C9DDE8');
     const basaltVolcanic = new THREE.Color('#3A4750');
 
     expect(goldenSun5500K.getHexString().toLowerCase()).toBe('fff4e0');
     expect(skyHemisphere.getHexString().toLowerCase()).toBe('9ac5db');
     expect(groundBounce.getHexString().toLowerCase()).toBe('5a4535');
-    expect(horizonFogMist.getHexString().toLowerCase()).toBe('f0dfcd');
+    expect(horizonFogMist.getHexString().toLowerCase()).toBe('c9dde8');
     expect(basaltVolcanic.getHexString().toLowerCase()).toBe('3a4750');
   });
 

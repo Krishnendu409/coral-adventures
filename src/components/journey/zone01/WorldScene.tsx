@@ -9,6 +9,8 @@ import { PavilionArchitecture } from './environment/PavilionArchitecture';
 import { CoralPortal } from './environment/CoralPortal';
 import { MarineCraft } from './environment/MarineCraft';
 import { AtmosphereSky } from './environment/AtmosphereSky';
+import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 
 interface CameraControllerProps {
   splineProgress: number;
@@ -243,6 +245,28 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
 
             {/* 7. Layer 2 & 3 (Living Craft): Malpe Fishing Trawlers, Jet Skis & 25.90M Catamaran */}
             <MarineCraft />
+
+            {/* 8. Restrained Postprocessing Pipeline: SSAO, Bloom & Editorial Vignette */}
+            <EffectComposer>
+              <SSAO
+                samples={21}
+                radius={0.15}
+                intensity={25}
+                luminanceInfluence={0.6}
+                color={new THREE.Color('#1A120B')}
+              />
+              <Bloom
+                luminanceThreshold={0.15}
+                luminanceSmoothing={0.85}
+                intensity={0.4}
+                mipmapBlur
+              />
+              <Vignette
+                offset={0.3}
+                darkness={0.45}
+                blendFunction={BlendFunction.NORMAL}
+              />
+            </EffectComposer>
           </Canvas>
         </ErrorBoundary>
       ) : (

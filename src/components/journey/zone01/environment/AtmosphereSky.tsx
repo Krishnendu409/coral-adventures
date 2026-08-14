@@ -1,6 +1,8 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
+import { JOURNEY_ASSETS } from '@/data/journeyAssets';
 
 /**
  * AtmosphereSky Component - Malpe Waterfront Digital Twin
@@ -127,9 +129,27 @@ export const AtmosphereSky: React.FC = () => {
     <group name="Atmosphere_SkyLighting">
       {/* 1. Coastal Karnataka Calibrated Exponential Sea-Mist Fog */}
       {/* Blends distant ocean at z: 320..450m into the sky horizon with warm tropical haze */}
-      <fogExp2 attach="fog" args={['#F0DFCD', 0.0022]} />
+      <fogExp2 attach="fog" args={['#C9DDE8', 0.0022]} />
 
-      {/* 2. Panoramic Sky Dome (360° Multi-Stop Atmospheric Scattering) */}
+      {/* 2. Drei HDRI Sky Fill & Environment Lighting */}
+      <Environment
+        files={JOURNEY_ASSETS.environment.hdriMap}
+        preset="sunset"
+        background={false}
+      />
+
+      {/* 3. Soft Contact Shadows grounding furniture, laterite plinths, boulders, and palm trunks */}
+      <ContactShadows
+        position={[0, 0.02, 100]}
+        opacity={0.65}
+        scale={180}
+        blur={2.5}
+        far={15}
+        color="#2A1B0E"
+        name="GroundContactShadows"
+      />
+
+      {/* 4. Panoramic Sky Dome (360° Multi-Stop Atmospheric Scattering) */}
       <mesh position={[0, 0, 180]} scale={[-1, 1, 1]} name="PanoramicSkyDome">
         <sphereGeometry args={[520, 48, 32]} />
         <meshBasicMaterial map={skyTexture} side={THREE.BackSide} />
