@@ -36,7 +36,8 @@ const CameraController: React.FC<CameraControllerProps> = ({
   const currentLookTarget = useRef(new THREE.Vector3(0, 1.7, 25));
   const isFirstFrame = useRef(true);
 
-  useFrame(() => {
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
     const { position, lookAt, fov, currentLandmark } = getInterpolatedCameraState(
       spline,
       splineProgress,
@@ -44,6 +45,12 @@ const CameraController: React.FC<CameraControllerProps> = ({
     );
 
     const targetPos = position.clone();
+
+    // Add subtle cinematic micro-breathing to target position for organic realism
+    const breathY = Math.sin(time * 1.2) * 0.015;
+    const breathX = Math.cos(time * 0.8) * 0.012;
+    targetPos.y += breathY;
+    targetPos.x += breathX;
 
     // Calculate current progressive delivery tier relative to target landmark node position
     const landmarkPos = currentLandmark ? currentLandmark.position : targetPos;
@@ -57,7 +64,7 @@ const CameraController: React.FC<CameraControllerProps> = ({
     // Dynamically update camera FOV smoothly
     if (camera instanceof THREE.PerspectiveCamera) {
       if (Math.abs(camera.fov - fov) > 0.001) {
-        camera.fov = THREE.MathUtils.lerp(camera.fov, fov, 0.08);
+        camera.fov = THREE.MathUtils.lerp(camera.fov, fov, 0.05);
         camera.updateProjectionMatrix();
       }
     }
@@ -78,10 +85,10 @@ const CameraController: React.FC<CameraControllerProps> = ({
       targetLookAt.y += Math.tan(clampedPitch) * 15;
     }
 
-    // Dampen look offset back toward center when not actively dragging
+    // Dampen look offset back toward center smoothly when not actively dragging
     if (!isDraggingRef.current) {
-      lookOffsetRef.current.yaw *= 0.95;
-      lookOffsetRef.current.pitch *= 0.95;
+      lookOffsetRef.current.yaw *= 0.92;
+      lookOffsetRef.current.pitch *= 0.92;
     }
 
     if (isFirstFrame.current) {
@@ -90,8 +97,8 @@ const CameraController: React.FC<CameraControllerProps> = ({
       camera.lookAt(currentLookTarget.current);
       isFirstFrame.current = false;
     } else {
-      camera.position.lerp(targetPos, 0.08);
-      currentLookTarget.current.lerp(targetLookAt, 0.1);
+      camera.position.lerp(targetPos, 0.05);
+      currentLookTarget.current.lerp(targetLookAt, 0.06);
       camera.lookAt(currentLookTarget.current);
     }
 
