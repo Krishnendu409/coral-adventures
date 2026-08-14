@@ -18,6 +18,35 @@ import { WildlifeSystem } from './environment/WildlifeSystem';
 import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 
+// ── Module-Level WebGL Safety Patch ──────────────────────────────────────
+// Three.js WebGLRenderer internally does `_gl.getContextAttributes().alpha`
+// which crashes if getContextAttributes() returns null (context lost/recycled).
+// Patch the prototype at module load time so it's in place before any Canvas renders.
+if (typeof window !== 'undefined') {
+  const safeDefaults: WebGLContextAttributes = {
+    alpha: true, antialias: true, depth: true,
+    failIfMajorPerformanceCaveat: false,
+    powerPreference: 'default',
+    premultipliedAlpha: true, preserveDrawingBuffer: false,
+    stencil: true, desynchronized: false, xrCompatible: false,
+  };
+
+  const patchProto = (Proto: { prototype: { getContextAttributes: () => WebGLContextAttributes | null } } | undefined) => {
+    if (!Proto) return;
+    const orig = Proto.prototype.getContextAttributes;
+    if (orig && !(orig as any).__safePatched) {
+      Proto.prototype.getContextAttributes = function () {
+        return orig.call(this) || safeDefaults;
+      };
+      (Proto.prototype.getContextAttributes as any).__safePatched = true;
+    }
+  };
+
+  if (typeof WebGLRenderingContext !== 'undefined') patchProto(WebGLRenderingContext as any);
+  if (typeof WebGL2RenderingContext !== 'undefined') patchProto(WebGL2RenderingContext as any);
+}
+// ─────────────────────────────────────────────────────────────────────────
+
 interface CameraControllerProps {
   splineProgress: number;
   onProjectDiscoveries?: (projectedList: { id: string; x: number; y: number }[]) => void;
@@ -331,21 +360,15 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
             shadows
             dpr={[1, 1.5]}
             gl={{
-              alpha: true,
               antialias: true,
+              alpha: true,
               preserveDrawingBuffer: true,
+              powerPreference: 'high-performance',
+              failIfMajorPerformanceCaveat: false,
               toneMapping: THREE.ACESFilmicToneMapping,
               toneMappingExposure: 1.15,
-              powerPreference: 'high-performance',
-              failIfMajorPerformanceCaveat: false
             }}
             camera={{ fov: 52, near: 0.1, far: 2000 }}
-            onCreated={({ gl }) => {
-              // Ensure context is valid after creation
-              if (!gl.getContext()?.getContextAttributes()) {
-                console.warn('WebGL context attributes unavailable, scene may have rendering limitations');
-              }
-            }}
           >
             <color attach="background" args={['#F5E8D8']} />
 
