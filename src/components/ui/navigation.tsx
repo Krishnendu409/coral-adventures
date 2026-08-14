@@ -138,6 +138,20 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
 
         {/* Printed Editorial Instruction Links (No SaaS Pills) */}
         <div className="flex items-center gap-4 sm:gap-6">
+          {/* Storyboard Dossier Route Link */}
+          <Link
+            href="/storyboard"
+            className={cn(
+              "hidden md:inline-flex items-center gap-1.5 pb-0.5 border-b font-mono text-[9.5px] uppercase tracking-[0.22em] font-semibold transition-all duration-300 group",
+              isDark
+                ? "border-[#38BDF8]/70 text-[#38BDF8] hover:border-white hover:text-white"
+                : "border-[#E05A36]/50 text-[#E05A36] hover:border-[#0A2540] hover:text-[#0A2540]"
+            )}
+          >
+            <span>STORYBOARD</span>
+            <span className="text-[10px]">↗</span>
+          </Link>
+
           {/* Explore Journey Route Link */}
           <Link
             href="/journey"
@@ -148,7 +162,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
                 : "border-[#0A2540]/50 text-[#0A2540] hover:border-[#E05A36] hover:text-[#E05A36]"
             )}
           >
-            <span>EXPLORE JOURNEY</span>
+            <span>3D WORLD</span>
             <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
           </Link>
 
