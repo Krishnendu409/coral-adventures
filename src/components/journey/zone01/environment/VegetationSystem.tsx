@@ -8,12 +8,17 @@ import { createPalmFrondTexture, createBroadleafTexture } from '../../../../lib/
  * Dynamic Botanical Population System for Malpe Digital Twin (Zone 01)
  * 
  * Key Features:
- * - 4 Botanical Variants of Cocos nucifera (Tall Mature Leaning 12m, Mid-height Upright 9m, Coastal Wind-bowed 7m, Young Cluster 5m).
- * - Ecological instancing & GPU batching with randomized scale (0.85x - 1.2x), trunk bend curvature (0-28°), rotation, frond count (18-32), and frond droop age.
- * - Seaward wind bowing logic: Palms closer to shoreline bow seaward towards the Arabian Sea (+Z).
- * - Gentle, non-synchronous wind sway frame & vertex physics with independent phase offsets.
- * - Tropical Undergrowth: Instanced Spinifex littoreus dune runner grass, Alocasia macrorrhizos broadleaf plants, Bougainvillea coastal shrubs.
- * - Inhabited Cause-and-Effect Ground Debris: Fallen brown fronds, coconut husks, driftwood logs, shell fragments clustered near tree bases & high-tide swash line.
+ * - 4 Botanical Variants of Cocos nucifera across 1200m Continuous Spatial World (Z = 0m -> 1200m):
+ *   1. Tall Mature Leaning Palm (12m)
+ *   2. Mid-height Upright Palm (9m)
+ *   3. Coastal Wind-Bowed Palm (7m)
+ *   4. Young Cluster Palm (5m)
+ * - Ecological InstancedMesh GPU batching & per-instance randomized scale (0.85x - 1.2x),
+ *   trunk bend curvature (0° to 28°), yaw rotation, frond count (18-32), and frond droop age across Z=0m to Z=1200m.
+ * - Seaward wind bowing logic: palms closer to shoreline naturally bow seaward (+Z towards Arabian Sea).
+ * - Gentle non-synchronous wind sway frame & vertex physics with independent multi-harmonic phase offsets.
+ * - Tropical undergrowth: Spinifex littoreus dune runner grass clusters, broadleaf Alocasia macrorrhizos, Bougainvillea coastal shrubs.
+ * - Inhabited cause-and-effect ground debris: fallen brown palm fronds, coconut husks, driftwood logs, and shell fragments clustered near tree bases and high-tide swash lines.
  */
 
 // ----------------------------------------------------------------------------
@@ -98,14 +103,14 @@ export interface PalmInstanceData {
   height: number;
 }
 
-// Helper: Calculate seaward wind bowing based on Z proximity to Arabian Sea shoreline (Z=30 to Z=190)
+// Helper: Calculate seaward wind bowing based on Z proximity to shoreline/Arabian Sea across Z=0m to Z=1200m
 export function calculateSeawardBowing(pos: [number, number, number], variant: PalmVariantType) {
   const spec = PALM_VARIANT_SPECS[variant];
-  // Shoreline proximity factor (0 at entrance Z=10, 1.0 at shore Z=180+)
-  const coastalFactor = Math.max(0, Math.min(1, (pos[2] - 20) / 160));
+  // Shoreline proximity / coastal exposure factor (0 at inland road entrance Z=0, up to 1.0 towards open ocean/coast Z=150..1200)
+  const coastalFactor = Math.max(0, Math.min(1.0, (pos[2] - 15) / 185));
   
-  // Bowing increases seaward (+Z direction) up to 28 degrees max curvature
-  const extraSeawardLean = (variant === 'COASTAL_WIND_BOWED' ? 0.32 : 0.16) * coastalFactor;
+  // Bowing increases seaward (+Z direction towards open sea) up to 28 degrees max curvature
+  const extraSeawardLean = (variant === 'COASTAL_WIND_BOWED' ? 0.36 : 0.18) * coastalFactor;
   const effectiveCurvature = Math.min(28, spec.bendCurvature + coastalFactor * 8);
 
   return {
@@ -123,7 +128,7 @@ export const VegetationSystem: React.FC = () => {
   const shrubGroupRef = useRef<THREE.Group>(null);
   const debrisGroupRef = useRef<THREE.Group>(null);
 
-  // 1. Naturalistic Population Layout across Malpe Zone 01 (28+ Palms)
+  // 1. Naturalistic Botanical Population Layout across 1200m Continuous Spatial World (Z = 0m -> 1200m)
   const palmInstances = useMemo<PalmInstanceData[]>(() => {
     const rawPlacements: Array<{
       variant: PalmVariantType;
@@ -132,20 +137,19 @@ export const VegetationSystem: React.FC = () => {
       yaw?: number;
       frondCount?: number;
     }> = [
-      // --- Zone 01A: Approach Road & Entry Sanctuary (Z = 10..55) ---
+      // --- Zone 01A: Approach Road & Entry Sanctuary (Z = 10..55m) ---
       { variant: 'TALL_MATURE_LEANING', pos: [-15.2, 0.0, 12.5], scale: 1.12, yaw: 0.35, frondCount: 30 },
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [-20.5, 0.1, 24.0], scale: 0.98, yaw: 1.15, frondCount: 24 },
       { variant: 'YOUNG_CLUSTER', pos: [-13.0, 0.0, 36.5], scale: 0.90, yaw: 2.10, frondCount: 20 },
       { variant: 'TALL_MATURE_LEANING', pos: [-22.8, 0.2, 45.0], scale: 1.18, yaw: 0.85, frondCount: 31 },
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [-17.5, 0.05, 52.0], scale: 1.05, yaw: 1.80, frondCount: 25 },
       { variant: 'YOUNG_CLUSTER', pos: [-18.8, 0.05, 53.5], scale: 0.86, yaw: 4.20, frondCount: 19 },
-
       { variant: 'TALL_MATURE_LEANING', pos: [16.5, 0.0, 15.0], scale: 1.08, yaw: 3.40, frondCount: 29 },
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [22.2, 0.1, 28.5], scale: 1.02, yaw: 0.75, frondCount: 23 },
       { variant: 'YOUNG_CLUSTER', pos: [14.0, 0.0, 40.0], scale: 0.88, yaw: 1.95, frondCount: 18 },
       { variant: 'TALL_MATURE_LEANING', pos: [23.5, 0.2, 50.5], scale: 1.15, yaw: 2.60, frondCount: 32 },
 
-      // --- Zone 01B: Pavilion Sanctuary Framing (Z = 60..125) ---
+      // --- Zone 01B: Pavilion Sanctuary Framing (Z = 60..125m) ---
       { variant: 'TALL_MATURE_LEANING', pos: [-18.5, 0.35, 68.0], scale: 1.14, yaw: 0.55, frondCount: 28 },
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [-25.2, 0.50, 88.0], scale: 1.06, yaw: 2.75, frondCount: 26 },
       { variant: 'COASTAL_WIND_BOWED', pos: [-17.0, 0.65, 108.0], scale: 0.96, yaw: 1.65, frondCount: 22 },
@@ -153,15 +157,52 @@ export const VegetationSystem: React.FC = () => {
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [27.0, 0.55, 96.0], scale: 1.10, yaw: 0.95, frondCount: 24 },
       { variant: 'COASTAL_WIND_BOWED', pos: [19.2, 0.65, 122.0], scale: 1.04, yaw: 2.25, frondCount: 23 },
 
-      // --- Zone 01C: Coastal Dune Transition & Tidal Edge (Z = 130..195) ---
+      // --- Zone 01C: Coastal Dune Transition & Intertidal Swash Line (Z = 130..250m) ---
       { variant: 'COASTAL_WIND_BOWED', pos: [-23.5, 0.45, 142.0], scale: 1.08, yaw: 1.10, frondCount: 24 },
-      { variant: 'COASTAL_WIND_BOWED', pos: [-29.0, 0.15, 172.0], scale: 1.15, yaw: 0.30, frondCount: 22 }, // High seaward bow
+      { variant: 'COASTAL_WIND_BOWED', pos: [-29.0, 0.15, 172.0], scale: 1.15, yaw: 0.30, frondCount: 22 },
       { variant: 'YOUNG_CLUSTER', pos: [-26.5, 0.20, 185.0], scale: 0.92, yaw: 0.90, frondCount: 20 },
       { variant: 'COASTAL_WIND_BOWED', pos: [-27.8, 0.20, 186.2], scale: 1.00, yaw: 2.10, frondCount: 21 },
-
       { variant: 'COASTAL_WIND_BOWED', pos: [25.5, 0.55, 148.0], scale: 1.12, yaw: 2.85, frondCount: 23 },
-      { variant: 'COASTAL_WIND_BOWED', pos: [31.2, 0.10, 182.0], scale: 1.16, yaw: 1.65, frondCount: 24 }, // High seaward bow
+      { variant: 'COASTAL_WIND_BOWED', pos: [31.2, 0.10, 182.0], scale: 1.16, yaw: 1.65, frondCount: 24 },
       { variant: 'YOUNG_CLUSTER', pos: [28.0, 0.12, 192.0], scale: 0.88, yaw: 4.10, frondCount: 18 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [-32.0, 0.10, 220.0], scale: 1.10, yaw: 0.45, frondCount: 23 },
+      { variant: 'TALL_MATURE_LEANING', pos: [34.0, 0.15, 240.0], scale: 1.14, yaw: 3.10, frondCount: 29 },
+
+      // --- Zone 01D: Sea Walkway & Harbour Edge Groves (Z = 260..500m) ---
+      { variant: 'COASTAL_WIND_BOWED', pos: [-38.0, 0.10, 280.0], scale: 1.05, yaw: 1.25, frondCount: 22 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [-42.0, 0.12, 330.0], scale: 0.95, yaw: 2.40, frondCount: 25 },
+      { variant: 'TALL_MATURE_LEANING', pos: [-35.0, 0.15, 380.0], scale: 1.18, yaw: 0.70, frondCount: 30 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [-40.0, 0.10, 440.0], scale: 1.12, yaw: 1.85, frondCount: 24 },
+      { variant: 'YOUNG_CLUSTER', pos: [-36.0, 0.08, 490.0], scale: 0.90, yaw: 3.50, frondCount: 19 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [38.0, 0.10, 290.0], scale: 1.08, yaw: 2.10, frondCount: 23 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [45.0, 0.15, 350.0], scale: 1.02, yaw: 0.60, frondCount: 24 },
+      { variant: 'TALL_MATURE_LEANING', pos: [40.0, 0.20, 410.0], scale: 1.16, yaw: 4.10, frondCount: 31 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [42.0, 0.12, 470.0], scale: 1.14, yaw: 1.30, frondCount: 22 },
+
+      // --- Zone 01E: Mid-Coast Beach & Coastal Fringe (Z = 510..800m) ---
+      { variant: 'COASTAL_WIND_BOWED', pos: [-44.0, 0.10, 540.0], scale: 1.12, yaw: 0.80, frondCount: 23 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [-48.0, 0.15, 600.0], scale: 0.98, yaw: 2.90, frondCount: 25 },
+      { variant: 'TALL_MATURE_LEANING', pos: [-42.0, 0.18, 670.0], scale: 1.20, yaw: 1.15, frondCount: 32 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [-46.0, 0.10, 730.0], scale: 1.06, yaw: 0.35, frondCount: 21 },
+      { variant: 'YOUNG_CLUSTER', pos: [-40.0, 0.08, 780.0], scale: 0.88, yaw: 3.20, frondCount: 20 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [46.0, 0.12, 560.0], scale: 1.10, yaw: 2.45, frondCount: 24 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [50.0, 0.15, 620.0], scale: 1.04, yaw: 1.05, frondCount: 26 },
+      { variant: 'TALL_MATURE_LEANING', pos: [44.0, 0.20, 700.0], scale: 1.15, yaw: 3.80, frondCount: 30 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [48.0, 0.10, 760.0], scale: 1.12, yaw: 0.90, frondCount: 23 },
+
+      // --- Zone 01F: Outer Lagoon & St. Mary's Basalt Isle Groves (Z = 810..1180m) ---
+      { variant: 'COASTAL_WIND_BOWED', pos: [-35.0, 0.15, 840.0], scale: 1.14, yaw: 1.50, frondCount: 24 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [-38.0, 0.20, 910.0], scale: 1.00, yaw: 3.20, frondCount: 25 },
+      { variant: 'TALL_MATURE_LEANING', pos: [-32.0, 0.25, 980.0], scale: 1.18, yaw: 0.40, frondCount: 31 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [-28.0, 0.30, 1050.0], scale: 1.16, yaw: 2.15, frondCount: 23 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [-22.0, 0.35, 1120.0], scale: 1.10, yaw: 1.05, frondCount: 22 },
+      { variant: 'YOUNG_CLUSTER', pos: [-18.0, 0.40, 1160.0], scale: 0.92, yaw: 4.00, frondCount: 19 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [36.0, 0.15, 860.0], scale: 1.12, yaw: 2.70, frondCount: 23 },
+      { variant: 'MID_HEIGHT_UPRIGHT', pos: [40.0, 0.20, 930.0], scale: 1.02, yaw: 0.85, frondCount: 24 },
+      { variant: 'TALL_MATURE_LEANING', pos: [34.0, 0.25, 1010.0], scale: 1.16, yaw: 3.45, frondCount: 30 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [26.0, 0.30, 1080.0], scale: 1.15, yaw: 1.60, frondCount: 24 },
+      { variant: 'COASTAL_WIND_BOWED', pos: [20.0, 0.35, 1140.0], scale: 1.08, yaw: 0.50, frondCount: 22 },
+      { variant: 'YOUNG_CLUSTER', pos: [15.0, 0.40, 1175.0], scale: 0.86, yaw: 2.30, frondCount: 18 },
     ];
 
     return rawPlacements.map((p, idx) => {
@@ -187,9 +228,9 @@ export const VegetationSystem: React.FC = () => {
     });
   }, []);
 
-  // 2. Coastal Undergrowth Placement Coordinates
+  // 2. Coastal Undergrowth Placement Coordinates across 1200m World
   const undergrowthPlacements = useMemo(() => [
-    // Roadside / Gateway Approach
+    // Roadside / Gateway Approach (Z = 10..55m)
     { type: 'broadleaf', pos: [-12.5, 0.1, 20], scale: 1.2, rot: 0.4 },
     { type: 'grass', pos: [-10.8, 0.05, 26], scale: 1.3, rot: 1.2 },
     { type: 'shrub', pos: [-11.5, 0.1, 34], scale: 1.4, rot: 2.1 },
@@ -197,7 +238,7 @@ export const VegetationSystem: React.FC = () => {
     { type: 'grass', pos: [11.5, 0.05, 30], scale: 1.35, rot: 0.8 },
     { type: 'shrub', pos: [12.8, 0.1, 38], scale: 1.45, rot: 1.9 },
 
-    // Pavilion Sanctuary Perimeter
+    // Pavilion Sanctuary Perimeter (Z = 60..125m)
     { type: 'broadleaf', pos: [-14.5, 0.35, 62], scale: 1.5, rot: 0.6 },
     { type: 'shrub', pos: [-16.0, 0.45, 76], scale: 1.6, rot: 2.8 },
     { type: 'grass', pos: [-13.2, 0.40, 92], scale: 1.4, rot: 1.4 },
@@ -205,16 +246,28 @@ export const VegetationSystem: React.FC = () => {
     { type: 'shrub', pos: [17.5, 0.50, 84], scale: 1.5, rot: 0.9 },
     { type: 'grass', pos: [14.8, 0.45, 102], scale: 1.3, rot: 2.4 },
 
-    // Coastal & Shoreline Transition
+    // Coastal & Shoreline Transition (Z = 130..250m)
     { type: 'grass', pos: [-18.5, 0.55, 132], scale: 1.6, rot: 1.0 },
     { type: 'broadleaf', pos: [-20.0, 0.45, 150], scale: 1.7, rot: 0.4 },
     { type: 'grass', pos: [-24.0, 0.25, 170], scale: 1.8, rot: 2.2 },
     { type: 'grass', pos: [20.0, 0.50, 138], scale: 1.5, rot: 2.9 },
     { type: 'broadleaf', pos: [22.5, 0.35, 158], scale: 1.65, rot: 1.7 },
     { type: 'grass', pos: [26.0, 0.15, 178], scale: 1.75, rot: 0.8 },
+
+    // Sea Walkway & Harbour Edge (Z = 260..500m)
+    { type: 'grass', pos: [-28.0, 0.10, 310], scale: 1.6, rot: 1.5 },
+    { type: 'shrub', pos: [-32.0, 0.12, 390], scale: 1.5, rot: 0.3 },
+    { type: 'broadleaf', pos: [30.0, 0.10, 330], scale: 1.7, rot: 2.1 },
+    { type: 'grass', pos: [34.0, 0.15, 450], scale: 1.65, rot: 1.1 },
+
+    // St. Mary's Basalt Lagoon (Z = 800..1180m)
+    { type: 'grass', pos: [-20.0, 0.30, 950], scale: 1.7, rot: 0.5 },
+    { type: 'shrub', pos: [-15.0, 0.35, 1080], scale: 1.6, rot: 2.4 },
+    { type: 'broadleaf', pos: [22.0, 0.30, 990], scale: 1.8, rot: 1.9 },
+    { type: 'grass', pos: [18.0, 0.38, 1140], scale: 1.75, rot: 0.8 },
   ], []);
 
-  // 3. Ground Debris Placement Coordinates (Tree Bases & High-Tide Swash Line Z=130..190)
+  // 3. Ground Debris Placement Coordinates (Tree Bases & High-Tide Swash Line Z = 10m -> 1180m)
   const debrisPlacements = useMemo(() => {
     const items: Array<{
       type: 'fallen_frond' | 'coconut_husk' | 'driftwood' | 'shell_fragment';
@@ -242,29 +295,27 @@ export const VegetationSystem: React.FC = () => {
       });
     });
 
-    // High-tide wrack line debris (Z = 135..185)
-    for (let i = 0; i < 18; i++) {
-      const zVal = 135 + i * 3.0;
+    // High-tide wrack line debris across Z = 135m to Z = 1150m
+    const zSteps = [135, 160, 185, 240, 320, 420, 520, 650, 780, 920, 1050, 1140];
+    zSteps.forEach((zVal, i) => {
       const xLeft = -28 + Math.sin(i * 1.5) * 4;
       const xRight = 24 + Math.cos(i * 1.3) * 4;
 
-      // Driftwood logs
-      if (i % 3 === 0) {
-        items.push({
-          type: 'driftwood',
-          pos: [xLeft, 0.08, zVal],
-          scale: 1.0 + (i % 4) * 0.2,
-          rot: [0.05, 0.4 + i * 0.3, -0.02],
-        });
-        items.push({
-          type: 'driftwood',
-          pos: [xRight, 0.08, zVal + 2],
-          scale: 0.9 + (i % 3) * 0.25,
-          rot: [-0.03, -0.5 + i * 0.2, 0.04],
-        });
-      }
+      // Driftwood logs lying along high-tide swash line
+      items.push({
+        type: 'driftwood',
+        pos: [xLeft, 0.08, zVal],
+        scale: 1.0 + (i % 4) * 0.2,
+        rot: [0.05, 0.4 + i * 0.3, -0.02],
+      });
+      items.push({
+        type: 'driftwood',
+        pos: [xRight, 0.08, zVal + 2],
+        scale: 0.9 + (i % 3) * 0.25,
+        rot: [-0.03, -0.5 + i * 0.2, 0.04],
+      });
 
-      // Shell fragments scattered along swash
+      // Shell fragments scattered along swash line
       items.push({
         type: 'shell_fragment',
         pos: [xLeft + Math.cos(i) * 2, 0.03, zVal + 1],
@@ -277,7 +328,7 @@ export const VegetationSystem: React.FC = () => {
         scale: 0.75 + (i % 4) * 0.12,
         rot: [0, i * 0.9, 0],
       });
-    }
+    });
 
     return items;
   }, [palmInstances]);
@@ -364,7 +415,7 @@ export const VegetationSystem: React.FC = () => {
           })}
         </group>
 
-        {/* GPU Instanced Undergrowth Batching */}
+        {/* GPU Instanced Undergrowth Batching (Spanning Z = 0m -> 1200m) */}
         <InstancedUndergrowthBatch />
 
         {/* Inhabited Cause-and-Effect Ground Debris Layer */}
@@ -380,7 +431,7 @@ export const VegetationSystem: React.FC = () => {
           ))}
         </group>
 
-        {/* GPU Instanced Ground Debris Batching */}
+        {/* GPU Instanced Ground Debris Batching (Spanning Z = 0m -> 1200m) */}
         <InstancedGroundDebrisBatch />
       </group>
     </group>
@@ -832,20 +883,21 @@ export const CauseAndEffectDebrisItem: React.FC<{
 };
 
 // ----------------------------------------------------------------------------
-// GPU Instanced Undergrowth & Debris Batching Components
+// GPU Instanced Undergrowth & Debris Batching Components across 1200m World
 // ----------------------------------------------------------------------------
 
 export const InstancedUndergrowthBatch: React.FC = () => {
   const grassRef = useRef<THREE.InstancedMesh>(null!);
-  const count = 90;
+  const count = 200;
 
   useLayoutEffect(() => {
     if (!grassRef.current || typeof grassRef.current.setMatrixAt !== 'function') return;
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
-      const z = 25 + (i * 1.7) % 160;
-      const x = -30 + ((i * 7.3) % 60);
-      const scale = 0.8 + (i % 4) * 0.2;
+      // Spanning Z = 0m -> 1200m
+      const z = (i * 6.0) % 1200;
+      const x = -35 + ((i * 11.3) % 70);
+      const scale = 0.8 + (i % 5) * 0.18;
       tempObj.position.set(x, 0.05, z);
       tempObj.rotation.set(0, (i * 0.7) % (Math.PI * 2), 0);
       tempObj.scale.set(scale, scale, scale);
@@ -871,14 +923,15 @@ export const InstancedUndergrowthBatch: React.FC = () => {
 
 export const InstancedGroundDebrisBatch: React.FC = () => {
   const husksRef = useRef<THREE.InstancedMesh>(null!);
-  const count = 40;
+  const count = 120;
 
   useLayoutEffect(() => {
     if (!husksRef.current || typeof husksRef.current.setMatrixAt !== 'function') return;
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
-      const z = 130 + (i * 1.4) % 60;
-      const x = -26 + ((i * 5.7) % 52);
+      // Spanning Z = 0m -> 1200m
+      const z = (i * 10.0) % 1200;
+      const x = -30 + ((i * 8.7) % 60);
       tempObj.position.set(x, 0.04, z);
       tempObj.rotation.set(0.2, (i * 1.1) % (Math.PI * 2), 0.1);
       tempObj.scale.set(0.8, 0.8, 0.8);

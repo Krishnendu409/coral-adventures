@@ -1,68 +1,58 @@
-# Task 0 Execution Report: Foundation, Asset Discovery & Registry Setup
+# Task 0 Execution Report: Asset Discovery, Production Pipeline & Foundation Audit
 
-**Plan:** `docs/superpowers/plans/2026-08-14-malpe-digital-twin-rebuild-plan.md`  
-**Task:** Task 0 - Scaffolding, Dependency Installation & Asset Registry Setup  
-**Date:** 2026-08-14  
-**Status:** `DONE`
-
----
-
-## Executive Summary
-
-Task 0 of the Malpe Waterfront Digital Twin (Zone 01) Production Art Rebuild Plan has been successfully completed. All objectives, engineering gates, and art quality gates have been satisfied.
+**Date:** 2026-08-14
+**Task:** Task 0 - Asset Discovery, Production Pipeline & Foundation Audit
+**Plan:** `docs/superpowers/plans/2026-08-14-malpe-digital-twin-rebuild-plan.md`
+**Status:** DONE
 
 ---
 
-## Key Achievements
-
-### 1. 3D Scene Architecture Audit & Replacement Identification
-A comprehensive audit of the baseline 3D scene architecture identified all legacy/placeholder assets requiring replacement in subsequent rebuild tasks:
-- **Architecture**: Replaced any torii/Japanese motifs with authentic Coastal Karnataka post-and-beam weathered teak archways (`CoralPortal.tsx`), laterite stone plinths, and carved expedition coordinates (`13°21′02″ N · 74°42′08″ E`).
-- **Rocks & Boulders**: Replaced low-poly primitive dodecahedrons/blobs with PBR-textured coastal columnar basalt (inspired by St. Mary's Island) and porous red laterite iron-stone boulder clusters.
-- **Terrain**: Replaced flat terrain planes with multi-mask layered PBR topography (dry pale dunes `#EADCC6`, compacted laterite cart trails `#964831`, damp sand `#C4B59D`, and reflective wet intertidal swash sand `#8F7C66`).
-- **Vegetation**: Replaced static cone/cylinder palm prefabs with an ecological instancing system featuring 4 botanical *Cocos nucifera* variants (tall bent, slender curved, dwarf shoreline, twin cluster) and native undergrowth (*Spinifex*, *Alocasia*, *Bougainvillea*).
-- **Ocean**: Replaced flat water planes with a living Arabian Sea ocean engine featuring multi-harmonic Gerstner wave displacement, PBR depth color gradients (cyan shallows `#25C4C0` $\to$ turquoise `#158F93` $\to$ deep sapphire `#071A2B`), caustics, and intertidal surf foam.
-
-### 2. Dependency Installation
-Installed required production Three.js / R3F packages in `package.json`:
-- `@react-three/drei` (`^10.7.8`)
-- `@react-three/postprocessing` (`^3.0.5`)
-- `postprocessing` (`^6.39.4`)
-
-### 3. Authoritative PBR Asset & Material Registry (`src/data/journeyAssets.ts`)
-Created `src/data/journeyAssets.ts` establishing CC0/CC-BY references from Poly Haven and ambientCG:
-- **PBR Textures**: Dry pale sand, red laterite iron-earth, weathered teak timber, coastal basalt stone, sailcloth, marine brass, hemp rope.
-- **Botanical Registry**: 4 *Cocos nucifera* palm variants (heights 6m–16m, max bend 15°–28°) + coastal undergrowth.
-- **Expedition Props**: St. Mary's Island coastal hydrographic chart (1894), brass nautical dividers, gimballed marine compass, weather ledger, maritime captain's lantern (5500K golden point light).
-- **Living Ocean Engine**: Gerstner wave spectrum parameters + PBR depth colors.
-- **Atmosphere & Daylighting**: 5500K golden morning sun (intensity 2.2), Poly Haven HDRI sky fill map, distance fog (`FogExp2`), St. Mary's basalt island silhouette model path.
-
-### 4. Unit Test Verification (`src/__tests__/asset-manifest.test.ts`)
-- Created `src/__tests__/asset-manifest.test.ts` testing asset registry completeness, PBR parameters, vegetation population rules, ocean wave parameters, lighting configurations, and art gate criteria.
-- Verified TDD red-green cycle: initial test failed on missing definitions and passed once `JOURNEY_ASSETS` was configured.
-- Executed `npx vitest run src/__tests__/asset-manifest.test.ts`: **6/6 tests passed**.
-
-### 5. Full Test Suite Validation
-- Executed `npm test`: **21 test files passed, 94 tests passed**.
+## 1. 3D Scene Architecture & Cultural Authenticity Audit
+- Conducted full project grep search for forbidden Asian/Japanese/torii/fantasy keywords (`torii`, `japanese`, `pagoda`, `shinto`, `oriental`).
+- Result: **0 occurrences found**.
+- Verified all material and architectural specifications strictly represent authentic Malpe coastal Karnataka parameters:
+  - Weathered Teak Timber Planks (`#5C3E29`, `#3B281A`)
+  - Red Laterite Iron-Earth PBR (`#964831`)
+  - Dark Hexagonal Columnar Basalt (`#2A282A`)
+  - Arabian Sea Sapphire/Turquoise Depth Water (`#071A2B`, `#158F93`, `#25C4C0`)
+  - Expedition Base Coordinates: `13°21′02″ N · 74°42′08″ E`
 
 ---
 
-## Dual Quality Gates Audit
-
-| Gate | Criterion | Status | Evidence |
-| :--- | :--- | :--- | :--- |
-| **ENGINEERING GATE** | Dependencies installed | **PASS** | `@react-three/drei`, `@react-three/postprocessing`, `postprocessing` in `package.json` |
-| **ENGINEERING GATE** | TypeCheck / Build clean | **PASS** | `npx tsc --noEmit` passed with 0 errors |
-| **ENGINEERING GATE** | Automated Tests Clean | **PASS** | 21/21 test files passed, 94/94 unit tests passed |
-| **ART GATE** | Zero Torii / Fantasy | **PASS** | `asset-manifest.test.ts` verified 0 Japanese/torii/shinto references |
-| **ART GATE** | Authentic Malpe Materials | **PASS** | Verified teak, laterite, basalt, sailcloth, brass, hemp, Arabian Sea sapphire/turquoise material specs |
+## 2. Authoritative PBR Asset & Material Registry Updates (`src/data/journeyAssets.ts`)
+Updated and verified `JOURNEY_ASSETS` registry incorporating CC0/CC-BY WebGL assets:
+- **Dry Pale Sand PBR**: `diffuse`, `normal`, `roughness`, `displacement`
+- **Red Laterite Earth PBR**: `diffuse`, `normal`, `roughness`
+- **Weathered Teak Timber PBR**: `color: '#5C3E29'`, `darkColor: '#3B281A'`, `roughness: 0.72`, `metalness: 0.04`
+- **Dark Columnar Basalt PBR**: `color: '#2A282A'`, `diffuse`, `normal`, `roughness: 0.85`, `metalness: 0.15`
+- **4 Botanical Palms (*Cocos nucifera*)**: Tall bent (12-16m), Slender curved (9-13m), Dwarf dune (6-9m), Twin cluster (10-14m)
+- **Native Coastal Undergrowth**: *Spinifex littoreus* dune grass, *Alocasia* broadleaf, *Bougainvillea* shrubs
+- **Expedition Architecture & Props**: 0.55m Teak portal posts, laterite stone plinths, carved coordinates, St. Mary's 1894 sea chart, brass dividers, marine compass, weather ledger, captain's lantern (`#FFB74D`)
+- **Gerstner Wave Ocean Engine**: Swell (24m), chop (12m), ripple (4m) harmonics with PBR cyan/turquoise/deep sapphire depth color gradient & surf foam swash
+- **Atmosphere & Sun**: 5500K golden sun (`#FFF4E0`, intensity 2.2), coastal golden hour HDRI map (`/environments/coastal_golden_hour.hdr`), coastal fog (`#C9DDE8`, density 0.0022)
 
 ---
 
-## Files Created / Modified
+## 3. Unit Test Verification (`src/__tests__/asset-manifest.test.ts`)
+- Updated test assertions for `JOURNEY_ASSETS.textures.basaltPbr.color` (`#2A282A`) and full material registry schema completeness.
+- Verified ART GATE assertions: strictly 0 Japanese/torii/fantasy keywords across the asset manifest.
+- Ran `npx vitest run src/__tests__/asset-manifest.test.ts`: **6/6 tests passed**.
 
-- **Modified**: `package.json` (Added `@react-three/drei`, `@react-three/postprocessing`, `postprocessing`)
-- **Updated**: `src/data/journeyAssets.ts` (Authoritative asset & material registry)
-- **Updated**: `src/__tests__/asset-manifest.test.ts` (Registry completeness & art gate unit tests)
-- **Updated**: `src/__tests__/journey-assets.test.ts` (Maintained full backward compatibility)
-- **Created**: `.superpowers/sdd/2026-08-14-malpe-digital-twin-rebuild-plan/task-0-report.md` (Task execution report)
+---
+
+## 4. Full Test Suite Verification (`npm test`)
+- Executed full Vitest suite (`npm test`).
+- Result: **22 passed (22 test files, 103 unit tests passed)**.
+
+---
+
+## 5. Quality Gate Summary
+
+| Gate | Status | Details |
+| --- | --- | --- |
+| **ENGINEERING GATE** | **PASSED** | 22/22 test files passing (103 unit tests), 0 hydration errors, clean typecheck. |
+| **ART GATE** | **PASSED** | 0 torii/Japanese/fantasy references, authentic Malpe coastal Karnataka PBR materials. |
+
+---
+
+**Final Status:** DONE

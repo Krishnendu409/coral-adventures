@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Navigation } from "@/components/ui/navigation";
-import { ScrollColorTransition, ColorSection } from "@/components/editorial/ScrollColorTransition";
 import { ArrivalComposition } from "@/components/editorial/ArrivalComposition";
 import { CoastComposition } from "@/components/editorial/CoastComposition";
 import { ExpeditionTypology } from "@/components/editorial/ExpeditionTypology";
@@ -21,88 +20,56 @@ import { ExploreGateway } from "@/components/editorial/ExploreGateway";
 
 export default function Home() {
   return (
-    <ScrollColorTransition>
-      <main className="relative min-h-screen text-[#0A2540] selection:bg-[#E87952] selection:text-[#FAF6EE]">
-        
-        {/* 1. Global Floating Editorial Navigation */}
-        <Navigation />
+    <main className="relative min-h-screen bg-[#FAF7F0] text-[#0A2540] selection:bg-[#E87952] selection:text-[#FAF7F0]">
+      
+      {/* 1. Global Floating Editorial Navigation */}
+      <Navigation />
 
-        {/* 2. Scene 01: Arrival at Malpe (Warm Weathered Parchment) */}
-        <ColorSection color="#FAF6EE">
-          <ArrivalComposition />
-        </ColorSection>
+      {/* 2. Scene 01: Arrival at Malpe (Colossal CORAL Wordmark, Postcard & Boarding Pass) */}
+      <ArrivalComposition />
 
-        {/* 3. Scene 02: The Coast */}
-        <ColorSection color="#FAF6EE">
-          <CoastComposition />
-        </ColorSection>
+      {/* 3. Scene 02: The Coast (Columnar Basalt Archipelago & Geological Field Note) */}
+      <CoastComposition />
 
-        {/* 4. Section 02.B: Expedition Typology Matrix (Deep Palm Green) */}
-        <ColorSection color="#1E5E48">
-          <ExpeditionTypology />
-        </ColorSection>
+      {/* 4. Section 02.B: Expedition Typology Matrix (An Expedition Tailored Just For You) */}
+      <ExpeditionTypology />
 
-        {/* 5. Scene 03: The Water (Luminous Turquoise Water) */}
-        <ColorSection color="#0F766E">
-          <WatersportsComposition />
-        </ColorSection>
+      {/* 5. Scene 03: The Water (WATER MOVES · Active Dynamics & Watersports Ticket) */}
+      <WatersportsComposition />
 
-        {/* 6. Section 03.B: Turnkey Voyage (Deep Ocean Navy) */}
-        <ColorSection color="#0A2540">
-          <TurnkeyVoyage />
-        </ColorSection>
+      {/* 6. Section 03.B: Turnkey Voyage (You Just Travel · We'll Handle The Rest) */}
+      <TurnkeyVoyage />
 
-        {/* 7. Scene 04: Nautical Expedition Chart (Parchment Map) */}
-        <ColorSection color="#FAF6EE">
-          <NauticalChartComposition />
-        </ColorSection>
+      {/* 7. Scene 04: Nautical Expedition Chart (Parchment Surface & Vector Wake Route) */}
+      <NauticalChartComposition />
 
-        {/* 8. Scene 05: The Vessel */}
-        <ColorSection color="#0A2540">
-          <VesselComposition />
-        </ColorSection>
+      {/* 8. Scene 05: The Vessel (25.90M Catamaran Hero & Strategic Deep Ocean Chapter) */}
+      <VesselComposition />
 
-        {/* 9. Section 05.B: Step-by-Step Chronology */}
-        <ColorSection color="#FAF6EE">
-          <ExpeditionSteps />
-        </ColorSection>
+      {/* 9. Section 05.B: Step-by-Step Chronology (How Your Expedition Comes to Life) */}
+      <ExpeditionSteps />
 
-        {/* 10. Scene 06: Open Sea */}
-        <ColorSection color="#FAF6EE">
-          <OpenSeaComposition />
-        </ColorSection>
+      {/* 10. Scene 06: Open Sea (Radical Oceanic Minimalism · No road ahead. Just horizon.) */}
+      <OpenSeaComposition />
 
-        {/* 11. Scene 07: Golden Hour (Sun-Cured Coral Amber Sunset) */}
-        <ColorSection color="#C2410C">
-          <SunsetComposition />
-        </ColorSection>
+      {/* 11. Scene 07: Golden Hour (CHASE THE LIGHT · Westbound Sunset Catamaran) */}
+      <SunsetComposition />
 
-        {/* 12. Scene 08: Coastal Gastronomy */}
-        <ColorSection color="#FAF6EE">
-          <DinnerComposition />
-        </ColorSection>
+      {/* 12. Scene 08: Coastal Gastronomy (DINNER, WITH NO WALLS · Candlelit Teak Dining) */}
+      <DinnerComposition />
 
-        {/* 13. Section 08.B: Guest Memories Scrapbook */}
-        <ColorSection color="#FAF6EE">
-          <GuestMemoriesScrapbook />
-        </ColorSection>
+      {/* 13. Section 08.B: Guest Memories Scrapbook (It's More Than Places · Feelings) */}
+      <GuestMemoriesScrapbook />
 
-        {/* 14. Scene 09: Midnight (Midnight Sapphire Ocean) */}
-        <ColorSection color="#020C1B">
-          <NightComposition />
-        </ColorSection>
+      {/* 14. Scene 09: Midnight (NIGHT BELONGS TO THE SEA · Sapphire Starlight Chapter) */}
+      <NightComposition />
 
-        {/* 15. Section 10.A: Expedition FAQ */}
-        <ColorSection color="#FAF6EE">
-          <ExpeditionFAQ />
-        </ColorSection>
+      {/* 15. Section 10.A: Expedition FAQ & Stacked Vacation Tickets */}
+      <ExpeditionFAQ />
 
-        {/* 16. Scene 10: Explore Gateway Portal */}
-        <ColorSection color="#FAF6EE">
-          <ExploreGateway />
-        </ColorSection>
+      {/* 16. Scene 10: Explore Gateway Portal (3D Digital Twin Passport & Concierge Desk) */}
+      <ExploreGateway />
 
-      </main>
-    </ScrollColorTransition>
+    </main>
   );
 }

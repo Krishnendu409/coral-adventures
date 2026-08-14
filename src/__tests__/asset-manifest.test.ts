@@ -25,6 +25,7 @@ describe('Asset Registry & Environment Setup', () => {
 
     // Basalt PBR
     expect(JOURNEY_ASSETS.textures.basaltPbr).toBeDefined();
+    expect(JOURNEY_ASSETS.textures.basaltPbr.color).toBe('#2A282A');
     expect(JOURNEY_ASSETS.textures.basaltPbr.diffuse).toBeTruthy();
     expect(JOURNEY_ASSETS.textures.basaltPbr.normal).toBeTruthy();
 

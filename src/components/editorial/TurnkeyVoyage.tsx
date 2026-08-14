@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { WashiTape, TornPaperEdge } from "./ephemera/ScrapbookEphemera";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -75,10 +74,8 @@ export function TurnkeyVoyage() {
     <section
       ref={sectionRef}
       id="turnkey"
-      className="relative w-full min-h-[900px] bg-[#0A2540] text-[#FAF6EE] py-28 sm:py-36 overflow-hidden"
+      className="relative w-full min-h-[900px] bg-[#0A2540] text-[#FAF6EE] py-28 sm:py-36 overflow-hidden border-b border-white/15"
     >
-      <TornPaperEdge color="#0D9488" className="absolute top-0 left-0 right-0" />
-
       {/* 1. Rich Ocean Photography & Liquid Turquoise Atmosphere */}
       <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
         <Image
@@ -94,7 +91,7 @@ export function TurnkeyVoyage() {
       <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#FAF6EE_1px,transparent_1px)] [background-size:24px_24px]" />
 
       {/* 2. Header Telemetry */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-10 z-20 pt-8">
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-10 z-20">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
@@ -129,7 +126,7 @@ export function TurnkeyVoyage() {
           {/* Hydrodynamic Wake Halo */}
           <div className="absolute inset-0 bg-[#38BDF8]/25 rounded-full blur-3xl pointer-events-none scale-125 animate-pulse" />
           
-          <div className="relative w-full h-full overflow-hidden shadow-2xl border border-white/30 rounded-full p-2.5 bg-[#0A2540]/70 backdrop-blur-md">
+          <div className="relative w-full h-full overflow-hidden postcard-shadow border border-white/30 rounded-full p-2.5 bg-[#0A2540]/70 backdrop-blur-md">
             <Image
               src="/images/vessel_catamaran.jpg"
               alt="Architectural catamaran cutting through turquoise waters"
@@ -140,8 +137,7 @@ export function TurnkeyVoyage() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent" />
           </div>
 
-          <div className="absolute -bottom-4 bg-[#FAF6EE] text-[#0A2540] px-4 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] font-bold shadow-xl whitespace-nowrap border border-[#E2D9C8] relative">
-            <WashiTape angle={-3} className="-top-3 left-2" color="amber" />
+          <div className="absolute -bottom-4 bg-[#FAF6EE] text-[#0A2540] px-4 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] font-bold shadow-xl whitespace-nowrap border border-[#E2D9C8]">
             CORAL EXPLORER · 25.90M CATAMARAN
           </div>
         </div>
@@ -165,8 +161,6 @@ export function TurnkeyVoyage() {
         ))}
 
       </div>
-
-      <TornPaperEdge flip color="#FAF6EE" className="absolute bottom-0 left-0 right-0" />
     </section>
   );
 }

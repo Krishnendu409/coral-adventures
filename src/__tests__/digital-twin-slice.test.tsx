@@ -61,7 +61,7 @@ describe('Digital Twin Slice (Zone01Experience)', () => {
     
     const forwardBtn = screen.getByTestId('step-forward');
     fireEvent.click(forwardBtn);
-    expect(screen.getByText(/CORAL GATEWAY & WAYFINDING/i)).toBeInTheDocument();
+    expect(screen.getByText(/EXPEDITION PORTAL/i)).toBeInTheDocument();
 
     const backwardBtn = screen.getByTestId('step-backward');
     fireEvent.click(backwardBtn);

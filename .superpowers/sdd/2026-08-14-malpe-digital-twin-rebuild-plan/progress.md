@@ -2,13 +2,9 @@
 
 ## Quality Gates for Every Task:
 1. ENGINEERING GATE: builds, types, tests, zero console/runtime/hydration errors, assets load.
-2. ART GATE: inspect actual rendered viewport across 6 spatial beats (Approach, Portal, Gardens, Pavilion, Deck, Shoreline), zero primitive/torii/cloned assets, natural cause-and-effect storytelling, material fidelity.
-
-Task 0: complete (commits 88fdf79, review clean - Drei/Postprocessing installed, PBR asset registry authored, 94/94 tests passing, 0 hydration errors)
-Task 1: complete (commits 65e23e8, review clean - multi-mask PBR terrain engine, wagon cart ruts, wet intertidal specular reflections, 97/97 tests passing)
-Task 2: complete (commits 554788e, review clean - botanical vegetation population system, seaward wind bowing, undergrowth, organic ground debris, 99/99 tests passing)
-Task 3: complete (commits f2629c3, review clean - Malpe teak & laterite expedition portal, open-air pavilion, inhabited chart table with St. Mary's sea chart, dividers, compass, weather ledger, captain's lantern, 101/101 tests passing)
-Task 4: complete (commits bc5a664, review clean - living Gerstner wave ocean engine, cyan-to-sapphire depth gradient, caustics, intertidal surf foam swash, 25.90M catamaran, traditional Malpe wooden trawlers, Sea-Doos & kayaks, 101/101 tests passing)
-Task 5: complete (commits aa80379, review clean - 5500K golden daylighting, Drei environment, FogExp2 distance haze, St. Mary's basalt island silhouette, flocking kites, EffectComposer SSAO/bloom/vignette, 101/101 tests passing)
-Task 6: complete (commits 48719dc, review clean - stateful cinematic camera director across 6 spatial beats, FOV & eye-height transitions, 4-zone positional spatial Web Audio synthesizer, 102/102 tests passing)
-Task 7: complete (commits 04b881b, review clean - progressive WebGL delivery, 60 FPS performance optimization, 102/102 unit tests passing, Next.js build clean, 6 spatial beat acceptance screenshots captured)
+2. ART HARD GATE (6-Point Inspection):
+   `IMPLEMENT → RUN TESTS → RENDER → HIDE UI → FORWARD VIEW → 180° VIEW → CLOSE-UP → 10s IDLE → ART REVIEW`
+   - One continuous loaded coordinate space ($Z = 0\text{m} \to 1200\text{m}$).
+   - Zero primitive asset substitutions.
+   - Real working Malpe harbour identity + Coral Adventures luxury expedition layer.
+   - St. Mary's 6-sided hexagonal columnar basalt climax.

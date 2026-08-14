@@ -1,17 +1,19 @@
+export type AudioZone = "road" | "gardens" | "pavilion" | "beach" | "catamaran";
+
 export interface SpatialAudioEngine {
   start: () => void;
   stop: () => void;
   toggleMute: () => boolean;
   isMuted: () => boolean;
-  setAudioZone: (zone: "road" | "gardens" | "pavilion" | "beach") => void;
-  getCurrentZone: () => "road" | "gardens" | "pavilion" | "beach";
+  setAudioZone: (zone: AudioZone) => void;
+  getCurrentZone: () => AudioZone;
 }
 
 export function createSpatialAudioEngine(): SpatialAudioEngine {
   let context: AudioContext | null = null;
   let isMuted = false;
   let isPlaying = false;
-  let currentZone: "road" | "gardens" | "pavilion" | "beach" = "beach";
+  let currentZone: AudioZone = "beach";
   
   // Nodes mapping
   const zoneGains: Record<string, GainNode> = {};
@@ -31,7 +33,7 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
       if (!AudioContextClass) return false;
       context = new AudioContextClass();
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   };
@@ -59,8 +61,8 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
       masterGain.connect(context.destination);
     }
 
-    // Create 4 zone gain nodes
-    const zones: Array<"road" | "gardens" | "pavilion" | "beach"> = ["road", "gardens", "pavilion", "beach"];
+    // Create 5 zone gain nodes ("road", "gardens", "pavilion", "beach", "catamaran")
+    const zones: AudioZone[] = ["road", "gardens", "pavilion", "beach", "catamaran"];
     zones.forEach(z => {
       const gain = context!.createGain();
       if (gain.gain) {
@@ -135,20 +137,9 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
     oscillators.push(insectOsc);
     nodesToDisconnect.push(insectGain);
 
-    const bambooNoise = context.createBufferSource();
-    bambooNoise.buffer = createNoiseBuffer(context);
-    bambooNoise.loop = true;
-    const bambooFilter = context.createBiquadFilter();
-    bambooFilter.type = 'bandpass';
-    if (bambooFilter.frequency) bambooFilter.frequency.value = 850;
-    if (bambooNoise.connect) bambooNoise.connect(bambooFilter);
-    if (bambooFilter.connect) bambooFilter.connect(zoneGains["gardens"]);
-    if (bambooNoise.start) bambooNoise.start();
-    nodesToDisconnect.push(bambooNoise, bambooFilter);
-
     // ----------------------------------------------------
-    // Zone 02: Welcome Pavilion ("pavilion")
-    // Flapping sailcloth canvas, creaking weathered teak, soft breeze, wind chime
+    // Zone 01: Welcome Pavilion ("pavilion")
+    // Flapping sailcloth canvas, creaking weathered teak, ocean breeze, wind chimes
     // ----------------------------------------------------
     const sailNoise = context.createBufferSource();
     sailNoise.buffer = createNoiseBuffer(context);
@@ -187,20 +178,9 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
     oscillators.push(chime1);
     nodesToDisconnect.push(chime1Gain);
 
-    const chime2 = context.createOscillator();
-    chime2.type = 'sine';
-    if (chime2.frequency) chime2.frequency.value = 1046; // C6
-    const chime2Gain = context.createGain();
-    if (chime2Gain.gain) chime2Gain.gain.value = 0.04;
-    if (chime2.connect) chime2.connect(chime2Gain);
-    if (chime2Gain.connect) chime2Gain.connect(zoneGains["pavilion"]);
-    if (chime2.start) chime2.start();
-    oscillators.push(chime2);
-    nodesToDisconnect.push(chime2Gain);
-
     // ----------------------------------------------------
-    // Zone 03: Exploration Deck & Beach ("beach")
-    // Arabian Sea ocean swells, breaking surf swash, halyards, water lapping hulls
+    // Zone 02: Sea Walkway & Beach ("beach")
+    // Open Arabian Sea ocean swells, breaking surf swash, fishing boat engines, watersports
     // ----------------------------------------------------
     const beachSurfNoise = context.createBufferSource();
     beachSurfNoise.buffer = createNoiseBuffer(context);
@@ -213,27 +193,83 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
     if (beachSurfNoise.start) beachSurfNoise.start();
     nodesToDisconnect.push(beachSurfNoise, beachSurfFilter);
 
-    const halyardOsc = context.createOscillator();
-    halyardOsc.type = 'triangle';
-    if (halyardOsc.frequency) halyardOsc.frequency.value = 1950;
-    const halyardGain = context.createGain();
-    if (halyardGain.gain) halyardGain.gain.value = 0.04;
-    if (halyardOsc.connect) halyardOsc.connect(halyardGain);
-    if (halyardGain.connect) halyardGain.connect(zoneGains["beach"]);
-    if (halyardOsc.start) halyardOsc.start();
-    oscillators.push(halyardOsc);
-    nodesToDisconnect.push(halyardGain);
+    const boatEngineOsc = context.createOscillator();
+    boatEngineOsc.type = 'sawtooth';
+    if (boatEngineOsc.frequency) boatEngineOsc.frequency.value = 110;
+    const boatEngineFilter = context.createBiquadFilter();
+    boatEngineFilter.type = 'lowpass';
+    if (boatEngineFilter.frequency) boatEngineFilter.frequency.value = 180;
+    const boatEngineGain = context.createGain();
+    if (boatEngineGain.gain) boatEngineGain.gain.value = 0.04;
+    if (boatEngineOsc.connect) boatEngineOsc.connect(boatEngineFilter);
+    if (boatEngineFilter.connect) boatEngineFilter.connect(boatEngineGain);
+    if (boatEngineGain.connect) boatEngineGain.connect(zoneGains["beach"]);
+    if (boatEngineOsc.start) boatEngineOsc.start();
+    oscillators.push(boatEngineOsc);
+    nodesToDisconnect.push(boatEngineFilter, boatEngineGain);
 
-    const lapNoise = context.createBufferSource();
-    lapNoise.buffer = createNoiseBuffer(context);
-    lapNoise.loop = true;
-    const lapFilter = context.createBiquadFilter();
-    lapFilter.type = 'bandpass';
-    if (lapFilter.frequency) lapFilter.frequency.value = 650;
-    if (lapNoise.connect) lapNoise.connect(lapFilter);
-    if (lapFilter.connect) lapFilter.connect(zoneGains["beach"]);
-    if (lapNoise.start) lapNoise.start();
-    nodesToDisconnect.push(lapNoise, lapFilter);
+    const jetSkiOsc = context.createOscillator();
+    jetSkiOsc.type = 'triangle';
+    if (jetSkiOsc.frequency) jetSkiOsc.frequency.value = 1200;
+    const jetSkiGain = context.createGain();
+    if (jetSkiGain.gain) jetSkiGain.gain.value = 0.03;
+    if (jetSkiOsc.connect) jetSkiOsc.connect(jetSkiGain);
+    if (jetSkiGain.connect) jetSkiGain.connect(zoneGains["beach"]);
+    if (jetSkiOsc.start) jetSkiOsc.start();
+    oscillators.push(jetSkiOsc);
+    nodesToDisconnect.push(jetSkiGain);
+
+    // ----------------------------------------------------
+    // Zone 03: Catamaran & St. Mary's ("catamaran")
+    // Engine hum, hull wake, open sea wind, waves against hexagonal basalt columns
+    // ----------------------------------------------------
+    const catamaranEngineOsc = context.createOscillator();
+    catamaranEngineOsc.type = 'sawtooth';
+    if (catamaranEngineOsc.frequency) catamaranEngineOsc.frequency.value = 75;
+    const catamaranEngineFilter = context.createBiquadFilter();
+    catamaranEngineFilter.type = 'lowpass';
+    if (catamaranEngineFilter.frequency) catamaranEngineFilter.frequency.value = 120;
+    const catamaranEngineGain = context.createGain();
+    if (catamaranEngineGain.gain) catamaranEngineGain.gain.value = 0.05;
+    if (catamaranEngineOsc.connect) catamaranEngineOsc.connect(catamaranEngineFilter);
+    if (catamaranEngineFilter.connect) catamaranEngineFilter.connect(catamaranEngineGain);
+    if (catamaranEngineGain.connect) catamaranEngineGain.connect(zoneGains["catamaran"]);
+    if (catamaranEngineOsc.start) catamaranEngineOsc.start();
+    oscillators.push(catamaranEngineOsc);
+    nodesToDisconnect.push(catamaranEngineFilter, catamaranEngineGain);
+
+    const hullWakeNoise = context.createBufferSource();
+    hullWakeNoise.buffer = createNoiseBuffer(context);
+    hullWakeNoise.loop = true;
+    const hullWakeFilter = context.createBiquadFilter();
+    hullWakeFilter.type = 'bandpass';
+    if (hullWakeFilter.frequency) hullWakeFilter.frequency.value = 600;
+    if (hullWakeNoise.connect) hullWakeNoise.connect(hullWakeFilter);
+    if (hullWakeFilter.connect) hullWakeFilter.connect(zoneGains["catamaran"]);
+    if (hullWakeNoise.start) hullWakeNoise.start();
+    nodesToDisconnect.push(hullWakeNoise, hullWakeFilter);
+
+    const seaWindNoise = context.createBufferSource();
+    seaWindNoise.buffer = createNoiseBuffer(context);
+    seaWindNoise.loop = true;
+    const seaWindFilter = context.createBiquadFilter();
+    seaWindFilter.type = 'bandpass';
+    if (seaWindFilter.frequency) seaWindFilter.frequency.value = 800;
+    if (seaWindNoise.connect) seaWindNoise.connect(seaWindFilter);
+    if (seaWindFilter.connect) seaWindFilter.connect(zoneGains["catamaran"]);
+    if (seaWindNoise.start) seaWindNoise.start();
+    nodesToDisconnect.push(seaWindNoise, seaWindFilter);
+
+    const basaltWavesNoise = context.createBufferSource();
+    basaltWavesNoise.buffer = createNoiseBuffer(context);
+    basaltWavesNoise.loop = true;
+    const basaltWavesFilter = context.createBiquadFilter();
+    basaltWavesFilter.type = 'lowpass';
+    if (basaltWavesFilter.frequency) basaltWavesFilter.frequency.value = 150;
+    if (basaltWavesNoise.connect) basaltWavesNoise.connect(basaltWavesFilter);
+    if (basaltWavesFilter.connect) basaltWavesFilter.connect(zoneGains["catamaran"]);
+    if (basaltWavesNoise.start) basaltWavesNoise.start();
+    nodesToDisconnect.push(basaltWavesNoise, basaltWavesFilter);
   };
 
   return {
@@ -267,7 +303,7 @@ export function createSpatialAudioEngine(): SpatialAudioEngine {
       return isMuted;
     },
     isMuted: () => isMuted,
-    setAudioZone: (zone: "road" | "gardens" | "pavilion" | "beach") => {
+    setAudioZone: (zone: AudioZone) => {
       currentZone = zone;
       if (context && isPlaying) {
         const time = context.currentTime || 0;

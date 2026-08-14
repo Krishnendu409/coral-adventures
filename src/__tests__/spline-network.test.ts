@@ -3,9 +3,11 @@ import { describe, it, expect } from 'vitest';
 import { LANDMARK_NODES, createCameraSpline, getInterpolatedCameraState } from '../lib/three/splineNetwork';
 import { WORLD_ANCHORS } from '../lib/three/worldCoordinates';
 
-describe('Spline Network', () => {
-  it('defines 6 stateful landmark nodes in strict spline progress order', () => {
-    expect(LANDMARK_NODES).toHaveLength(6);
+describe('Stateful 12-Beat Camera Expedition Route & Spline Network', () => {
+  it('defines 12 stateful landmark nodes in strict spline progress order spanning z=0m to z=1150m', () => {
+    expect(LANDMARK_NODES).toHaveLength(12);
+    expect(LANDMARK_NODES[0].id).toBe('road-entrance');
+    expect(LANDMARK_NODES[11].id).toBe('st-marys-basalt');
     for (let i = 0; i < LANDMARK_NODES.length - 1; i++) {
       expect(LANDMARK_NODES[i].splineProgress).toBeLessThan(LANDMARK_NODES[i + 1].splineProgress);
     }
@@ -54,9 +56,51 @@ describe('Spline Network', () => {
     expect(LANDMARK_NODES[5].cameraHeight).toBe(1.7);
     expect(LANDMARK_NODES[5].fov).toBe(52);
     expect(LANDMARK_NODES[5].lookAt.z).toBe(320);
+
+    // 06. Watersports Zone
+    expect(LANDMARK_NODES[6].id).toBe('watersports-zone');
+    expect(LANDMARK_NODES[6].position.z).toBe(WORLD_ANCHORS.WATERSPORTS_ZONE.z);
+    expect(LANDMARK_NODES[6].cameraHeight).toBe(1.7);
+    expect(LANDMARK_NODES[6].fov).toBe(54);
+    expect(LANDMARK_NODES[6].lookAt.z).toBe(350);
+
+    // 07. Sea Walkway
+    expect(LANDMARK_NODES[7].id).toBe('sea-walkway');
+    expect(LANDMARK_NODES[7].position.z).toBe(WORLD_ANCHORS.SEA_WALKWAY.z);
+    expect(LANDMARK_NODES[7].cameraHeight).toBe(1.8);
+    expect(LANDMARK_NODES[7].fov).toBe(55);
+    expect(LANDMARK_NODES[7].lookAt.z).toBe(450);
+
+    // 08. Boarding Jetty
+    expect(LANDMARK_NODES[8].id).toBe('boarding-jetty');
+    expect(LANDMARK_NODES[8].position.z).toBe(WORLD_ANCHORS.BOARDING_JETTY.z);
+    expect(LANDMARK_NODES[8].cameraHeight).toBe(1.7);
+    expect(LANDMARK_NODES[8].fov).toBe(54);
+    expect(LANDMARK_NODES[8].lookAt.z).toBe(550);
+
+    // 09. Catamaran Expedition
+    expect(LANDMARK_NODES[9].id).toBe('catamaran-expedition');
+    expect(LANDMARK_NODES[9].position.z).toBe(WORLD_ANCHORS.CATAMARAN_EXPEDITION.z);
+    expect(LANDMARK_NODES[9].cameraHeight).toBe(2.2);
+    expect(LANDMARK_NODES[9].fov).toBe(58);
+    expect(LANDMARK_NODES[9].lookAt.z).toBe(950);
+
+    // 10. Open Arabian Sea
+    expect(LANDMARK_NODES[10].id).toBe('open-sea');
+    expect(LANDMARK_NODES[10].position.z).toBe(WORLD_ANCHORS.OPEN_SEA.z);
+    expect(LANDMARK_NODES[10].cameraHeight).toBe(2.0);
+    expect(LANDMARK_NODES[10].fov).toBe(56);
+    expect(LANDMARK_NODES[10].lookAt.z).toBe(1150);
+
+    // 11. St. Mary's Basalt
+    expect(LANDMARK_NODES[11].id).toBe('st-marys-basalt');
+    expect(LANDMARK_NODES[11].position.z).toBe(WORLD_ANCHORS.ST_MARYS_BASALT.z);
+    expect(LANDMARK_NODES[11].cameraHeight).toBe(1.7);
+    expect(LANDMARK_NODES[11].fov).toBe(52);
+    expect(LANDMARK_NODES[11].lookAt.z).toBe(1180);
   });
 
-  it('generates spline and interpolates smooth camera state, FOV, and eye height', () => {
+  it('generates spline and interpolates smooth camera state, FOV, and eye height transitions', () => {
     const spline = createCameraSpline(LANDMARK_NODES);
     expect(spline).toBeInstanceOf(THREE.CatmullRomCurve3);
 
@@ -67,21 +111,23 @@ describe('Spline Network', () => {
     expect(state0.fov).toBe(50);
     expect(state0.cameraHeight).toBe(1.7);
 
-    // Midpoint between Welcome Pavilion (0.6, FOV 54, height 1.7) and Exploration Deck (0.8, FOV 56, height 2.1)
-    const stateMid = getInterpolatedCameraState(spline, 0.7, LANDMARK_NODES);
-    expect(stateMid.fov).toBeCloseTo(55, 1);
-    expect(stateMid.cameraHeight).toBeCloseTo(1.9, 1);
+    // Node 9: Catamaran Expedition (progress 700/1150, cameraHeight 2.2, FOV 58)
+    const progressCat = 700 / 1150;
+    const stateCat = getInterpolatedCameraState(spline, progressCat, LANDMARK_NODES);
+    expect(stateCat.currentLandmark?.id).toBe('catamaran-expedition');
+    expect(stateCat.fov).toBe(58);
+    expect(stateCat.cameraHeight).toBe(2.2);
 
-    // Node 5: Beach Shoreline
-    const state1 = getInterpolatedCameraState(spline, 1.0, LANDMARK_NODES);
-    expect(state1.position).toBeInstanceOf(THREE.Vector3);
-    expect(state1.currentLandmark?.id).toBe('beach-shoreline');
-    expect(state1.nextLandmark).toBeNull();
-    expect(state1.fov).toBe(52);
-    expect(state1.cameraHeight).toBe(1.7);
+    // Final Node 11: St. Mary's Basalt
+    const state11 = getInterpolatedCameraState(spline, 1.0, LANDMARK_NODES);
+    expect(state11.position).toBeInstanceOf(THREE.Vector3);
+    expect(state11.currentLandmark?.id).toBe('st-marys-basalt');
+    expect(state11.nextLandmark).toBeNull();
+    expect(state11.fov).toBe(52);
+    expect(state11.cameraHeight).toBe(1.7);
   });
 
-  it('defines valid allowable look ranges and discovery hotspots for all landmark nodes', () => {
+  it('defines valid allowable look ranges and discovery hotspots for all 12 landmark nodes', () => {
     LANDMARK_NODES.forEach((landmark) => {
       expect(landmark.allowableLookRange).toBeDefined();
       expect(landmark.allowableLookRange.minYaw).toBeLessThan(landmark.allowableLookRange.maxYaw);

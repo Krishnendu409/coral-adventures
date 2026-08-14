@@ -45,8 +45,8 @@ describe('DiegeticNauticalMap', () => {
       />
     );
     expect(screen.getByText('MALPE COASTAL ROAD')).toBeInTheDocument();
-    expect(screen.getByText('CORAL ARRIVAL PAVILION')).toBeInTheDocument();
-    expect(screen.getByText('MALPE BEACH PROMENADE & SHORELINE')).toBeInTheDocument();
+    expect(screen.getByText('WELCOME PAVILION')).toBeInTheDocument();
+    expect(screen.getByText('LIVING BEACH & SHORELINE')).toBeInTheDocument();
   });
 
   it('calls onSelectLandmark and onClose when a waypoint is clicked', () => {

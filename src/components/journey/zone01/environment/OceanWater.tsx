@@ -6,26 +6,28 @@ import * as THREE from 'three';
  * OceanWater Component
  * High-fidelity Arabian Sea Living Water Engine for Malpe Digital Twin:
  * 
- * 1. Multi-Harmonic Gerstner Wave Displacement:
+ * 1. Multi-Harmonic Gerstner Wave Displacement (Spanning Z=0m to Z=1200m):
  *    - Deep Arabian Swell (24m wavelength, steepness 0.22, shoreward propagation)
  *    - Coastal Medium Chop (12m wavelength, steepness 0.18)
  *    - Capillary Ripple Harmonics (4m & 2.4m wavelengths for micro-facets)
+ *    - Secondary Cross-Swell (16m wavelength)
  *    - Exact analytical tangent/binormal calculations for accurate surface normals
  * 
- * 2. PBR Optical Characteristics & Depth Shading:
- *    - Color Depth Gradient: Crystal Coastal Turquoise (#1FA7A6) in shallows (Z: 195m..220m)
- *      transitioning to Deep Sapphire Navy (#071A2B) in open waters (Z > 240m)
+ * 2. PBR Optical Characteristics & Depth Gradient (Z=0m -> 1200m):
+ *    - Crystal Cyan Shallows (#25C4C0) in intertidal shore zone (Z: 195m..218m)
+ *    - Rich Coastal Turquoise (#158F93) in coastal waters (Z: 218m..350m)
+ *    - Deep Offshore Sapphire (#071A2B) in open sea toward St. Mary's (Z > 350m..1200m)
  *    - Full Schlick Fresnel Reflectance: High reflectivity at glancing angles, exposing
  *      translucent turquoise shallows & illuminated sandbars at steep incidence
  *    - Dual-Lobe Sun Specular Glint: Calibrated for 5500K golden sunlight (#FFF4E0)
  * 
  * 3. Dynamic Shoreline Foam & Wave Crest Caustics:
  *    - Procedural Voronoi caustics and breaking whitecap crests on peaked wave summits
- *    - Dynamic oscillating intertidal surf foam band matching swell period
+ *    - Dynamic oscillating intertidal surf foam swash band matching swell period
  * 
  * 4. Strict Anti-Primitive Rules & Seamless Shoreline Blending:
- *    - High-density subdivided mesh (160x160 vertices)
- *    - Soft edge alpha fade (Z: 193m..203m) blending seamlessly with MalpeTerrain.tsx
+ *    - High-density subdivided mesh (200x400 vertices spanning 600x1200m)
+ *    - Soft edge alpha fade (Z: 190m..205m) blending seamlessly with MalpeTerrain.tsx dry sand
  */
 
 export const OceanWater: React.FC = () => {
@@ -37,13 +39,13 @@ export const OceanWater: React.FC = () => {
     // 1. Primary Arabian Sea Water Shader
     const uniforms = {
       uTime: { value: 0 },
-      uDeepColor: { value: new THREE.Color('#071A2B') },      // Deep Offshore Sapphire (#071A2B)
-      uShallowColor: { value: new THREE.Color('#158F93') },   // Rich Coastal Turquoise (#158F93)
-      uUltraShallowColor: { value: new THREE.Color('#25C4C0') }, // Crystal Cyan Shallows (#25C4C0)
-      uSubmergedSandColor: { value: new THREE.Color('#DEC4A0') }, // Illuminated Sandbar Tone
-      uSunColor: { value: new THREE.Color('#FFF4E0') },       // 5500K Golden Sun Glint
-      uSkyColor: { value: new THREE.Color('#98C4DB') },       // Atmospheric Sky Reflection
-      uFoamColor: { value: new THREE.Color('#F6FAFC') },      // Crisp Ocean Spray Foam
+      uDeepColor: { value: new THREE.Color('#071A2B') },          // Deep Offshore Sapphire (#071A2B)
+      uShallowColor: { value: new THREE.Color('#158F93') },       // Rich Coastal Turquoise (#158F93)
+      uUltraShallowColor: { value: new THREE.Color('#25C4C0') },   // Crystal Cyan Shallows (#25C4C0)
+      uSubmergedSandColor: { value: new THREE.Color('#DEC4A0') },   // Illuminated Sandbar Tone
+      uSunColor: { value: new THREE.Color('#FFF4E0') },           // 5500K Golden Sun Glint
+      uSkyColor: { value: new THREE.Color('#98C4DB') },           // Atmospheric Sky Reflection
+      uFoamColor: { value: new THREE.Color('#F6FAFC') },          // Crisp Ocean Spray Foam
       uSunDirection: { value: new THREE.Vector3(0.45, 0.75, -0.48).normalize() }
     };
 
@@ -108,9 +110,9 @@ export const OceanWater: React.FC = () => {
 
         // Shoreline wave dampening: gently reduce wave displacement in ultra-shallows
         // to ensure zero clipping with sloping beach sand (Z: 190m..218m)
-        float shoreDamp = smoothstep(192.0, 218.0, initialWorldPos.z);
+        float shoreDamp = smoothstep(190.0, 218.0, initialWorldPos.z);
 
-        // Multi-frequency wave harmonics:
+        // Multi-frequency 5-harmonic wave engine:
         // 1. Primary Deep Arabian Sea Swell (24m wavelength, long shoreward swell)
         WaveHarmonic wave1 = WaveHarmonic(vec2(0.20, -0.98), 0.22 * shoreDamp, 24.0, 0.65);
         // 2. Coastal Medium Chop (12m wavelength)
@@ -141,11 +143,11 @@ export const OceanWater: React.FC = () => {
         // Crest height metric for dynamic whitecap breaking foam
         vWaveCrest = displacement.y;
 
-        // Color depth gradient factor: Shoreline shallows (Z: 195m..220m) to Deep Ocean (Z > 240m)
-        vDepthFactor = smoothstep(195.0, 242.0, worldPos.z);
+        // Color depth gradient factor: Shoreline shallows (Z: 195m..218m) -> Coastal Turquoise (218m..350m) -> Deep Ocean Sapphire (Z > 350m)
+        vDepthFactor = smoothstep(195.0, 380.0, worldPos.z);
 
-        // Shoreline edge soft alpha blending
-        vShoreFade = smoothstep(193.0, 203.0, worldPos.z);
+        // Shoreline edge soft alpha blending: fade water out shoreward of Z=190m
+        vShoreFade = smoothstep(190.0, 205.0, worldPos.z);
 
         gl_Position = projectionMatrix * viewMatrix * worldPos;
       }
@@ -208,11 +210,15 @@ export const OceanWater: React.FC = () => {
         vec3 viewDir = normalize(cameraPosition - vWorldPosition);
         vec3 normal = normalize(vNormal);
 
-        // 1. Water Depth Color Gradient
+        // 1. Water Depth Color Gradient across 1200m world:
         // Crystal Cyan Shallows (#25C4C0) -> Rich Coastal Turquoise (#158F93) -> Deep Offshore Sapphire (#071A2B)
-        float shallowGrad = smoothstep(195.0, 218.0, vWorldPosition.z);
+        float shallowGrad = smoothstep(195.0, 240.0, vWorldPosition.z);
         vec3 shallowColor = mix(uUltraShallowColor, uShallowColor, shallowGrad);
         vec3 baseWaterColor = mix(shallowColor, uDeepColor, vDepthFactor);
+
+        // St. Mary's Lagoon Turquoise Resurgence (Z: 1050m..1200m)
+        float stMarysLagoon = smoothstep(1050.0, 1150.0, vWorldPosition.z) * (1.0 - smoothstep(1170.0, 1200.0, vWorldPosition.z));
+        baseWaterColor = mix(baseWaterColor, uUltraShallowColor, stMarysLagoon * 0.7);
 
         // Steep incidence illumination: in clear shallows, expose illuminated sandbars
         float NdotV = clamp(dot(normal, viewDir), 0.0, 1.0);
@@ -222,10 +228,10 @@ export const OceanWater: React.FC = () => {
           baseWaterColor = mix(baseWaterColor, uSubmergedSandColor, sandbarExposure);
         }
 
-        // 2. Submerged Sunlight Caustics in Shallows
-        if (vDepthFactor < 0.7) {
+        // 2. Submerged Sunlight Caustics in Shallows and St. Mary's Lagoon
+        if (vDepthFactor < 0.7 || stMarysLagoon > 0.2) {
           float caustics = getCaustics(vWorldPosition.xz * 0.22, uTime * 0.85);
-          float causticIntensity = (1.0 - vDepthFactor) * caustics * 0.42;
+          float causticIntensity = (1.0 - vDepthFactor + stMarysLagoon * 0.6) * caustics * 0.42;
           baseWaterColor += vec3(0.18, 0.38, 0.32) * causticIntensity;
         }
 
@@ -250,7 +256,7 @@ export const OceanWater: React.FC = () => {
         float swashCycle = 204.0 + sin(uTime * 0.62) * 4.2 + sin(uTime * 1.25) * 1.5;
         float shoreProximity = 1.0 - smoothstep(swashCycle - 2.8, swashCycle + 5.5, vWorldPosition.z);
         float shoreNoise = voronoi(vWorldPosition.xz * 0.65 - vec2(0.0, uTime * 0.3));
-        float shoreSurfFoam = shoreProximity * smoothstep(0.2, 0.75, shoreNoise) * smoothstep(193.0, 198.0, vWorldPosition.z);
+        float shoreSurfFoam = shoreProximity * smoothstep(0.2, 0.75, shoreNoise) * smoothstep(190.0, 198.0, vWorldPosition.z);
 
         float totalFoam = clamp(crestWhitecaps + shoreSurfFoam * 0.95, 0.0, 1.0);
 
@@ -258,7 +264,7 @@ export const OceanWater: React.FC = () => {
         vec3 finalColor = mix(waterSurface, uFoamColor, totalFoam);
         finalColor += sunGlint * (1.0 - totalFoam * 0.45);
 
-        // Alpha calculation: feathered at shoreline edge (Z: 193m..203m) with deep water opacity (0.92)
+        // Alpha calculation: feathered at shoreline edge (Z: 190m..205m) with deep water opacity (0.92)
         float alpha = vShoreFade * (0.84 + 0.12 * vDepthFactor);
 
         gl_FragColor = vec4(finalColor, alpha);
@@ -387,14 +393,14 @@ export const OceanWater: React.FC = () => {
 
   return (
     <group name="ArabianSea_OceanWater">
-      {/* 1. Primary Continuous Arabian Sea Ocean Surface with Gerstner Waves */}
+      {/* 1. Primary Continuous Arabian Sea Ocean Surface with Gerstner Waves (Z: 0m to Z: 1200m) */}
       <mesh
         ref={waterMeshRef}
-        position={[0, -0.32, 335]}
+        position={[0, -0.32, 600]}
         rotation={[-Math.PI / 2, 0, 0]}
         material={waterMaterial}
       >
-        <planeGeometry args={[360, 300, 160, 160]} />
+        <planeGeometry args={[450, 1200, 180, 360]} />
       </mesh>
 
       {/* 2. Dynamic Intertidal Surf Foam Swash Ribbon */}

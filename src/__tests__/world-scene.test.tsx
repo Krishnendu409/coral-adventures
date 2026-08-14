@@ -12,7 +12,7 @@ describe('WorldScene & Spline Camera Integration', () => {
 
   it('renders container in production mode and responds to pointer drag events for look-mode without crashing', () => {
     vi.stubEnv('NODE_ENV', 'production');
-    const { container } = render(<WorldScene splineProgress={0.4} isHeadless={false} />);
+    const { container } = render(<WorldScene splineProgress={0.13} isHeadless={false} />);
     const sceneContainer = screen.getByTestId('world-scene-container');
     expect(sceneContainer).toBeInTheDocument();
 
@@ -30,7 +30,7 @@ describe('WorldScene & Spline Camera Integration', () => {
     const originalGetContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(null) as any;
 
-    render(<WorldScene splineProgress={0.4} isHeadless={false} />);
+    render(<WorldScene splineProgress={0.13} isHeadless={false} />);
     expect(screen.getByTestId('world-scene-fallback')).toBeInTheDocument();
     expect(screen.getByText(/WebGL not supported/i)).toBeInTheDocument();
 
@@ -42,7 +42,7 @@ describe('WorldScene & Spline Camera Integration', () => {
     const onProjectDiscoveries = vi.fn();
     render(
       <WorldScene
-        splineProgress={0.8}
+        splineProgress={0.6}
         onProjectDiscoveries={onProjectDiscoveries}
         isHeadless={true}
       />
@@ -50,38 +50,68 @@ describe('WorldScene & Spline Camera Integration', () => {
     expect(screen.getByTestId('world-scene-fallback')).toBeInTheDocument();
   });
 
-  it('accurately verifies all 6 landmark spline keypoints and camera heights', () => {
+  it('accurately verifies all 12 landmark spline keypoints and camera heights', () => {
     const spline = createCameraSpline(LANDMARK_NODES);
-    expect(LANDMARK_NODES).toHaveLength(6);
+    expect(LANDMARK_NODES).toHaveLength(12);
 
     // 1. Approach Road (z = 0)
     const state0 = getInterpolatedCameraState(spline, 0.0, LANDMARK_NODES);
     expect(state0.currentLandmark?.id).toBe('road-entrance');
     expect(state0.currentLandmark?.cameraHeight).toBe(1.7);
 
-    // 2. Coral Portal (z = 50)
-    const state1 = getInterpolatedCameraState(spline, 0.2, LANDMARK_NODES);
+    // 2. Expedition Portal (z = 50)
+    const state1 = getInterpolatedCameraState(spline, 50 / 1150, LANDMARK_NODES);
     expect(state1.currentLandmark?.id).toBe('coral-portal');
     expect(state1.currentLandmark?.cameraHeight).toBe(1.7);
 
     // 3. Arrival Gardens (z = 70)
-    const state2 = getInterpolatedCameraState(spline, 0.4, LANDMARK_NODES);
+    const state2 = getInterpolatedCameraState(spline, 70 / 1150, LANDMARK_NODES);
     expect(state2.currentLandmark?.id).toBe('garden-path');
     expect(state2.currentLandmark?.cameraHeight).toBe(1.7);
 
-    // 4. Pavilion Sanctuary (z = 90)
-    const state3 = getInterpolatedCameraState(spline, 0.6, LANDMARK_NODES);
+    // 4. Welcome Pavilion (z = 90)
+    const state3 = getInterpolatedCameraState(spline, 90 / 1150, LANDMARK_NODES);
     expect(state3.currentLandmark?.id).toBe('pavilion-center');
     expect(state3.currentLandmark?.cameraHeight).toBe(1.7);
 
     // 5. Exploration Deck (z = 150) - Elevated Vantage
-    const state4 = getInterpolatedCameraState(spline, 0.8, LANDMARK_NODES);
+    const state4 = getInterpolatedCameraState(spline, 150 / 1150, LANDMARK_NODES);
     expect(state4.currentLandmark?.id).toBe('exploration-deck');
     expect(state4.currentLandmark?.cameraHeight).toBe(2.1);
 
-    // 6. Malpe Beach Shoreline (z = 200)
-    const state5 = getInterpolatedCameraState(spline, 1.0, LANDMARK_NODES);
+    // 6. Living Beach Shoreline (z = 200)
+    const state5 = getInterpolatedCameraState(spline, 200 / 1150, LANDMARK_NODES);
     expect(state5.currentLandmark?.id).toBe('beach-shoreline');
     expect(state5.currentLandmark?.cameraHeight).toBe(1.7);
+
+    // 7. Watersports Zone (z = 250)
+    const state6 = getInterpolatedCameraState(spline, 250 / 1150, LANDMARK_NODES);
+    expect(state6.currentLandmark?.id).toBe('watersports-zone');
+    expect(state6.currentLandmark?.cameraHeight).toBe(1.7);
+
+    // 8. Sea Walkway (z = 350)
+    const state7 = getInterpolatedCameraState(spline, 350 / 1150, LANDMARK_NODES);
+    expect(state7.currentLandmark?.id).toBe('sea-walkway');
+    expect(state7.currentLandmark?.cameraHeight).toBe(1.8);
+
+    // 9. Boarding Jetty (z = 450)
+    const state8 = getInterpolatedCameraState(spline, 450 / 1150, LANDMARK_NODES);
+    expect(state8.currentLandmark?.id).toBe('boarding-jetty');
+    expect(state8.currentLandmark?.cameraHeight).toBe(1.7);
+
+    // 10. Catamaran Expedition (z = 700)
+    const state9 = getInterpolatedCameraState(spline, 700 / 1150, LANDMARK_NODES);
+    expect(state9.currentLandmark?.id).toBe('catamaran-expedition');
+    expect(state9.currentLandmark?.cameraHeight).toBe(2.2);
+
+    // 11. Open Arabian Sea (z = 950)
+    const state10 = getInterpolatedCameraState(spline, 950 / 1150, LANDMARK_NODES);
+    expect(state10.currentLandmark?.id).toBe('open-sea');
+    expect(state10.currentLandmark?.cameraHeight).toBe(2.0);
+
+    // 12. St. Mary's Basalt (z = 1150)
+    const state11 = getInterpolatedCameraState(spline, 1.0, LANDMARK_NODES);
+    expect(state11.currentLandmark?.id).toBe('st-marys-basalt');
+    expect(state11.currentLandmark?.cameraHeight).toBe(1.7);
   });
 });

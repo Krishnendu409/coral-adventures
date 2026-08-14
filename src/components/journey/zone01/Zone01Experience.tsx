@@ -86,11 +86,14 @@ export function Zone01Experience() {
     }
   };
 
+  const [activeTier, setActiveTier] = useState<number>(1);
+
   return (
     <main className="relative w-full h-screen h-[100dvh] overflow-hidden bg-marine-deep select-none">
       
       <WorldScene 
         splineProgress={splineProgress}
+        onTierChange={setActiveTier}
         onProjectDiscoveries={(list) => {
           const fullList = list.map(item => {
              const discovery = currentLandmark.discoveries.find(d => d.id === item.id) || LANDMARK_NODES.flatMap(l => l.discoveries).find(d => d.id === item.id);

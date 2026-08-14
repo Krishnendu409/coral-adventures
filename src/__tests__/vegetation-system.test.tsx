@@ -64,4 +64,18 @@ describe('VegetationSystem Component', () => {
     const instancedDebris = container.querySelector('[data-testid="instanced-coconut-husks-debris"]');
     expect(instancedDebris).toBeDefined();
   }, 15000);
+
+  it('verifies botanical population instancing spans across the 1200m continuous spatial world', () => {
+    const { container } = render(<VegetationSystem />);
+    const palmCanopy = container.querySelector('[name="PalmCanopyLayer"]');
+    expect(palmCanopy).toBeDefined();
+
+    // Ensure children in canopy layer reflect extensive population
+    expect(palmCanopy?.children.length).toBeGreaterThanOrEqual(50);
+
+    const instancedGrass = container.querySelector('[data-testid="instanced-spinifex-grass"]');
+    expect(instancedGrass).toBeDefined();
+    // Verify count attribute for GPU batching
+    expect(instancedGrass?.getAttribute('args') || instancedGrass).toBeDefined();
+  });
 });

@@ -98,5 +98,45 @@ describe('PavilionArchitecture & CoralPortal Expedition Architecture', () => {
     expect(pavilionHtml).not.toContain('pagoda');
     expect(pavilionHtml).not.toContain('shinto');
   });
+
+  it('verifies CoralPortal authentic Malpe Expedition Base specifications & coordinates', () => {
+    const { container } = render(<CoralPortal />);
+    const html = container.innerHTML;
+
+    // Check Expedition Base Coordinates sign
+    const sign = container.querySelector('[name="Expedition_CoordinatesSign"]');
+    expect(sign).not.toBeNull();
+
+    // Check Sailcloth Canopy & Totem
+    expect(container.querySelector('[name="Expedition_SailclothCanopy"]')).not.toBeNull();
+    expect(container.querySelector('[name="Wayfinding_Totem"]')).not.toBeNull();
+  });
+
+  it('verifies PavilionArchitecture post-and-beam, concierge desk, captain lantern point light, and chart table props', () => {
+    const { container } = render(<PavilionArchitecture />);
+
+    // Verify Welcome Pavilion group
+    const pavilion = container.querySelector('[name="Coral_WelcomePavilion"]');
+    expect(pavilion).not.toBeNull();
+
+    // Verify Concierge Desk & Inlay Countertop
+    const desk = container.querySelector('[name="Expedition_ConciergeDesk"]');
+    expect(desk).not.toBeNull();
+
+    // Verify Captain's Lantern & Incandescent Point Light
+    const lantern = container.querySelector('[name="Captains_Lantern"]');
+    expect(lantern).not.toBeNull();
+
+    // Verify Inhabited Navigational Chart Table & Storytelling Props
+    expect(container.querySelector('[name="Navigational_ChartTable"]')).not.toBeNull();
+    expect(container.querySelector('[name="Navigation_Dividers"]')).not.toBeNull();
+    expect(container.querySelector('[name="Parallel_Ruler"]')).not.toBeNull();
+    expect(container.querySelector('[name="Marine_Compass"]')).not.toBeNull();
+    expect(container.querySelector('[name="Weather_Ledger"]')).not.toBeNull();
+    expect(container.querySelector('[name="Tide_Table"]')).not.toBeNull();
+    expect(container.querySelector('[name="Vessel_Manifest"]')).not.toBeNull();
+    expect(container.querySelector('[name="Map_ScrollHolder"]')).not.toBeNull();
+  });
 });
+
 

@@ -2,12 +2,16 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { LANDMARK_NODES, SplineLandmark, createCameraSpline, getInterpolatedCameraState } from '../../../lib/three/splineNetwork';
+import { calculateProgressiveTier, PROGRESSIVE_TIERS, ProgressiveTier } from '../../../lib/three/progressiveDelivery';
 import { MalpeTerrain } from './environment/MalpeTerrain';
 import { OceanWater } from './environment/OceanWater';
 import { VegetationSystem } from './environment/VegetationSystem';
 import { PavilionArchitecture } from './environment/PavilionArchitecture';
 import { CoralPortal } from './environment/CoralPortal';
 import { MarineCraft } from './environment/MarineCraft';
+import { SeaWalkway } from './environment/SeaWalkway';
+import { CatamaranHero } from './environment/CatamaranHero';
+import { StMarysIsland } from './environment/StMarysIsland';
 import { AtmosphereSky } from './environment/AtmosphereSky';
 import { EffectComposer, SSAO, Bloom, Vignette } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
@@ -17,13 +21,15 @@ interface CameraControllerProps {
   onProjectDiscoveries?: (projectedList: { id: string; x: number; y: number }[]) => void;
   lookOffsetRef: React.MutableRefObject<{ yaw: number; pitch: number }>;
   isDraggingRef: React.MutableRefObject<boolean>;
+  onCameraUpdate?: (pos: THREE.Vector3, currentTier: ProgressiveTier) => void;
 }
 
 const CameraController: React.FC<CameraControllerProps> = ({
   splineProgress,
   onProjectDiscoveries,
   lookOffsetRef,
-  isDraggingRef
+  isDraggingRef,
+  onCameraUpdate
 }) => {
   const { camera } = useThree();
   const spline = useMemo(() => createCameraSpline(LANDMARK_NODES), []);
@@ -38,6 +44,15 @@ const CameraController: React.FC<CameraControllerProps> = ({
     );
 
     const targetPos = position.clone();
+
+    // Calculate current progressive delivery tier relative to target landmark node position
+    const landmarkPos = currentLandmark ? currentLandmark.position : targetPos;
+    const distanceToLandmark = targetPos.distanceTo(landmarkPos);
+    const activeTier = calculateProgressiveTier(distanceToLandmark);
+
+    if (onCameraUpdate) {
+      onCameraUpdate(camera.position, activeTier);
+    }
 
     // Dynamically update camera FOV smoothly
     if (camera instanceof THREE.PerspectiveCamera) {
@@ -108,6 +123,7 @@ const CameraController: React.FC<CameraControllerProps> = ({
 export interface WorldSceneProps {
   splineProgress: number;
   onProjectDiscoveries?: (projectedList: { id: string; x: number; y: number }[]) => void;
+  onTierChange?: (tier: ProgressiveTier) => void;
   isHeadless?: boolean;
 }
 
@@ -132,19 +148,6 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-/**
- * WorldScene Component
- * Master 3D Scene Orchestration for Malpe Waterfront Digital Twin
- * 
- * Environmental Layers:
- * 1. AtmosphereSky: 5500K golden hour lighting, FogExp2, St. Mary's basalt columns silhouette
- * 2. MalpeTerrain: Karnataka coastal topography, PBR sand, laterite boulders & pathways
- * 3. OceanWater: Living Arabian Sea Gerstner waves, Voronoi caustics, shoreline surf foam
- * 4. CoralPortal: Weathered teak timber portal framing arrival sanctuary (z = 52)
- * 5. PavilionArchitecture: Weathered teak post-and-beam pavilion, linen canopy, lounge, lantern
- * 6. VegetationSystem: Coconut palm groves with 4-tier frond canopies & undergrowth
- * 7. MarineCraft: Malpe fishing trawlers, Seadoo jet skis, ocean kayaks & 25.90M catamaran
- */
 function checkWebGLSupport(): boolean {
   if (typeof window === 'undefined') return false;
   try {
@@ -159,6 +162,7 @@ function checkWebGLSupport(): boolean {
 export const WorldScene: React.FC<WorldSceneProps> = ({
   splineProgress,
   onProjectDiscoveries,
+  onTierChange,
   isHeadless = false
 }) => {
   const [mounted, setMounted] = useState(false);
@@ -166,6 +170,7 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
   const lookOffsetRef = useRef({ yaw: 0, pitch: 0 });
   const isDraggingRef = useRef(false);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
+  const [currentTier, setCurrentTier] = useState<ProgressiveTier>(1);
 
   useEffect(() => {
     setMounted(true);
@@ -204,6 +209,15 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
     lookOffsetRef.current.pitch -= deltaY * 0.0025;
   };
 
+  const handleCameraUpdate = (_pos: THREE.Vector3, tier: ProgressiveTier) => {
+    if (tier !== currentTier) {
+      setCurrentTier(tier);
+      if (onTierChange) {
+        onTierChange(tier);
+      }
+    }
+  };
+
   return (
     <div
       className="relative w-full h-full cursor-grab active:cursor-grabbing select-none"
@@ -217,13 +231,15 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
         <ErrorBoundary fallback={<div data-testid="world-scene-fallback" className="w-full h-full flex items-center justify-center bg-[#071A2B] text-[#FAF6EE]/60 font-mono text-xs uppercase tracking-widest">WebGL not supported</div>}>
           <Canvas
             shadows
+            dpr={[1, 1.5]}
             gl={{
               antialias: true,
               preserveDrawingBuffer: true,
               toneMapping: THREE.ACESFilmicToneMapping,
-              toneMappingExposure: 1.15
+              toneMappingExposure: 1.15,
+              powerPreference: 'high-performance'
             }}
-            camera={{ fov: 52, near: 0.1, far: 850 }}
+            camera={{ fov: 52, near: 0.1, far: 2000 }}
           >
             <color attach="background" args={['#F5E8D8']} />
 
@@ -233,6 +249,7 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
               onProjectDiscoveries={onProjectDiscoveries}
               lookOffsetRef={lookOffsetRef}
               isDraggingRef={isDraggingRef}
+              onCameraUpdate={handleCameraUpdate}
             />
 
             {/* 1. Atmospheric Lighting, Sky & St. Mary's Basalt Silhouette */}
@@ -253,8 +270,17 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
             {/* 6. Layer 2 & 3 (Vegetation): Coastal Karnataka Coconut Palm Groves & Shrubs */}
             <VegetationSystem />
 
-            {/* 7. Layer 2 & 3 (Living Craft): Malpe Fishing Trawlers, Jet Skis & 25.90M Catamaran */}
+            {/* 7. Layer 2 & 3 (Living Craft): Malpe Fishing Trawlers, Jet Skis & Marine Fleet */}
             <MarineCraft />
+
+            {/* 8. Layer 2 (Infrastructure): 450m Malpe Sea Walkway Promenade & Breakwater */}
+            <SeaWalkway />
+
+            {/* 9. Layer 3 (Hero Craft): Flagship 25.90M Expedition Catamaran Moored Offshore (Z=700m) */}
+            <CatamaranHero />
+
+            {/* 10. Layer 4 (Geological Payoff): St. Mary's Island Hexagonal Columnar Basalt Formations (Z=1150m) */}
+            <StMarysIsland />
 
             {/* 8. Restrained Postprocessing Pipeline: Bloom & Editorial Vignette */}
             <EffectComposer multisampling={0}>

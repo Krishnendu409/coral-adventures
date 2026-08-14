@@ -11,6 +11,8 @@ export interface LandmarkDiscovery {
   specs?: { label: string; value: string }[];
 }
 
+export type AudioZone = "road" | "gardens" | "pavilion" | "beach" | "catamaran";
+
 export interface SplineLandmark {
   id: string;
   name: string;
@@ -28,7 +30,7 @@ export interface SplineLandmark {
     minPitch: number;
     maxPitch: number;
   };
-  audioZone: "road" | "gardens" | "pavilion" | "beach";
+  audioZone: AudioZone;
   discoveries: LandmarkDiscovery[];
 }
 
@@ -63,9 +65,9 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   },
   {
     id: "coral-portal",
-    name: "CORAL GATEWAY & WAYFINDING",
+    name: "EXPEDITION PORTAL",
     subtitle: "Expedition Portal: Architectural Threshold (13°21′02″ N · 74°42′08″ E)",
-    splineProgress: 0.2,
+    splineProgress: 50 / 1150,
     position: new THREE.Vector3(WORLD_ANCHORS.CORAL_PORTAL.x, WORLD_ANCHORS.CORAL_PORTAL.y, WORLD_ANCHORS.CORAL_PORTAL.z),
     lookAt: new THREE.Vector3(0, 1.7, 75),
     cameraHeight: 1.7,
@@ -93,7 +95,7 @@ export const LANDMARK_NODES: SplineLandmark[] = [
     id: "garden-path",
     name: "COASTAL ARRIVAL GARDENS",
     subtitle: "Arrival Gardens: Indigenous Flora & Laterite Walkway",
-    splineProgress: 0.4,
+    splineProgress: 70 / 1150,
     position: new THREE.Vector3(WORLD_ANCHORS.GARDEN_PATH.x, WORLD_ANCHORS.GARDEN_PATH.y, WORLD_ANCHORS.GARDEN_PATH.z),
     lookAt: new THREE.Vector3(0, 1.7, 90),
     cameraHeight: 1.7,
@@ -119,9 +121,9 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   },
   {
     id: "pavilion-center",
-    name: "CORAL ARRIVAL PAVILION",
+    name: "WELCOME PAVILION",
     subtitle: "Welcome Pavilion: Open-Air Shaded Teak Lounge & Reception",
-    splineProgress: 0.6,
+    splineProgress: 90 / 1150,
     position: new THREE.Vector3(WORLD_ANCHORS.PAVILION_CENTER.x, WORLD_ANCHORS.PAVILION_CENTER.y, WORLD_ANCHORS.PAVILION_CENTER.z),
     lookAt: new THREE.Vector3(0, 1.7, 115),
     cameraHeight: 1.7,
@@ -147,9 +149,9 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   },
   {
     id: "exploration-deck",
-    name: "CORAL EXPLORATION DECK",
+    name: "EXPLORATION DECK",
     subtitle: "Exploration Deck: Elevated Panorama Reveal Framing Open Arabian Sea",
-    splineProgress: 0.8,
+    splineProgress: 150 / 1150,
     position: new THREE.Vector3(WORLD_ANCHORS.EXPLORATION_DECK.x, WORLD_ANCHORS.EXPLORATION_DECK.y, WORLD_ANCHORS.EXPLORATION_DECK.z),
     lookAt: new THREE.Vector3(0, 1.7, 260),
     cameraHeight: 2.1,
@@ -157,7 +159,7 @@ export const LANDMARK_NODES: SplineLandmark[] = [
     arrivalVelocity: 1,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -90, maxYaw: 90, minPitch: -35, maxPitch: 45 },
-    audioZone: "beach",
+    audioZone: "pavilion",
     discoveries: [
       {
         id: "deck-viewpoint",
@@ -175,15 +177,15 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   },
   {
     id: "beach-shoreline",
-    name: "MALPE BEACH PROMENADE & SHORELINE",
+    name: "LIVING BEACH & SHORELINE",
     subtitle: "Living Beach & Shoreline: Intertidal Edge, Surf Swash & Fleet",
-    splineProgress: 1.0,
+    splineProgress: 200 / 1150,
     position: new THREE.Vector3(WORLD_ANCHORS.BEACH_SHORELINE.x, WORLD_ANCHORS.BEACH_SHORELINE.y, WORLD_ANCHORS.BEACH_SHORELINE.z),
     lookAt: new THREE.Vector3(0, 1.5, 320),
     cameraHeight: 1.7,
     fov: 52,
     arrivalVelocity: 1,
-    departureVelocity: 0,
+    departureVelocity: 1,
     allowableLookRange: { minYaw: -110, maxYaw: 110, minPitch: -35, maxPitch: 45 },
     audioZone: "beach",
     discoveries: [
@@ -197,6 +199,174 @@ export const LANDMARK_NODES: SplineLandmark[] = [
         specs: [
           { label: "FLAGSHIP", value: "25.90M Twin-Hull Catamaran" },
           { label: "WATERSPORTS", value: "Seadoo GTX & Sea Kayaks" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "watersports-zone",
+    name: "WATERSPORTS ZONE",
+    subtitle: "Watersports Zone: High-Octane Jet Skis & Sea Kayaks Shallows",
+    splineProgress: 250 / 1150,
+    position: new THREE.Vector3(WORLD_ANCHORS.WATERSPORTS_ZONE.x, WORLD_ANCHORS.WATERSPORTS_ZONE.y, WORLD_ANCHORS.WATERSPORTS_ZONE.z),
+    lookAt: new THREE.Vector3(0, 1.7, 350),
+    cameraHeight: 1.7,
+    fov: 54,
+    arrivalVelocity: 1,
+    departureVelocity: 1,
+    allowableLookRange: { minYaw: -110, maxYaw: 110, minPitch: -35, maxPitch: 45 },
+    audioZone: "beach",
+    discoveries: [
+      {
+        id: "watersports-staging",
+        title: "WATERSPORTS FLEET STAGING",
+        category: "SPORTS · ADVENTURE",
+        tagline: "Jet Skis & Coastal Kayaks",
+        description: "State-of-the-art Seadoo watercraft and seaworthy kayaks staged on custom timber launch skids.",
+        worldPosition: new THREE.Vector3(-10, 1.7, 250),
+        specs: [
+          { label: "EQUIPMENT", value: "Seadoo GTX 300 & Sea Kayaks" },
+          { label: "SAFETY", value: "Impact Vests & GPS Radios" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "sea-walkway",
+    name: "MALPE SEA WALKWAY",
+    subtitle: "Sea Walkway: 450m Promenade & Granite Rock Armour Breakwater",
+    splineProgress: 350 / 1150,
+    position: new THREE.Vector3(WORLD_ANCHORS.SEA_WALKWAY.x, WORLD_ANCHORS.SEA_WALKWAY.y, WORLD_ANCHORS.SEA_WALKWAY.z),
+    lookAt: new THREE.Vector3(0, 1.8, 450),
+    cameraHeight: 1.8,
+    fov: 55,
+    arrivalVelocity: 1,
+    departureVelocity: 1,
+    allowableLookRange: { minYaw: -120, maxYaw: 120, minPitch: -35, maxPitch: 45 },
+    audioZone: "beach",
+    discoveries: [
+      {
+        id: "sea-walkway-lookout",
+        title: "SEA WALKWAY PROMENADE",
+        category: "INFRASTRUCTURE · BREAKWATER",
+        tagline: "450m Granite Breakwater Walkway",
+        description: "Elevated promenade extending 450 meters into the Arabian Sea, bordered by heavy granite rock armour and fishing fleet vistas.",
+        worldPosition: new THREE.Vector3(0, 1.8, 350),
+        specs: [
+          { label: "LENGTH", value: "450 Meters" },
+          { label: "ELEVATION", value: "+1.8m Mean High Tide" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "boarding-jetty",
+    name: "BOARDING JETTY",
+    subtitle: "Boarding Jetty: Floating Dock & Vessel Embarkation Point",
+    splineProgress: 450 / 1150,
+    position: new THREE.Vector3(WORLD_ANCHORS.BOARDING_JETTY.x, WORLD_ANCHORS.BOARDING_JETTY.y, WORLD_ANCHORS.BOARDING_JETTY.z),
+    lookAt: new THREE.Vector3(0, 1.7, 550),
+    cameraHeight: 1.7,
+    fov: 54,
+    arrivalVelocity: 1,
+    departureVelocity: 1,
+    allowableLookRange: { minYaw: -120, maxYaw: 120, minPitch: -35, maxPitch: 45 },
+    audioZone: "beach",
+    discoveries: [
+      {
+        id: "jetty-embarkation",
+        title: "EXPEDITION EMBARKATION JETTY",
+        category: "PORT · EMBARKATION",
+        tagline: "Deep-Water Vessel Dock",
+        description: "Heavy timber floating pontoon dock engineered for seamless embarkation onto Coral Adventures' catamaran fleet.",
+        worldPosition: new THREE.Vector3(0, 1.7, 450),
+        specs: [
+          { label: "DRAFT", value: "3.5m Low Water Depth" },
+          { label: "CAPACITY", value: "Twin 25M Catamaran Berths" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "catamaran-expedition",
+    name: "CATAMARAN EXPEDITION",
+    subtitle: "Catamaran Expedition: Flagship 25.90M Twin-Hull Offshore Cruise",
+    splineProgress: 700 / 1150,
+    position: new THREE.Vector3(WORLD_ANCHORS.CATAMARAN_EXPEDITION.x, WORLD_ANCHORS.CATAMARAN_EXPEDITION.y, WORLD_ANCHORS.CATAMARAN_EXPEDITION.z),
+    lookAt: new THREE.Vector3(0, 2.0, 950),
+    cameraHeight: 2.2,
+    fov: 58,
+    arrivalVelocity: 1,
+    departureVelocity: 1,
+    allowableLookRange: { minYaw: -135, maxYaw: 135, minPitch: -40, maxPitch: 50 },
+    audioZone: "catamaran",
+    discoveries: [
+      {
+        id: "catamaran-lounge",
+        title: "FLAGSHIP 25.90M CATAMARAN",
+        category: "VESSEL · EXPEDITION",
+        tagline: "3-Deck Twin-Hull Power Catamaran",
+        description: "Luxury expedition vessel featuring panoramic social lounge, upper sun deck, low-emission twin propulsion, and active wave stabilization.",
+        worldPosition: new THREE.Vector3(0, 2.2, 700),
+        specs: [
+          { label: "LENGTH", value: "25.90 Meters (85 ft)" },
+          { label: "PASSENGERS", value: "120 Guests + Marine Crew" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "open-sea",
+    name: "OPEN ARABIAN SEA",
+    subtitle: "Open Arabian Sea: Deep Sapphire Swells & Horizon Vista",
+    splineProgress: 950 / 1150,
+    position: new THREE.Vector3(WORLD_ANCHORS.OPEN_SEA.x, WORLD_ANCHORS.OPEN_SEA.y, WORLD_ANCHORS.OPEN_SEA.z),
+    lookAt: new THREE.Vector3(0, 1.7, 1150),
+    cameraHeight: 2.0,
+    fov: 56,
+    arrivalVelocity: 1,
+    departureVelocity: 1,
+    allowableLookRange: { minYaw: -140, maxYaw: 140, minPitch: -40, maxPitch: 50 },
+    audioZone: "catamaran",
+    discoveries: [
+      {
+        id: "open-sea-vista",
+        title: "ARABIAN SEA SANCTUARY",
+        category: "OCEAN · PELAGIC",
+        tagline: "Deep Sapphire Water Passage",
+        description: "Open coastal sea domain connecting Malpe mainland with the St. Mary's archipelago, home to sea turtles and oceanic dolphins.",
+        worldPosition: new THREE.Vector3(0, 2.0, 950),
+        specs: [
+          { label: "DEPTH", value: "18 - 25 Meters" },
+          { label: "VISIBILITY", value: "12 Meters Underwater" }
+        ]
+      }
+    ]
+  },
+  {
+    id: "st-marys-basalt",
+    name: "ST. MARY'S BASALT",
+    subtitle: "St. Mary's Basalt: 6-Sided Hexagonal Columnar Basalt Geologic Climax",
+    splineProgress: 1.0,
+    position: new THREE.Vector3(WORLD_ANCHORS.ST_MARYS_BASALT.x, WORLD_ANCHORS.ST_MARYS_BASALT.y, WORLD_ANCHORS.ST_MARYS_BASALT.z),
+    lookAt: new THREE.Vector3(0, 1.7, 1180),
+    cameraHeight: 1.7,
+    fov: 52,
+    arrivalVelocity: 1,
+    departureVelocity: 0,
+    allowableLookRange: { minYaw: -150, maxYaw: 150, minPitch: -40, maxPitch: 50 },
+    audioZone: "catamaran",
+    discoveries: [
+      {
+        id: "basalt-columns-geo",
+        title: "ST. MARY'S COLUMNAR BASALT",
+        category: "GEOLOGY · MONUMENT",
+        tagline: "6-Sided Volcanic Basalt Formations",
+        description: "Sub-aerial lava flow column formations created 88 million years ago during Madagascar rift separation, designated a Geo-Heritage Monument.",
+        worldPosition: new THREE.Vector3(0, 1.7, 1150),
+        specs: [
+          { label: "AGE", value: "88 Million Years (Cretaceous)" },
+          { label: "STATUS", value: "National Geo-Heritage Monument" }
         ]
       }
     ]
@@ -235,6 +405,12 @@ export function getInterpolatedCameraState(
     }
   }
 
+  // Fallback if safeT is less than landmarks[0].splineProgress
+  if (!currentLandmark && landmarks.length > 0) {
+    currentLandmark = landmarks[0];
+    nextLandmark = landmarks[1] || null;
+  }
+
   let lookAt = currentLandmark ? currentLandmark.lookAt.clone() : position.clone().add(new THREE.Vector3(0, 0, 10));
   let fov = currentLandmark ? currentLandmark.fov : 52;
   let cameraHeight = currentLandmark ? currentLandmark.cameraHeight : 1.7;
@@ -242,11 +418,12 @@ export function getInterpolatedCameraState(
   if (currentLandmark && nextLandmark) {
     const span = nextLandmark.splineProgress - currentLandmark.splineProgress;
     const progressInSpan = span > 0 ? (safeT - currentLandmark.splineProgress) / span : 0;
-    lookAt.lerp(nextLandmark.lookAt, progressInSpan);
-    fov = THREE.MathUtils.lerp(currentLandmark.fov, nextLandmark.fov, progressInSpan);
-    cameraHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, progressInSpan);
+    const clampedProgress = Math.max(0, Math.min(1, progressInSpan));
+    
+    lookAt.lerp(nextLandmark.lookAt, clampedProgress);
+    fov = THREE.MathUtils.lerp(currentLandmark.fov, nextLandmark.fov, clampedProgress);
+    cameraHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, clampedProgress);
   }
 
   return { position, lookAt, fov, cameraHeight, currentLandmark, nextLandmark };
 }
-

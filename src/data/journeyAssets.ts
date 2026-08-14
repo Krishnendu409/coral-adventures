@@ -67,10 +67,11 @@ export const JOURNEY_ASSETS = {
       metalness: 0.04
     },
     basaltPbr: {
+      color: '#2A282A',
       diffuse: '/textures/basalt_diffuse.jpg',
       normal: '/textures/basalt_normal.png',
-      roughness: 0.88,
-      metalness: 0.05
+      roughness: 0.85,
+      metalness: 0.15
     },
     sailclothPbr: {
       color: '#F4EFE6',

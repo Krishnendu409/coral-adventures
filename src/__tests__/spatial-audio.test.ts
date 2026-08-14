@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createSpatialAudioEngine } from '../lib/three/spatialAudio';
 
-describe('SpatialAudioEngine', () => {
+describe('SpatialAudioEngine & 4-Zone Positional Audio', () => {
   beforeEach(() => {
     // Mock AudioContext for headless testing environment
     (global as any).window = (global as any).window || {};
@@ -86,7 +86,7 @@ describe('SpatialAudioEngine', () => {
     expect(engine.isMuted()).toBe(false);
   });
 
-  it('transitions across all 4 spatial audio zones seamlessly', () => {
+  it('transitions across 4-zone positional spatial audio zones seamlessly', () => {
     const engine = createSpatialAudioEngine();
     engine.start();
 
@@ -94,17 +94,19 @@ describe('SpatialAudioEngine', () => {
     engine.setAudioZone('road');
     expect(engine.getCurrentZone()).toBe('road');
 
-    // Zone 01: Arrival Gardens
+    // Zone 01: Welcome Pavilion & Arrival Gardens
     engine.setAudioZone('gardens');
     expect(engine.getCurrentZone()).toBe('gardens');
-
-    // Zone 02: Welcome Pavilion
     engine.setAudioZone('pavilion');
     expect(engine.getCurrentZone()).toBe('pavilion');
 
-    // Zone 03: Exploration Deck & Beach
+    // Zone 02: Sea Walkway & Beach
     engine.setAudioZone('beach');
     expect(engine.getCurrentZone()).toBe('beach');
+
+    // Zone 03: Catamaran & St. Mary's Basalt
+    engine.setAudioZone('catamaran');
+    expect(engine.getCurrentZone()).toBe('catamaran');
   });
 
   it('supports lifecycle start and stop calls', () => {

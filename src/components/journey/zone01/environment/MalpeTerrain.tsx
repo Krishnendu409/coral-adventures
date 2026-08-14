@@ -4,34 +4,38 @@ import { createSandTexture, createLateriteRockTexture } from '../../../../lib/th
 
 /**
  * MalpeTerrain Component
- * Photorealistic Coastal Karnataka Topography & Multi-Mask PBR Surface Splatting
+ * Continuous 240x1200m Multi-Mask Layered PBR Terrain Engine
+ * Spanning Z = 0m to Z = 1200m across Malpe Coastal Twin
  * 
- * Topographical Zones:
- * 1. Approach Road & Trail (Z < 40m, Y = 0.0m..0.3m, Crushed red laterite iron-earth #964831 with wagon cart ruts)
- * 2. Garden Walkway & Portal (Z: 40m..85m, Y: 0.4m..0.8m, Laterite trail #964831 curving to portal, organic edge falloff)
+ * Spatial Topographical Zones:
+ * 1. Approach Road & Red Laterite Trail (Z: 0m..40m, Y = 0.0m..0.3m, #964831 with wagon cart ruts & organic falloff)
+ * 2. Garden Walkway & Portal (Z: 40m..85m, Y = 0.4m..0.8m, Laterite trail curving to portal, organic edge falloff)
  * 3. Pavilion Platform (Z: 85m..125m, Y = 0.7m level platform & landscaped surrounds)
- * 4. Exploration Deck Dune Ridge (Z: 125m..165m, Y = 2.1m elevated dune promontory, dry pale sand #EADCC6 with micro-ripples)
- * 5. Sloping Sand Beach & Damp Transition (Z: 165m..210m, Y: 0.5m -> 0.0m -> -0.3m, transition from dry #EADCC6 to damp #C4B59D to wet #8F7C66)
- * 6. Intertidal Wet Sand & Submerged Sandbars (Z >= 210m, Y = -0.3m -> -2.2m, wave wash ripples, reflective wet sand #8F7C66, submerged sandbars)
+ * 4. Exploration Deck Dune Ridge (Z: 125m..165m, Y = 2.1m elevated dune lookout, dry pale sand #EADCC6 with micro-ripples)
+ * 5. Sloping Sand Beach & Damp Transition (Z: 165m..210m, Y: 0.5m -> 0.0m -> -0.3m, transition from dry #EADCC6 to damp #C4B59D)
+ * 6. Intertidal Wet Sand & Tide Line (Z: 210m..300m, Y = -0.3m -> -0.8m, wave wash ripples, wet reflective sand #8F7C66)
+ * 7. 450m Malpe Sea Walkway & Granite Rock Armour (Z: 300m..750m, Y = 1.8m concrete paver #9E9E9E flanked by granite boulders #4A4E52)
+ * 8. Submerged Sandbars & Arabian Sea Bed (Z: 750m..950m, Y = -0.8m -> -3.8m, submerged sandbars #382D22 visible in turquoise water)
+ * 9. St. Mary's Lagoon Seabed & Hexagonal Basalt Base (Z: 950m..1200m, Y = -3.8m -> +0.5m lagoon floor & basalt foundation #2A282A)
  */
 export const MalpeTerrain: React.FC = () => {
   const { geometry, material } = useMemo(() => {
-    // 240m wide x 380m deep high-resolution continuous terrain mesh
+    // Continuous 240m wide x 1200m deep high-resolution terrain mesh
     const width = 240;
-    const depth = 380;
+    const depth = 1200;
     const segmentsW = 160;
-    const segmentsD = 240;
+    const segmentsD = 480;
 
     const geo = new THREE.PlaneGeometry(width, depth, segmentsW, segmentsD);
     // Rotate to horizontal XZ plane
     geo.rotateX(-Math.PI / 2);
-    // Offset along Z so mesh covers Z: -60m (behind approach) to +320m (deep ocean floor)
-    geo.translate(0, 0, 130);
+    // Offset along Z so mesh spans Z: 0m to 1200m continuously
+    geo.translate(0, 0, 600);
 
     const pos = geo.attributes.position;
     const colors = new Float32Array(pos.count * 3);
 
-    // Precise Production Color Palette Tokens
+    // Production Color Palette Tokens
     const cDrySand = new THREE.Color('#EADCC6');       // Dry pale sun-bleached coastal sand
     const cLateriteTrail = new THREE.Color('#964831');  // Crushed red laterite iron-earth trail
     const cLateriteEdging = new THREE.Color('#B86C52'); // Organic laterite gravel edging
@@ -40,7 +44,10 @@ export const MalpeTerrain: React.FC = () => {
     const cTerraceSand = new THREE.Color('#DFCCA8');    // Compacted terrace sand
     const cDampSand = new THREE.Color('#C4B59D');       // Damp transition sand approaching tide line
     const cWetSand = new THREE.Color('#8F7C66');        // Wet reflective intertidal sand
+    const cSeaWalkway = new THREE.Color('#9E9E9E');     // 450m Sea Walkway concrete paver
+    const cGraniteArmour = new THREE.Color('#4A4E52');  // Rough-cut granite rock armour
     const cSubmergedSand = new THREE.Color('#382D22');   // Deep submerged Arabian sea bed
+    const cBasaltBase = new THREE.Color('#2A282A');      // St. Mary's basalt foundation stone
 
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
@@ -52,7 +59,7 @@ export const MalpeTerrain: React.FC = () => {
       // Micro-relief organic undulation across terrain
       const microNoise = Math.sin(x * 0.12) * Math.cos(z * 0.09) * 0.035 + Math.sin(x * 0.28 + z * 0.18) * 0.015;
 
-      // Calculate path centerline and wagon cart ruts across approach, portal, and pavilion zones
+      // Calculate path centerline and wagon cart ruts across approach, portal, and pavilion zones (Z: 0..125m)
       let pathCenterX = 0;
       if (z < 40) {
         pathCenterX = 0;
@@ -75,11 +82,15 @@ export const MalpeTerrain: React.FC = () => {
       const centerRidge = Math.exp(-Math.pow(distFromPath / 0.75, 2)) * 0.018;
       const cartRutHeight = (rutLeft + rutRight + centerRidge);
 
-      // Organic edge falloff weight for red laterite trail (NO hard polygon edge)
+      // Organic edge falloff weight for red laterite trail (NO flat polygon strip or hard edge)
       const trailWeight = Math.exp(-Math.pow(distFromPath / 2.2, 2.4));
 
+      // Sea Walkway parameters (Z: 300m..750m)
+      const walkwayCenterX = 25.0; // Sea Walkway pier centerline extending seaward
+      const distFromWalkway = Math.abs(x - walkwayCenterX);
+
       if (z < 40) {
-        // ZONE 1: Approach Road & Red Laterite Trail (Z < 40m, y = 0.0m..0.3m)
+        // ZONE 1: Approach Road & Red Laterite Trail (Z < 40m, Y = 0.0m..0.3m)
         const roadHalfWidth = 4.2;
         const roadCamber = Math.max(0, 0.035 * (1 - Math.pow(distFromPath / roadHalfWidth, 2)));
         const roadSurface = 0.0 + roadCamber + cartRutHeight + microNoise * 0.4;
@@ -100,7 +111,7 @@ export const MalpeTerrain: React.FC = () => {
         }
 
       } else if (z >= 40 && z < 85) {
-        // ZONE 2: Garden Walkway & Portal (Z: 40m..85m, y = 0.4m..0.8m)
+        // ZONE 2: Garden Walkway & Portal (Z: 40m..85m, Y = 0.4m..0.8m)
         const tZ = (z - 40) / 45;
         const smoothZ = tZ * tZ * (3 - 2 * tZ);
 
@@ -120,7 +131,7 @@ export const MalpeTerrain: React.FC = () => {
         }
 
       } else if (z >= 85 && z < 125) {
-        // ZONE 3: Pavilion Foundation Platform (Z: 85m..125m, y = 0.7m level platform)
+        // ZONE 3: Pavilion Foundation Platform (Z: 85m..125m, Y = 0.7m level platform)
         const dx = Math.abs(x) / 12.0;
         const dz = Math.abs(z - 96) / 14.0;
         const padDist = Math.max(dx, dz);
@@ -142,7 +153,7 @@ export const MalpeTerrain: React.FC = () => {
         }
 
       } else if (z >= 125 && z < 165) {
-        // ZONE 4: Exploration Deck Dune Ridge (Z: 125m..165m, y = 2.1m elevated lookout)
+        // ZONE 4: Exploration Deck Dune Ridge (Z: 125m..165m, Y = 2.1m elevated lookout)
         const tZ = (z - 125) / 40;
         const ridgeProfile = 0.70 + 1.40 * Math.exp(-Math.pow((z - 150) / 14.0, 2));
 
@@ -163,7 +174,7 @@ export const MalpeTerrain: React.FC = () => {
         }
 
       } else if (z >= 165 && z < 210) {
-        // ZONE 5: Sloping Sand Beach & Damp Transition (Z: 165m..210m, y = 0.5m -> 0.0m -> -0.3m)
+        // ZONE 5: Sloping Sand Beach & Damp Transition (Z: 165m..210m, Y = 0.5m -> 0.0m -> -0.3m)
         const tZ = (z - 165) / 45;
         const slope = 0.72 * Math.pow(1 - tZ, 1.5) - 0.04 * tZ;
         const beachBerm = 0.05 * Math.sin(x * 0.04) * Math.cos(z * 0.08) + 0.025 * Math.sin(z * 0.35);
@@ -185,23 +196,73 @@ export const MalpeTerrain: React.FC = () => {
           col.copy(cDampSand).lerp(cWetSand, t);
         }
 
-      } else {
-        // ZONE 6: Intertidal Wet Sand & Submerged Sandbars (Z >= 210m, y = -0.3m -> -2.2m)
-        const tZ = Math.min(1.0, (z - 210) / 110);
+      } else if (z >= 210 && z < 300) {
+        // ZONE 6: Intertidal Wet Sand & Tide Line (Z: 210m..300m, Y = -0.3m -> -0.8m)
+        const tZ = Math.min(1.0, (z - 210) / 90);
         
         // Oscillating wave wash ripple ridges & submerged sandbars
-        const washRipples = (z < 228) ? 0.038 * Math.sin(z * 1.35 + Math.sin(x * 0.3) * 0.8) : 0;
+        const washRipples = (z < 240) ? 0.038 * Math.sin(z * 1.35 + Math.sin(x * 0.3) * 0.8) : 0;
         const sandbar = 0.28 * Math.sin(x * 0.045 + z * 0.075) * Math.cos(x * 0.08 - z * 0.035);
 
-        y = -0.30 - 1.90 * tZ + sandbar + washRipples + microNoise * 0.2;
+        y = -0.30 - 0.50 * tZ + sandbar + washRipples + microNoise * 0.2;
 
-        if (z < 228) {
+        if (z < 235) {
           // Wet reflective intertidal sand #8F7C66
           col.copy(cWetSand);
         } else {
           // Submerged sea bed #382D22 visible through shallow turquoise water
-          const t = Math.min(1.0, (z - 228) / 60);
+          const t = Math.min(1.0, (z - 235) / 65);
           col.copy(cWetSand).lerp(cSubmergedSand, t);
+        }
+
+      } else if (z >= 300 && z < 750) {
+        // ZONE 7: 450m Malpe Sea Walkway & Granite Rock Armour (Z: 300m..750m)
+        const tZ = (z - 300) / 450;
+        const baseSeaBed = -0.80 - 2.0 * tZ + 0.32 * Math.sin(x * 0.04 + z * 0.06);
+
+        if (distFromWalkway <= 3.0) {
+          // Elevated 450m Malpe Sea Walkway concrete paving (y = 1.8m)
+          y = 1.80 + microNoise * 0.1;
+          col.copy(cSeaWalkway);
+        } else if (distFromWalkway <= 11.0) {
+          // Rough-cut granite rock armour boulders flanking walkway
+          const slopeT = (distFromWalkway - 3.0) / 8.0;
+          const rockDisplacement = 0.18 * Math.sin(x * 0.4 + z * 0.3) + 0.12 * Math.cos(x * 0.8 - z * 0.5);
+          const slopeY = THREE.MathUtils.lerp(1.80, baseSeaBed, slopeT) + rockDisplacement;
+          y = slopeY;
+          col.copy(cGraniteArmour).lerp(cSubmergedSand, slopeT * 0.4);
+        } else {
+          // Submerged seabed with sandbars
+          y = baseSeaBed;
+          col.copy(cSubmergedSand);
+        }
+
+      } else if (z >= 750 && z < 950) {
+        // ZONE 8: Submerged Sandbars & Deep Arabian Sea Bed (Z: 750m..950m, Y = -2.8m -> -3.8m)
+        const tZ = (z - 750) / 200;
+        const sandbars = 0.42 * Math.sin(x * 0.035 + z * 0.05) * Math.cos(x * 0.06 - z * 0.03);
+        y = -2.80 - 1.0 * tZ + sandbars;
+        col.copy(cSubmergedSand);
+
+      } else {
+        // ZONE 9: St. Mary's Lagoon Seabed & Hexagonal Basalt Base (Z: 950m..1200m)
+        const tZ = (z - 950) / 250;
+        const distFromStMarys = Math.sqrt(Math.pow(x, 2) + Math.pow(z - 1150, 2));
+
+        if (distFromStMarys < 45.0) {
+          // St. Mary's island lagoon reef and elevated basalt rock base
+          const islandRise = 0.50 + 2.2 * Math.exp(-Math.pow(distFromStMarys / 28.0, 2));
+          y = -1.2 + islandRise + microNoise * 0.3;
+          if (distFromStMarys < 20.0) {
+            col.copy(cBasaltBase).lerp(cTerraceSand, 0.3);
+          } else {
+            col.copy(cTerraceSand).lerp(cDrySand, 0.5);
+          }
+        } else {
+          // Deep lagoon seabed sloping up near island
+          const lagoonDepth = -3.80 + 2.0 * Math.exp(-Math.pow((distFromStMarys - 45.0) / 80.0, 2));
+          y = lagoonDepth + 0.25 * Math.sin(x * 0.04 + z * 0.05);
+          col.copy(cSubmergedSand).lerp(cTerraceSand, Math.max(0, 1 - (distFromStMarys - 45.0) / 120.0));
         }
       }
 
@@ -233,7 +294,7 @@ export const MalpeTerrain: React.FC = () => {
         `
         #include <roughnessmap_fragment>
         // High specular wetness for wet intertidal sand (vColor RGB near #8F7C66)
-        float isWetSand = clamp((vColor.r < 0.60 && vColor.g < 0.52 && vColor.b < 0.44 && vColor.r > 0.45) ? 1.0 : 0.0, 0.0, 1.0);
+        float isWetSand = clamp((vColor.r < 0.62 && vColor.g < 0.53 && vColor.b < 0.45 && vColor.r > 0.45) ? 1.0 : 0.0, 0.0, 1.0);
         roughnessFactor = mix(roughnessFactor, 0.18, isWetSand);
         `
       );
@@ -244,10 +305,10 @@ export const MalpeTerrain: React.FC = () => {
 
   return (
     <group name="MalpeTerrain_Complex">
-      {/* 1. Main Continuous Topography Mesh */}
+      {/* 1. Main Continuous Topography Mesh (240x1200m) */}
       <mesh geometry={geometry} material={material} receiveShadow />
       
-      {/* 2. Geologically Accurate Karnataka Laterite & Basalt Boulder Formations */}
+      {/* 2. Geologically Accurate Karnataka Laterite, Basalt & Granite Boulder Formations */}
       {/* Roadside Approach Laterite Outcrops */}
       <LateriteRockCluster position={[-9.5, 0.1, 16]} scale={1.4} yaw={0.4} type="laterite" />
       <LateriteRockCluster position={[10.2, 0.12, 28]} scale={1.6} yaw={-0.6} type="laterite" />
@@ -273,6 +334,16 @@ export const MalpeTerrain: React.FC = () => {
       <LateriteRockCluster position={[30.0, -0.05, 196]} scale={4.4} yaw={-1.8} type="laterite" />
       <LateriteRockCluster position={[-19.0, -0.35, 214]} scale={3.8} yaw={0.5} isWet={true} type="basalt" />
       <LateriteRockCluster position={[24.0, -0.45, 226]} scale={4.6} yaw={-2.0} isWet={true} type="basalt" />
+
+      {/* 450m Sea Walkway Granite Armour Clusters */}
+      <LateriteRockCluster position={[18.0, 1.2, 330]} scale={3.5} yaw={0.2} type="basalt" isWet={true} />
+      <LateriteRockCluster position={[32.0, 1.1, 410]} scale={3.8} yaw={-0.8} type="basalt" isWet={true} />
+      <LateriteRockCluster position={[17.0, 0.8, 520]} scale={4.0} yaw={1.1} type="basalt" isWet={true} />
+      <LateriteRockCluster position={[33.0, 0.6, 640]} scale={4.2} yaw={-1.5} type="basalt" isWet={true} />
+
+      {/* St. Mary's Island Basalt Outcrops */}
+      <LateriteRockCluster position={[-12.0, 0.5, 1120]} scale={4.5} yaw={0.7} type="basalt" />
+      <LateriteRockCluster position={[15.0, 0.8, 1160]} scale={4.8} yaw={-1.1} type="basalt" />
     </group>
   );
 };
