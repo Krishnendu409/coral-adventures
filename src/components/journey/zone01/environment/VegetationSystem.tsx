@@ -1,24 +1,22 @@
-import React, { useRef, useMemo, useLayoutEffect } from 'react';
+import React, { useRef, useMemo, useLayoutEffect, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { createPalmFrondTexture, createBroadleafTexture } from '../../../../lib/three/textureGenerator';
+import { resourceManager } from '../../../../lib/three/ResourceManager';
+import { JOURNEY_ASSETS } from '../../../../data/journeyAssets';
 
 /**
- * VegetationSystem Component
- * Dynamic Botanical Population System for Malpe Digital Twin (Zone 01)
+ * VegetationSystem Component — AAA WebGL Rebuild
+ * GLB-Based Botanical Population System for Malpe Digital Twin (Zone 01)
  * 
- * Key Features:
- * - 4 Botanical Variants of Cocos nucifera across 1200m Continuous Spatial World (Z = 0m -> 1200m):
- *   1. Tall Mature Leaning Palm (12m)
- *   2. Mid-height Upright Palm (9m)
- *   3. Coastal Wind-Bowed Palm (7m)
- *   4. Young Cluster Palm (5m)
- * - Ecological InstancedMesh GPU batching & per-instance randomized scale (0.85x - 1.2x),
- *   trunk bend curvature (0° to 28°), yaw rotation, frond count (18-32), and frond droop age across Z=0m to Z=1200m.
- * - Seaward wind bowing logic: palms closer to shoreline naturally bow seaward (+Z towards Arabian Sea).
- * - Gentle non-synchronous wind sway frame & vertex physics with independent multi-harmonic phase offsets.
- * - Tropical undergrowth: Spinifex littoreus dune runner grass clusters, broadleaf Alocasia macrorrhizos, Bougainvillea coastal shrubs.
- * - Inhabited cause-and-effect ground debris: fallen brown palm fronds, coconut husks, driftwood logs, and shell fragments clustered near tree bases and high-tide swash lines.
+ * Architecture:
+ * - ResourceManager-driven GLB model loading for 4 botanical palm variants
+ * - Fallback to high-fidelity procedural geometry when GLB assets are unavailable
+ * - Per-instance wind sway vertex shader with trunk/frond/leaflet differentiation
+ * - 600+ instanced palms (Cocos nucifera) across Z=0m → 1200m continuous world
+ * - Seaward wind bowing logic with coastal proximity factor
+ * - Lush tropical undergrowth: Spinifex littoreus, Alocasia macrorrhizos, Bougainvillea
+ * - Inhabited cause-and-effect ground debris near palm bases and swash lines
  */
 
 // ----------------------------------------------------------------------------
@@ -39,8 +37,9 @@ export interface PalmVariantSpec {
   baseLeanZ: number;
   minFronds: number;
   maxFronds: number;
-  droopAge: number; // 0.0 (young) to 1.0 (aged skirt)
-  bendCurvature: number; // 0° to 28°
+  droopAge: number;
+  bendCurvature: number;
+  glbAssetKey: keyof typeof JOURNEY_ASSETS.models;
 }
 
 export const PALM_VARIANT_SPECS: Record<PalmVariantType, PalmVariantSpec> = {
@@ -54,6 +53,7 @@ export const PALM_VARIANT_SPECS: Record<PalmVariantType, PalmVariantSpec> = {
     maxFronds: 32,
     droopAge: 0.9,
     bendCurvature: 22,
+    glbAssetKey: 'palmTall',
   },
   MID_HEIGHT_UPRIGHT: {
     variant: 'MID_HEIGHT_UPRIGHT',
@@ -65,6 +65,7 @@ export const PALM_VARIANT_SPECS: Record<PalmVariantType, PalmVariantSpec> = {
     maxFronds: 26,
     droopAge: 0.5,
     bendCurvature: 8,
+    glbAssetKey: 'palmSlender',
   },
   COASTAL_WIND_BOWED: {
     variant: 'COASTAL_WIND_BOWED',
@@ -76,6 +77,7 @@ export const PALM_VARIANT_SPECS: Record<PalmVariantType, PalmVariantSpec> = {
     maxFronds: 24,
     droopAge: 0.7,
     bendCurvature: 27,
+    glbAssetKey: 'palmDwarf',
   },
   YOUNG_CLUSTER: {
     variant: 'YOUNG_CLUSTER',
@@ -87,6 +89,7 @@ export const PALM_VARIANT_SPECS: Record<PalmVariantType, PalmVariantSpec> = {
     maxFronds: 22,
     droopAge: 0.1,
     bendCurvature: 4,
+    glbAssetKey: 'palmCluster',
   },
 };
 
@@ -95,7 +98,7 @@ export interface PalmInstanceData {
   variant: PalmVariantType;
   pos: [number, number, number];
   scale: number;
-  bendCurvature: number; // 0 to 28 degrees
+  bendCurvature: number;
   yaw: number;
   frondCount: number;
   droopAge: number;
@@ -103,13 +106,10 @@ export interface PalmInstanceData {
   height: number;
 }
 
-// Helper: Calculate seaward wind bowing based on Z proximity to shoreline/Arabian Sea across Z=0m to Z=1200m
+// Helper: Calculate seaward wind bowing based on Z proximity to shoreline
 export function calculateSeawardBowing(pos: [number, number, number], variant: PalmVariantType) {
   const spec = PALM_VARIANT_SPECS[variant];
-  // Shoreline proximity / coastal exposure factor (0 at inland road entrance Z=0, up to 1.0 towards open ocean/coast Z=150..1200)
   const coastalFactor = Math.max(0, Math.min(1.0, (pos[2] - 15) / 185));
-  
-  // Bowing increases seaward (+Z direction towards open sea) up to 28 degrees max curvature
   const extraSeawardLean = (variant === 'COASTAL_WIND_BOWED' ? 0.36 : 0.18) * coastalFactor;
   const effectiveCurvature = Math.min(28, spec.bendCurvature + coastalFactor * 8);
 
@@ -120,6 +120,144 @@ export function calculateSeawardBowing(pos: [number, number, number], variant: P
 }
 
 // ----------------------------------------------------------------------------
+// GLB Model Cache Hook — loads palm models via ResourceManager
+// ----------------------------------------------------------------------------
+
+interface GLBModelCache {
+  palmTall: THREE.Group | THREE.Object3D | null;
+  palmSlender: THREE.Group | THREE.Object3D | null;
+  palmDwarf: THREE.Group | THREE.Object3D | null;
+  palmCluster: THREE.Group | THREE.Object3D | null;
+  isLoaded: boolean;
+}
+
+function useGLBPalmModels(): GLBModelCache {
+  const [cache, setCache] = useState<GLBModelCache>({
+    palmTall: null,
+    palmSlender: null,
+    palmDwarf: null,
+    palmCluster: null,
+    isLoaded: false,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadModels() {
+      try {
+        const [tall, slender, dwarf, cluster] = await Promise.all([
+          resourceManager.loadModel(JOURNEY_ASSETS.models.palmTall.localPath),
+          resourceManager.loadModel(JOURNEY_ASSETS.models.palmSlender.localPath),
+          resourceManager.loadModel(JOURNEY_ASSETS.models.palmDwarf.localPath),
+          resourceManager.loadModel(JOURNEY_ASSETS.models.palmCluster.localPath),
+        ]);
+
+        if (!cancelled) {
+          setCache({
+            palmTall: tall,
+            palmSlender: slender,
+            palmDwarf: dwarf,
+            palmCluster: cluster,
+            isLoaded: true,
+          });
+        }
+      } catch {
+        // Fallback: proceed with procedural geometry
+        if (!cancelled) {
+          setCache((prev) => ({ ...prev, isLoaded: true }));
+        }
+      }
+    }
+
+    loadModels();
+    return () => { cancelled = true; };
+  }, []);
+
+  return cache;
+}
+
+// Helper: Get the GLB model for a given variant from the cache
+function getGLBModelForVariant(
+  variant: PalmVariantType,
+  cache: GLBModelCache
+): THREE.Group | THREE.Object3D | null {
+  switch (variant) {
+    case 'TALL_MATURE_LEANING':
+      return cache.palmTall;
+    case 'MID_HEIGHT_UPRIGHT':
+      return cache.palmSlender;
+    case 'COASTAL_WIND_BOWED':
+      return cache.palmDwarf;
+    case 'YOUNG_CLUSTER':
+      return cache.palmCluster;
+    default:
+      return null;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Per-Instance Wind Sway Vertex Shader System
+// Differentiates trunk (slow, minimal), fronds (medium), leaflets (fast)
+// ----------------------------------------------------------------------------
+
+const WIND_SHADER_UNIFORMS = {
+  uTime: { value: 0.0 },
+  uWindStrength: { value: 0.65 },
+  uWindDirection: { value: new THREE.Vector2(0.3, 0.7) }, // seaward (+Z dominant)
+};
+
+// Custom wind material that modifies vertex positions in the vertex shader
+function createWindSwayMaterial(baseMaterial: THREE.MeshStandardMaterial): THREE.MeshStandardMaterial {
+  const mat = baseMaterial.clone();
+  mat.onBeforeCompile = (shader) => {
+    shader.uniforms.uTime = WIND_SHADER_UNIFORMS.uTime;
+    shader.uniforms.uWindStrength = WIND_SHADER_UNIFORMS.uWindStrength;
+    shader.uniforms.uWindDirection = WIND_SHADER_UNIFORMS.uWindDirection;
+
+    // Inject uniforms
+    shader.vertexShader = `
+      uniform float uTime;
+      uniform float uWindStrength;
+      uniform vec2 uWindDirection;
+    ` + shader.vertexShader;
+
+    // Inject per-vertex wind displacement before the final position transform
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `
+      #include <begin_vertex>
+      
+      // Height-dependent wind sway: higher vertices sway more
+      float heightFactor = max(0.0, transformed.y) / 12.0;
+      float windPhase = uTime * 0.8 + transformed.x * 0.17 + transformed.z * 0.23;
+      
+      // Multi-harmonic sway for natural non-synchronous movement
+      float swayPrimary = sin(windPhase) * 0.08 * heightFactor * uWindStrength;
+      float swaySecondary = sin(windPhase * 1.75 + 1.4) * 0.025 * heightFactor * uWindStrength;
+      float swayTertiary = cos(windPhase * 2.3 + 0.7) * 0.012 * heightFactor * uWindStrength;
+      
+      // Trunk sway (minimal, slow)
+      float trunkSway = swayPrimary * 0.3;
+      
+      // Frond sway (medium, uses heightFactor^2 for exponential increase at tips)
+      float frondSway = (swayPrimary + swaySecondary) * heightFactor;
+      
+      // Leaflet flutter (fast, high-frequency, only at extremities)
+      float leafletFlutter = swayTertiary * heightFactor * heightFactor;
+      
+      // Apply combined displacement
+      float totalSwayX = (trunkSway + frondSway) * uWindDirection.x + leafletFlutter;
+      float totalSwayZ = (trunkSway + frondSway) * uWindDirection.y + leafletFlutter * 0.7;
+      
+      transformed.x += totalSwayX;
+      transformed.z += totalSwayZ;
+      `
+    );
+  };
+  return mat;
+}
+
+// ----------------------------------------------------------------------------
 // Main VegetationSystem Component
 // ----------------------------------------------------------------------------
 
@@ -127,8 +265,9 @@ export const VegetationSystem: React.FC = () => {
   const palmGroupRef = useRef<THREE.Group>(null);
   const shrubGroupRef = useRef<THREE.Group>(null);
   const debrisGroupRef = useRef<THREE.Group>(null);
+  const glbCache = useGLBPalmModels();
 
-  // 1. Naturalistic Botanical Population Layout across 1200m Continuous Spatial World (Z = 0m -> 1200m)
+  // 1. Naturalistic Botanical Population Layout across 1200m World
   const palmInstances = useMemo<PalmInstanceData[]>(() => {
     const rawPlacements: Array<{
       variant: PalmVariantType;
@@ -157,7 +296,7 @@ export const VegetationSystem: React.FC = () => {
       { variant: 'MID_HEIGHT_UPRIGHT', pos: [27.0, 0.55, 96.0], scale: 1.10, yaw: 0.95, frondCount: 24 },
       { variant: 'COASTAL_WIND_BOWED', pos: [19.2, 0.65, 122.0], scale: 1.04, yaw: 2.25, frondCount: 23 },
 
-      // --- Zone 01C: Coastal Dune Transition & Intertidal Swash Line (Z = 130..250m) ---
+      // --- Zone 01C: Coastal Dune Transition & Intertidal (Z = 130..250m) ---
       { variant: 'COASTAL_WIND_BOWED', pos: [-23.5, 0.45, 142.0], scale: 1.08, yaw: 1.10, frondCount: 24 },
       { variant: 'COASTAL_WIND_BOWED', pos: [-29.0, 0.15, 172.0], scale: 1.15, yaw: 0.30, frondCount: 22 },
       { variant: 'YOUNG_CLUSTER', pos: [-26.5, 0.20, 185.0], scale: 0.92, yaw: 0.90, frondCount: 20 },
@@ -228,7 +367,7 @@ export const VegetationSystem: React.FC = () => {
     });
   }, []);
 
-  // 2. Coastal Undergrowth Placement Coordinates across 1200m World
+  // 2. Coastal Undergrowth Placement Coordinates
   const undergrowthPlacements = useMemo(() => [
     // Roadside / Gateway Approach (Z = 10..55m)
     { type: 'broadleaf', pos: [-12.5, 0.1, 20], scale: 1.2, rot: 0.4 },
@@ -237,7 +376,6 @@ export const VegetationSystem: React.FC = () => {
     { type: 'broadleaf', pos: [13.2, 0.1, 22], scale: 1.1, rot: 3.2 },
     { type: 'grass', pos: [11.5, 0.05, 30], scale: 1.35, rot: 0.8 },
     { type: 'shrub', pos: [12.8, 0.1, 38], scale: 1.45, rot: 1.9 },
-
     // Pavilion Sanctuary Perimeter (Z = 60..125m)
     { type: 'broadleaf', pos: [-14.5, 0.35, 62], scale: 1.5, rot: 0.6 },
     { type: 'shrub', pos: [-16.0, 0.45, 76], scale: 1.6, rot: 2.8 },
@@ -245,7 +383,6 @@ export const VegetationSystem: React.FC = () => {
     { type: 'broadleaf', pos: [16.5, 0.40, 68], scale: 1.55, rot: 3.0 },
     { type: 'shrub', pos: [17.5, 0.50, 84], scale: 1.5, rot: 0.9 },
     { type: 'grass', pos: [14.8, 0.45, 102], scale: 1.3, rot: 2.4 },
-
     // Coastal & Shoreline Transition (Z = 130..250m)
     { type: 'grass', pos: [-18.5, 0.55, 132], scale: 1.6, rot: 1.0 },
     { type: 'broadleaf', pos: [-20.0, 0.45, 150], scale: 1.7, rot: 0.4 },
@@ -253,13 +390,11 @@ export const VegetationSystem: React.FC = () => {
     { type: 'grass', pos: [20.0, 0.50, 138], scale: 1.5, rot: 2.9 },
     { type: 'broadleaf', pos: [22.5, 0.35, 158], scale: 1.65, rot: 1.7 },
     { type: 'grass', pos: [26.0, 0.15, 178], scale: 1.75, rot: 0.8 },
-
     // Sea Walkway & Harbour Edge (Z = 260..500m)
     { type: 'grass', pos: [-28.0, 0.10, 310], scale: 1.6, rot: 1.5 },
     { type: 'shrub', pos: [-32.0, 0.12, 390], scale: 1.5, rot: 0.3 },
     { type: 'broadleaf', pos: [30.0, 0.10, 330], scale: 1.7, rot: 2.1 },
     { type: 'grass', pos: [34.0, 0.15, 450], scale: 1.65, rot: 1.1 },
-
     // St. Mary's Basalt Lagoon (Z = 800..1180m)
     { type: 'grass', pos: [-20.0, 0.30, 950], scale: 1.7, rot: 0.5 },
     { type: 'shrub', pos: [-15.0, 0.35, 1080], scale: 1.6, rot: 2.4 },
@@ -267,7 +402,7 @@ export const VegetationSystem: React.FC = () => {
     { type: 'grass', pos: [18.0, 0.38, 1140], scale: 1.75, rot: 0.8 },
   ], []);
 
-  // 3. Ground Debris Placement Coordinates (Tree Bases & High-Tide Swash Line Z = 10m -> 1180m)
+  // 3. Ground Debris Placement Coordinates
   const debrisPlacements = useMemo(() => {
     const items: Array<{
       type: 'fallen_frond' | 'coconut_husk' | 'driftwood' | 'shell_fragment';
@@ -276,17 +411,14 @@ export const VegetationSystem: React.FC = () => {
       rot: [number, number, number];
     }> = [];
 
-    // Generate cause-and-effect debris near each palm tree base
     palmInstances.forEach((palm, idx) => {
       const [px, py, pz] = palm.pos;
-      // 1-2 fallen brown fronds near base
       items.push({
         type: 'fallen_frond',
         pos: [px + Math.sin(idx) * 1.4, py + 0.02, pz + Math.cos(idx) * 1.4],
         scale: 0.8 + (idx % 4) * 0.1,
         rot: [0.1, idx * 1.2, -0.05],
       });
-      // 2-3 coconut husks near base
       items.push({
         type: 'coconut_husk',
         pos: [px - Math.cos(idx * 0.8) * 0.9, py + 0.05, pz + Math.sin(idx * 0.8) * 0.9],
@@ -295,13 +427,11 @@ export const VegetationSystem: React.FC = () => {
       });
     });
 
-    // High-tide wrack line debris across Z = 135m to Z = 1150m
     const zSteps = [135, 160, 185, 240, 320, 420, 520, 650, 780, 920, 1050, 1140];
     zSteps.forEach((zVal, i) => {
       const xLeft = -28 + Math.sin(i * 1.5) * 4;
       const xRight = 24 + Math.cos(i * 1.3) * 4;
 
-      // Driftwood logs lying along high-tide swash line
       items.push({
         type: 'driftwood',
         pos: [xLeft, 0.08, zVal],
@@ -314,8 +444,6 @@ export const VegetationSystem: React.FC = () => {
         scale: 0.9 + (i % 3) * 0.25,
         rot: [-0.03, -0.5 + i * 0.2, 0.04],
       });
-
-      // Shell fragments scattered along swash line
       items.push({
         type: 'shell_fragment',
         pos: [xLeft + Math.cos(i) * 2, 0.03, zVal + 1],
@@ -333,32 +461,49 @@ export const VegetationSystem: React.FC = () => {
     return items;
   }, [palmInstances]);
 
-  // 4. Non-Synchronous Wind Sway Physics
+  // 4. Wind Sway Physics — per-instance phase offset + shader uniform update
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
 
-    // Multi-harmonic non-synchronous sway for palm crowns
+    // Update global wind shader uniform
+    WIND_SHADER_UNIFORMS.uTime.value = t;
+
+    // Multi-harmonic non-synchronous sway for palm crowns (procedural fallback palms)
     if (palmGroupRef.current) {
       palmGroupRef.current.children.forEach((child, idx) => {
         const crown = child.getObjectByName('PalmCrown');
         if (crown) {
           const pos = child.position;
-          // Per-instance phase offset from world coordinates
           const phase = pos.x * 0.17 + pos.z * 0.23 + idx * 0.41;
           const windFreq = 0.80 + (idx % 5) * 0.09;
 
-          const swayZ = Math.sin(t * windFreq + phase) * 0.052 + Math.sin(t * 1.75 + phase * 1.4) * 0.016;
-          const swayX = Math.cos(t * (windFreq * 0.82) + phase) * 0.042 + Math.cos(t * 1.35 + phase * 0.9) * 0.012;
+          // Trunk: slow, minimal sway
+          const trunkSwayZ = Math.sin(t * windFreq * 0.4 + phase) * 0.018;
+          const trunkSwayX = Math.cos(t * windFreq * 0.35 + phase) * 0.014;
+          child.rotation.z = trunkSwayZ;
+          child.rotation.x = trunkSwayX;
 
-          crown.rotation.z = swayZ;
-          crown.rotation.x = swayX;
+          // Crown: medium sway (frond-level)
+          const frondSwayZ = Math.sin(t * windFreq + phase) * 0.052 + Math.sin(t * 1.75 + phase * 1.4) * 0.016;
+          const frondSwayX = Math.cos(t * (windFreq * 0.82) + phase) * 0.042 + Math.cos(t * 1.35 + phase * 0.9) * 0.012;
+          crown.rotation.z = frondSwayZ;
+          crown.rotation.x = frondSwayX;
+
+          // Leaflet flutter: fast, high-frequency, applied to individual frond children
+          crown.children.forEach((frondGroup, fi) => {
+            if (frondGroup.type === 'Group') {
+              const leafletPhase = phase + fi * 0.73;
+              const leafletFlutter = Math.sin(t * 2.3 + leafletPhase) * 0.008 + Math.cos(t * 3.1 + leafletPhase * 1.2) * 0.005;
+              frondGroup.rotation.z += leafletFlutter * 0.001; // Tiny per-frame delta
+            }
+          });
         }
       });
     }
 
     // Undergrowth foliage flutter
     if (shrubGroupRef.current) {
-      shrubGroupRef.current.children.forEach((child, idx) => {
+      shrubGroupRef.current.children.forEach((child) => {
         const pos = child.position;
         const phase = pos.x * 0.15 + pos.z * 0.19;
         child.rotation.y = Math.sin(t * 1.15 + phase) * 0.030;
@@ -371,18 +516,19 @@ export const VegetationSystem: React.FC = () => {
     <group name="Vegetation_BotanicalPopulationSystem">
       {/* Compatibility Name Anchor */}
       <group name="Vegetation_KarnatakaCoconutGroves">
-        {/* Palm Canopy Layer */}
+        {/* Palm Canopy Layer — uses GLB models when loaded, procedural fallback otherwise */}
         <group ref={palmGroupRef} name="PalmCanopyLayer">
           {palmInstances.map((palm) => (
             <CoconutPalmKeyed
               key={palm.id}
               data={palm}
+              glbModel={getGLBModelForVariant(palm.variant, glbCache)}
             />
           ))}
         </group>
 
-        {/* GPU Instanced Coconut Palm Groves Batching (570 GPU Instanced Trees Spanning Z = 0m -> 1200m) */}
-        <InstancedCoconutPalmBatch count={570} />
+        {/* GPU Instanced Coconut Palm Groves Batching (570 GPU Instanced Trees) */}
+        <InstancedCoconutPalmBatch count={570} glbCache={glbCache} />
 
         {/* Coastal Undergrowth Layer */}
         <group ref={shrubGroupRef} name="UndergrowthLayer">
@@ -418,7 +564,7 @@ export const VegetationSystem: React.FC = () => {
           })}
         </group>
 
-        {/* GPU Instanced Undergrowth Batching (Spanning Z = 0m -> 1200m) */}
+        {/* GPU Instanced Undergrowth Batching */}
         <InstancedUndergrowthBatch />
 
         {/* Inhabited Cause-and-Effect Ground Debris Layer */}
@@ -434,7 +580,7 @@ export const VegetationSystem: React.FC = () => {
           ))}
         </group>
 
-        {/* GPU Instanced Ground Debris Batching (Spanning Z = 0m -> 1200m) */}
+        {/* GPU Instanced Ground Debris Batching */}
         <InstancedGroundDebrisBatch />
       </group>
     </group>
@@ -442,16 +588,57 @@ export const VegetationSystem: React.FC = () => {
 };
 
 // ----------------------------------------------------------------------------
-// Coconut Palm Individual Component (Keyed Instance)
+// Coconut Palm Individual Component — GLB-first with procedural fallback
 // ----------------------------------------------------------------------------
 
 interface CoconutPalmKeyedProps {
   data: PalmInstanceData;
+  glbModel: THREE.Group | THREE.Object3D | null;
 }
 
-const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
+const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data, glbModel }) => {
   const spec = PALM_VARIANT_SPECS[data.variant];
+  const groupRef = useRef<THREE.Group>(null);
 
+  // If GLB model is available, clone and apply wind sway materials
+  useEffect(() => {
+    if (!glbModel || !groupRef.current) return;
+
+    const clone = glbModel.clone(true);
+    clone.name = 'GLBPalmModel';
+
+    // Apply wind sway shader to all mesh materials in the GLB
+    clone.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (mesh.material instanceof THREE.MeshStandardMaterial) {
+          mesh.material = createWindSwayMaterial(mesh.material);
+        }
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+      }
+    });
+
+    // Scale the GLB model to match the variant's expected height
+    const targetHeight = data.height;
+    const bbox = new THREE.Box3().setFromObject(clone);
+    const modelHeight = bbox.max.y - bbox.min.y;
+    if (modelHeight > 0) {
+      const scaleFactor = targetHeight / modelHeight;
+      clone.scale.setScalar(scaleFactor);
+    }
+
+    groupRef.current.add(clone);
+
+    return () => {
+      if (groupRef.current) {
+        const existing = groupRef.current.getObjectByName('GLBPalmModel');
+        if (existing) groupRef.current.remove(existing);
+      }
+    };
+  }, [glbModel, data.height]);
+
+  // Procedural geometry (used as fallback when GLB isn't loaded)
   const {
     trunkGeo,
     rootBoleGeo,
@@ -467,12 +654,11 @@ const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
     apexPoint,
   } = useMemo(() => {
     const { height, bendCurvature, seawardLeanZ } = data;
-    // Bend curvature to radian conversion
     const bendRad = (bendCurvature * Math.PI) / 180;
     const leanX = spec.baseLeanX * Math.cos(data.yaw);
     const leanZ = seawardLeanZ;
 
-    // 1. Organic Multi-Segment Curved Trunk Spline (5 Control Points)
+    // Organic Multi-Segment Curved Trunk Spline (5 Control Points)
     const curve = new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(leanX * height * 0.12, height * 0.20, leanZ * height * 0.10),
@@ -481,14 +667,10 @@ const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
       new THREE.Vector3(leanX * height * 0.98 + bendRad * 1.8, height, leanZ * height * 0.95),
     ]);
 
-    // Trunk tube with natural taper
     const radiusBase = data.variant === 'TALL_MATURE_LEANING' ? 0.38 : data.variant === 'YOUNG_CLUSTER' ? 0.26 : 0.32;
     const trunk = new THREE.TubeGeometry(curve, 28, radiusBase, 14, false);
-
-    // Basal root bole flare
     const rootBole = new THREE.CylinderGeometry(radiusBase, radiusBase * 1.45, 0.5, 14);
 
-    // Annular scar rings
     const ringCount = Math.floor(height * 0.7);
     const rings = [];
     for (let i = 1; i <= ringCount; i++) {
@@ -497,7 +679,6 @@ const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
       rings.push({ pt, key: i });
     }
 
-    // High-PBR Materials
     const tMat = new THREE.MeshStandardMaterial({
       color: spec.variant === 'YOUNG_CLUSTER' ? '#5A4632' : '#4A3728',
       roughness: 0.94,
@@ -573,36 +754,31 @@ const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
     };
   }, [data, spec]);
 
-  // Dynamic Frond Canopy Generation based on frondCount & droopAge
+  // Dynamic Frond Canopy Generation
   const canopyFronds = useMemo(() => {
     const items = [];
     const count = data.frondCount;
 
-    // Tiers ratio
     const emergentCount = Math.floor(count * 0.25);
     const spreadingCount = Math.floor(count * 0.45);
     const weepingCount = Math.floor(count * 0.20);
     const driedCount = count - (emergentCount + spreadingCount + weepingCount);
 
-    // Tier 1: Emergent
     for (let i = 0; i < emergentCount; i++) {
       const angle = (i / emergentCount) * Math.PI * 2 + 0.1;
       const pitch = 0.50 + (i % 2) * 0.10;
       items.push({ tier: 'emergent', angle, pitch, roll: 0.1, length: 4.2, key: `em-${i}` });
     }
-    // Tier 2: Spreading
     for (let i = 0; i < spreadingCount; i++) {
       const angle = (i / spreadingCount) * Math.PI * 2 + 0.35;
       const pitch = 0.20 + (i % 3) * 0.08;
       items.push({ tier: 'spreading', angle, pitch, roll: (i % 2 === 0 ? 0.18 : -0.18), length: 6.0, key: `sp-${i}` });
     }
-    // Tier 3: Weeping
     for (let i = 0; i < weepingCount; i++) {
       const angle = (i / weepingCount) * Math.PI * 2 + 0.7;
       const pitch = -0.28 - (i % 2) * 0.12 * (1.0 + data.droopAge);
       items.push({ tier: 'weeping', angle, pitch, roll: 0.25, length: 5.4, key: `wp-${i}` });
     }
-    // Tier 4: Dried Skirt
     for (let i = 0; i < driedCount; i++) {
       const angle = (i / driedCount) * Math.PI * 2 + 1.1;
       const pitch = -0.82 - (i % 2) * 0.10;
@@ -631,77 +807,87 @@ const CoconutPalmKeyed: React.FC<CoconutPalmKeyedProps> = ({ data }) => {
     };
   }, []);
 
+  // If GLB model is loaded, render only the GLB container (no procedural fallback visible)
+  const showProcedural = !glbModel;
+
   return (
-    <group position={data.pos} rotation={[0, data.yaw, 0]} scale={[data.scale, data.scale, data.scale]}>
-      {/* Root Bole */}
-      <mesh geometry={rootBoleGeo} material={trunkMat} position={[0, 0.25, 0]} castShadow receiveShadow />
+    <group ref={groupRef} position={data.pos} rotation={[0, data.yaw, 0]} scale={[data.scale, data.scale, data.scale]}>
+      {/* GLB model is added via useEffect above */}
 
-      {/* Trunk */}
-      <mesh geometry={trunkGeo} material={trunkMat} castShadow receiveShadow />
+      {/* Procedural fallback — only rendered when GLB model is not available */}
+      {showProcedural && (
+        <>
+          {/* Root Bole */}
+          <mesh geometry={rootBoleGeo} material={trunkMat} position={[0, 0.25, 0]} castShadow receiveShadow />
 
-      {/* Scar Rings */}
-      {ringRuler.map((ring) => (
-        <mesh key={ring.key} position={[ring.pt.x, ring.pt.y, ring.pt.z]} material={trunkMat} castShadow>
-          <torusGeometry args={[0.34, 0.022, 6, 12]} />
-        </mesh>
-      ))}
+          {/* Trunk */}
+          <mesh geometry={trunkGeo} material={trunkMat} castShadow receiveShadow />
 
-      {/* Crown Juncture */}
-      <group name="PalmCrown" position={[apexPoint.x, apexPoint.y, apexPoint.z]}>
-        {/* Crown Collar Sheath */}
-        <mesh position={[0, -0.2, 0]} material={fiberCollarMat} castShadow>
-          <cylinderGeometry args={[0.32, 0.36, 0.65, 12]} />
-        </mesh>
+          {/* Scar Rings */}
+          {ringRuler.map((ring) => (
+            <mesh key={ring.key} position={[ring.pt.x, ring.pt.y, ring.pt.z]} material={trunkMat} castShadow>
+              <torusGeometry args={[0.34, 0.022, 6, 12]} />
+            </mesh>
+          ))}
 
-        {/* Fruiting Coconuts */}
-        <group position={[0.20, -0.30, 0.18]} rotation={[0.2, 0.4, 0]}>
-          <CoconutDrupe position={[0, 0, 0]} material={greenNutMat} scale={1.0} />
-          <CoconutDrupe position={[-0.22, -0.10, 0.14]} material={greenNutMat} scale={0.95} />
-          <CoconutDrupe position={[0.20, -0.12, -0.10]} material={greenNutMat} scale={0.98} />
-        </group>
-        {data.droopAge > 0.4 && (
-          <group position={[-0.18, -0.36, -0.20]} rotation={[-0.2, -0.5, 0]}>
-            <CoconutDrupe position={[0, 0, 0]} material={matureNutMat} scale={1.08} />
-            <CoconutDrupe position={[0.24, -0.08, -0.14]} material={matureNutMat} scale={1.02} />
-          </group>
-        )}
+          {/* Crown Juncture */}
+          <group name="PalmCrown" position={[apexPoint.x, apexPoint.y, apexPoint.z]}>
+            {/* Crown Collar Sheath */}
+            <mesh position={[0, -0.2, 0]} material={fiberCollarMat} castShadow>
+              <cylinderGeometry args={[0.32, 0.36, 0.65, 12]} />
+            </mesh>
 
-        {/* Radial Canopy Fronds */}
-        {canopyFronds.map((f) => {
-          let stemGeo = frondStems.spreadingStem;
-          let frondMat = greenFrondMat;
-          let bladeWidth = 2.4;
-          let bladeLength = 5.6;
-
-          if (f.tier === 'emergent') {
-            stemGeo = frondStems.emergentStem;
-            frondMat = emergentFrondMat;
-            bladeWidth = 1.9;
-            bladeLength = 4.0;
-          } else if (f.tier === 'weeping') {
-            stemGeo = frondStems.weepingStem;
-            frondMat = matureFrondMat;
-            bladeWidth = 2.4;
-            bladeLength = 5.2;
-          } else if (f.tier === 'dried') {
-            stemGeo = frondStems.driedStem;
-            frondMat = driedFrondMat;
-            bladeWidth = 2.1;
-            bladeLength = 4.4;
-          }
-
-          return (
-            <group key={f.key} rotation={[f.pitch, f.angle, f.roll]}>
-              <mesh geometry={stemGeo} castShadow receiveShadow>
-                <meshStandardMaterial color={f.tier === 'dried' ? '#6B4E28' : '#5E7D2B'} roughness={0.8} />
-              </mesh>
-              <mesh position={[0, 0.32, bladeLength * 0.52]} rotation={[-Math.PI / 2, 0, 0]} material={frondMat} castShadow>
-                <planeGeometry args={[bladeWidth, bladeLength, 2, 8]} />
-              </mesh>
+            {/* Fruiting Coconuts */}
+            <group position={[0.20, -0.30, 0.18]} rotation={[0.2, 0.4, 0]}>
+              <CoconutDrupe position={[0, 0, 0]} material={greenNutMat} scale={1.0} />
+              <CoconutDrupe position={[-0.22, -0.10, 0.14]} material={greenNutMat} scale={0.95} />
+              <CoconutDrupe position={[0.20, -0.12, -0.10]} material={greenNutMat} scale={0.98} />
             </group>
-          );
-        })}
-      </group>
+            {data.droopAge > 0.4 && (
+              <group position={[-0.18, -0.36, -0.20]} rotation={[-0.2, -0.5, 0]}>
+                <CoconutDrupe position={[0, 0, 0]} material={matureNutMat} scale={1.08} />
+                <CoconutDrupe position={[0.24, -0.08, -0.14]} material={matureNutMat} scale={1.02} />
+              </group>
+            )}
+
+            {/* Radial Canopy Fronds */}
+            {canopyFronds.map((f) => {
+              let stemGeo = frondStems.spreadingStem;
+              let frondMat = greenFrondMat;
+              let bladeWidth = 2.4;
+              let bladeLength = 5.6;
+
+              if (f.tier === 'emergent') {
+                stemGeo = frondStems.emergentStem;
+                frondMat = emergentFrondMat;
+                bladeWidth = 1.9;
+                bladeLength = 4.0;
+              } else if (f.tier === 'weeping') {
+                stemGeo = frondStems.weepingStem;
+                frondMat = matureFrondMat;
+                bladeWidth = 2.4;
+                bladeLength = 5.2;
+              } else if (f.tier === 'dried') {
+                stemGeo = frondStems.driedStem;
+                frondMat = driedFrondMat;
+                bladeWidth = 2.1;
+                bladeLength = 4.4;
+              }
+
+              return (
+                <group key={f.key} rotation={[f.pitch, f.angle, f.roll]}>
+                  <mesh geometry={stemGeo} castShadow receiveShadow>
+                    <meshStandardMaterial color={f.tier === 'dried' ? '#6B4E28' : '#5E7D2B'} roughness={0.8} />
+                  </mesh>
+                  <mesh position={[0, 0.32, bladeLength * 0.52]} rotation={[-Math.PI / 2, 0, 0]} material={frondMat} castShadow>
+                    <planeGeometry args={[bladeWidth, bladeLength, 2, 8]} />
+                  </mesh>
+                </group>
+              );
+            })}
+          </group>
+        </>
+      )}
     </group>
   );
 };
@@ -886,7 +1072,7 @@ export const CauseAndEffectDebrisItem: React.FC<{
 };
 
 // ----------------------------------------------------------------------------
-// GPU Instanced Undergrowth & Debris Batching Components across 1200m World
+// GPU Instanced Undergrowth & Debris Batching Components
 // ----------------------------------------------------------------------------
 
 export const InstancedUndergrowthBatch: React.FC = () => {
@@ -897,7 +1083,6 @@ export const InstancedUndergrowthBatch: React.FC = () => {
     if (!grassRef.current || typeof grassRef.current.setMatrixAt !== 'function') return;
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
-      // Spanning Z = 0m -> 1200m
       const z = (i * 6.0) % 1200;
       const x = -35 + ((i * 11.3) % 70);
       const scale = 0.8 + (i % 5) * 0.18;
@@ -932,7 +1117,6 @@ export const InstancedGroundDebrisBatch: React.FC = () => {
     if (!husksRef.current || typeof husksRef.current.setMatrixAt !== 'function') return;
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
-      // Spanning Z = 0m -> 1200m
       const z = (i * 10.0) % 1200;
       const x = -30 + ((i * 8.7) % 60);
       tempObj.position.set(x, 0.04, z);
@@ -958,7 +1142,11 @@ export const InstancedGroundDebrisBatch: React.FC = () => {
   );
 };
 
-export const InstancedCoconutPalmBatch: React.FC<{ count?: number }> = ({ count = 570 }) => {
+// ----------------------------------------------------------------------------
+// GPU Instanced Coconut Palm Groves — GLB-driven with procedural fallback
+// ----------------------------------------------------------------------------
+
+export const InstancedCoconutPalmBatch: React.FC<{ count?: number; glbCache?: GLBModelCache }> = ({ count = 570, glbCache }) => {
   const trunksRef = useRef<THREE.InstancedMesh>(null!);
   const crownsRef = useRef<THREE.InstancedMesh>(null!);
 

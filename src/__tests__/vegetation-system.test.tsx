@@ -7,6 +7,8 @@ import {
   calculateSeawardBowing,
 } from '../components/journey/zone01/environment/VegetationSystem';
 import { createPalmFrondTexture, createBroadleafTexture } from '../lib/three/textureGenerator';
+import { resourceManager } from '../lib/three/ResourceManager';
+import { JOURNEY_ASSETS } from '../data/journeyAssets';
 
 vi.mock('@react-three/fiber', async () => {
   const actual = await vi.importActual<any>('@react-three/fiber');
@@ -16,7 +18,7 @@ vi.mock('@react-three/fiber', async () => {
   };
 });
 
-describe('VegetationSystem Component', () => {
+describe('VegetationSystem Component — AAA GLB Pipeline Rebuild', () => {
   it('instantiates procedural botanical textures correctly', () => {
     const palmFrond = createPalmFrondTexture();
     expect(palmFrond).toBeDefined();
@@ -25,7 +27,7 @@ describe('VegetationSystem Component', () => {
     expect(broadleaf).toBeDefined();
   });
 
-  it('defines 4 distinct botanical variants of Cocos nucifera', () => {
+  it('defines 4 distinct botanical variants of Cocos nucifera with GLB asset keys', () => {
     expect(PALM_VARIANT_SPECS.TALL_MATURE_LEANING.baseHeight).toBe(12.0);
     expect(PALM_VARIANT_SPECS.MID_HEIGHT_UPRIGHT.baseHeight).toBe(9.0);
     expect(PALM_VARIANT_SPECS.COASTAL_WIND_BOWED.baseHeight).toBe(7.0);
@@ -34,15 +36,36 @@ describe('VegetationSystem Component', () => {
     // Verify bend curvature and frond ranges
     expect(PALM_VARIANT_SPECS.COASTAL_WIND_BOWED.bendCurvature).toBeGreaterThanOrEqual(25);
     expect(PALM_VARIANT_SPECS.TALL_MATURE_LEANING.maxFronds).toBeGreaterThanOrEqual(30);
+
+    // Verify GLB asset key mapping for ResourceManager loading
+    expect(PALM_VARIANT_SPECS.TALL_MATURE_LEANING.glbAssetKey).toBe('palmTall');
+    expect(PALM_VARIANT_SPECS.MID_HEIGHT_UPRIGHT.glbAssetKey).toBe('palmSlender');
+    expect(PALM_VARIANT_SPECS.COASTAL_WIND_BOWED.glbAssetKey).toBe('palmDwarf');
+    expect(PALM_VARIANT_SPECS.YOUNG_CLUSTER.glbAssetKey).toBe('palmCluster');
   });
 
   it('calculates seaward wind bowing for shoreline positions correctly', () => {
-    // Entrance position (low Z) vs Shoreline position (high Z)
     const entranceBowing = calculateSeawardBowing([0, 0, 15], 'COASTAL_WIND_BOWED');
     const shorelineBowing = calculateSeawardBowing([0, 0, 175], 'COASTAL_WIND_BOWED');
 
     expect(shorelineBowing.seawardLeanZ).toBeGreaterThan(entranceBowing.seawardLeanZ);
     expect(shorelineBowing.bendCurvature).toBeGreaterThanOrEqual(entranceBowing.bendCurvature);
+  });
+
+  it('verifies ResourceManager singleton and JOURNEY_ASSETS model entries for all 4 palm variants', () => {
+    expect(resourceManager).toBeDefined();
+    expect(resourceManager.loadModel).toBeDefined();
+    expect(resourceManager.getFallbackMaterial).toBeDefined();
+
+    // Verify all 4 palm GLB model entries exist in JOURNEY_ASSETS
+    expect(JOURNEY_ASSETS.models.palmTall.localPath).toBe('/models/palms/cocos_nucifera_tall.glb');
+    expect(JOURNEY_ASSETS.models.palmSlender.localPath).toBe('/models/palms/cocos_nucifera_slender.glb');
+    expect(JOURNEY_ASSETS.models.palmDwarf.localPath).toBe('/models/palms/cocos_nucifera_dwarf.glb');
+    expect(JOURNEY_ASSETS.models.palmCluster.localPath).toBe('/models/palms/cocos_nucifera_cluster.glb');
+
+    // Verify PBR texture channels are defined
+    expect(JOURNEY_ASSETS.models.palmTall.pbrTextures?.diffuse).toBeDefined();
+    expect(JOURNEY_ASSETS.models.palmTall.pbrTextures?.normal).toBeDefined();
   });
 
   it('renders VegetationSystem, coconut groves, undergrowth, and instanced debris cleanly in React/R3F tree', () => {
@@ -85,7 +108,6 @@ describe('VegetationSystem Component', () => {
 
     const instancedGrass = container.querySelector('[data-testid="instanced-spinifex-grass"]');
     expect(instancedGrass).toBeDefined();
-    // Verify count attribute for GPU batching
     expect(instancedGrass?.getAttribute('args') || instancedGrass).toBeDefined();
   });
 });
