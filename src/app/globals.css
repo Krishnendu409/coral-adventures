@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  /* 1. Tactile Sun-Aged Physical Paper Neutrals (NO Generic #FFFFFF) */
+  --color-coral-cream: #FAF6EE;        /* Sun-bleached warm cream */
+  --color-coral-ivory: #F7F3E9;        /* Warm ivory paper */
+  --color-coral-sand: #F2ECE1;         /* Pale coastal beach sand */
+  --color-coral-parchment: #EFE8D8;    /* Slightly yellowed vintage chart */
+  --color-coral-canvas: #EAE2D0;       /* Washed expedition canvas */
+  --color-coral-ink: #0A2540;          /* Deep maritime ink */
+
+  /* 2. Marine Ocean Authority (Vivid Water & Depths) */
+  --color-coral-sky: #38BDF8;          /* Radiant Malpe coastal sky */
+  --color-coral-cyan: #06B6D4;         /* Tropical shallows spray */
+  --color-coral-turquoise: #0D9488;    /* Crystalline St. Mary's water */
+  --color-coral-ocean: #1E40AF;        /* Open Arabian Sea blue */
+  --color-coral-marine: #0A2540;       /* Deep maritime navigational blue */
+  --color-coral-midnight: #071A2B;     /* Midnight ocean starlight */
+
+  /* 3. Botanical Coastal Green (Lively Palm Foliage) */
+  --color-coral-palm: #1E5E48;         /* Sun-dappled coconut palm */
+  --color-coral-leaf: #2D7D5F;         /* Coastal dune vegetation */
+  --color-coral-lime: #84CC16;         /* Sunlit leaf highlights */
+
+  /* 4. Coral & Solar Accents (Used strictly as accents) */
+  --color-coral-accent: #E05A36;       /* Vibrant coral lettering & stamps */
+  --color-coral-sun: #F59E0B;          /* Radiant tropical sun yellow */
+
+  /* Typography */
+  --font-serif: var(--font-instrument-serif), "Georgia", serif;
+  --font-sans: var(--font-geist-sans), "Inter", sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
+
+  /* Easing curves */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-cinematic: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  body {
+    @apply bg-[#FAF6EE] text-[#0A2540] font-sans antialiased overflow-x-hidden selection:bg-[#E05A36] selection:text-[#FAF6EE];
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-normal text-[#0A2540] tracking-tight;
+  }
+}
+
+/* Hide Next.js Dev Indicator */
+[data-nextjs-toast-wrapper],
+[data-nextjs-dev-indicator],
+#__next-build-watcher,
+button[aria-label="Open Next.js Dev Tools"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Subtle Organic Print Paper Grain Overlay */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@layer utilities {
+  .editorial-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .editorial-grid {
+      padding-inline: 3rem;
+    }
+  }
+
+  /* Physical Ephemera & Postcard Drop Shadows */
+  .postcard-shadow {
+    box-shadow: 0 15px 35px -5px rgba(10, 37, 64, 0.14), 0 5px 15px -3px rgba(10, 37, 64, 0.06);
+  }
+
+  .ticket-perforated {
+    background-image: radial-gradient(circle at 0 50%, transparent 8px, #FAF6EE 8.5px),
+                      radial-gradient(circle at 100% 50%, transparent 8px, #FAF6EE 8.5px);
+  }
+}
+
+@keyframes subtleDrift {
+  0% { transform: scale(1.0) translate(0, 0); }
+  50% { transform: scale(1.04) translate(-0.8%, -0.8%); }
+  100% { transform: scale(1.02) translate(0.8%, 0.4%); }
+}
