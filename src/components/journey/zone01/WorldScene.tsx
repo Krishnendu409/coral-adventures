@@ -145,18 +145,31 @@ class ErrorBoundary extends React.Component<
  * 6. VegetationSystem: Coconut palm groves with 4-tier frond canopies & undergrowth
  * 7. MarineCraft: Malpe fishing trawlers, Seadoo jet skis, ocean kayaks & 25.90M catamaran
  */
+function checkWebGLSupport(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    return !!(window.WebGLRenderingContext && gl);
+  } catch {
+    return false;
+  }
+}
+
 export const WorldScene: React.FC<WorldSceneProps> = ({
   splineProgress,
   onProjectDiscoveries,
   isHeadless = false
 }) => {
   const [mounted, setMounted] = useState(false);
+  const [hasWebGL, setHasWebGL] = useState(true);
   const lookOffsetRef = useRef({ yaw: 0, pitch: 0 });
   const isDraggingRef = useRef(false);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     setMounted(true);
+    setHasWebGL(checkWebGLSupport());
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -200,7 +213,7 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
       onPointerLeave={handlePointerUp}
       data-testid="world-scene-container"
     >
-      {mounted && !isHeadless && process.env.NODE_ENV !== 'test' ? (
+      {mounted && hasWebGL && !isHeadless && process.env.NODE_ENV !== 'test' ? (
         <ErrorBoundary fallback={<div data-testid="world-scene-fallback" className="w-full h-full flex items-center justify-center bg-[#071A2B] text-[#FAF6EE]/60 font-mono text-xs uppercase tracking-widest">WebGL not supported</div>}>
           <Canvas
             shadows
@@ -261,7 +274,7 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
         </ErrorBoundary>
       ) : (
         <div data-testid="world-scene-fallback" className="w-full h-full flex items-center justify-center bg-[#071A2B] text-[#FAF6EE]/60 font-mono text-xs uppercase tracking-widest">
-          {isHeadless ? "WebGL not supported in headless mode" : "INITIALIZING 3D EXPEDITION SCENE..."}
+          {!hasWebGL ? "WebGL not supported" : isHeadless ? "WebGL not supported in headless mode" : "INITIALIZING 3D EXPEDITION SCENE..."}
         </div>
       )}
     </div>

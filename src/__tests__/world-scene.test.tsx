@@ -25,6 +25,19 @@ describe('WorldScene & Spline Camera Integration', () => {
     vi.unstubAllEnvs();
   });
 
+  it('safely renders fallback when WebGL context creation fails or returns null', () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const originalGetContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(null) as any;
+
+    render(<WorldScene splineProgress={0.4} isHeadless={false} />);
+    expect(screen.getByTestId('world-scene-fallback')).toBeInTheDocument();
+    expect(screen.getByText(/WebGL not supported/i)).toBeInTheDocument();
+
+    HTMLCanvasElement.prototype.getContext = originalGetContext;
+    vi.unstubAllEnvs();
+  });
+
   it('invokes discovery projection handlers across traversal points', () => {
     const onProjectDiscoveries = vi.fn();
     render(
