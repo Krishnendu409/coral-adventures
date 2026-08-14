@@ -71,7 +71,7 @@ export function BeachVisionBoardMaster() {
         {/* ------------------------------------------------------------------ */}
         {/* FRAME 01: ARRIVAL (Immediate Malpe Beach Shoreline & Hub) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1540px] pt-4">
+        <section className="relative min-h-[1560px] pt-4">
           {/* Chapter Title Badge pinned directly on sand */}
           <div className="absolute top-2 left-4 sm:left-10 z-25 max-w-lg">
             <div className="inline-block px-3 py-1 bg-[#FAF6EE]/95 border border-[#0A2540]/15 rounded-xs font-mono text-[10px] sm:text-xs text-[#C2410C] uppercase tracking-widest mb-1.5 shadow-sm">
@@ -100,8 +100,8 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
-          {/* Guide Bird Field Photograph pinned top-left */}
-          <div className="absolute top-[80px] right-2 sm:right-10 z-30">
+          {/* Guide Bird Field Photograph pinned top-right */}
+          <div className="absolute top-[70px] right-2 sm:right-10 z-30">
             <PhysicalPolaroid
               imageSrc="/images/guide_bird_coastal_perched.jpg"
               caption="Brahminy Kite · Coastal Guide"
@@ -113,8 +113,21 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Nautical Route Chart Scrap pinned near kiosk */}
+          <div className="absolute top-[540px] right-2 sm:right-10 z-25">
+            <PhysicalPolaroid
+              imageSrc="/images/nautical_route_chart_scrap.jpg"
+              caption="Nautical Chart · St. Mary's Red Route"
+              subcaption="Depth soundings & lighthouse bearings"
+              size="md"
+              rotation={-3.5}
+              pinTop={true}
+              shadowIntensity="day"
+            />
+          </div>
+
           {/* Overlapping Polaroid 1: Beach Kiosk */}
-          <div className="absolute top-[540px] right-2 sm:right-8 z-25">
+          <div className="absolute top-[880px] right-4 sm:right-20 z-20">
             <PhysicalPolaroid
               imageSrc="/images/coral_arrival_pavilion.png"
               caption="The beach kiosk & boarding pass counter"
@@ -127,25 +140,13 @@ export function BeachVisionBoardMaster() {
           </div>
 
           {/* Overlapping Polaroid 2: Palm Trail */}
-          <div className="absolute top-[920px] right-6 sm:right-28 z-20">
+          <div className="absolute top-[1200px] right-6 sm:right-32 z-20">
             <PhysicalPolaroid
               imageSrc="/images/coral_beach_promenade.png"
               caption="Crushed laterite trail leading seaward"
               subcaption="High palms & salt breeze"
-              size="md"
-              rotation={-4.5}
-              shadowIntensity="day"
-            />
-          </div>
-
-          {/* Overlapping Polaroid 3: Malpe Coastline */}
-          <div className="absolute top-[1200px] right-4 sm:right-16 z-20">
-            <PhysicalPolaroid
-              imageSrc="/images/malpe_coast.jpg"
-              caption="Malpe coastline & coconut palms"
-              subcaption="Arabian Sea coastal gateway"
               size="sm"
-              rotation={3}
+              rotation={-4.5}
               shadowIntensity="day"
             />
           </div>
@@ -374,7 +375,7 @@ export function BeachVisionBoardMaster() {
         {/* ------------------------------------------------------------------ */}
         {/* FRAME 04: ONBOARD LIFE (Upper Teak Deck & Karavali Grill) */}
         {/* ------------------------------------------------------------------ */}
-        <section className="relative min-h-[1540px] pt-12">
+        <section className="relative min-h-[1580px] pt-12">
           {/* 3D Pushpin 04 */}
           <div className="absolute top-[560px] right-[24%] sm:right-[38%] z-35">
             <RedPushPin shadowAngle="sunset" size={36} />
@@ -402,38 +403,39 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Chef's Handwritten Karavali Recipe Card */}
+          <div className="absolute top-[560px] left-4 sm:left-10 z-30">
+            <PhysicalPolaroid
+              imageSrc="/images/recipe_karavali_seafood_note.jpg"
+              caption="Chef's Karavali Recipe · Sear Fish Rava Fry"
+              subcaption="Kokum marinade · Turmeric spice crust"
+              size="md"
+              rotation={-4}
+              pinTop={true}
+              shadowIntensity="sunset"
+            />
+          </div>
+
           {/* Overlapping Detail: Live Sizzling Fresh Catch Grill */}
-          <div className="absolute top-[560px] left-4 sm:left-12 z-25">
+          <div className="absolute top-[920px] left-8 sm:left-24 z-25">
             <PhysicalPolaroid
               imageSrc="/images/curated_dining.jpg"
               caption="Live coastal fresh catch grill"
               subcaption="Sear fish rava fry & kokum marinades"
               size="lg"
-              rotation={-3.5}
+              rotation={3}
               tapeTop={true}
               shadowIntensity="sunset"
             />
           </div>
 
           {/* Overlapping Detail: Social Dining Lounge */}
-          <div className="absolute top-[960px] left-8 sm:left-32 z-20">
+          <div className="absolute top-[1240px] left-12 sm:left-36 z-20">
             <PhysicalPolaroid
               imageSrc="/images/dining_deck.jpg"
               caption="Candlelit tables & ocean breeze"
               subcaption="Open horizon social dining"
               size="md"
-              rotation={4.5}
-              shadowIntensity="sunset"
-            />
-          </div>
-
-          {/* Overlapping Detail: Salon Chart Table */}
-          <div className="absolute top-[1220px] left-6 sm:left-20 z-20">
-            <PhysicalPolaroid
-              imageSrc="/images/coral_dining_theatre.png"
-              caption="Salon navigational chart table"
-              subcaption="Brass dividers & acoustic music"
-              size="sm"
               rotation={-2}
               shadowIntensity="sunset"
             />
