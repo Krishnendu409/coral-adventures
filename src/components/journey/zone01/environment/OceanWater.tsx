@@ -37,9 +37,9 @@ export const OceanWater: React.FC = () => {
     // 1. Primary Arabian Sea Water Shader
     const uniforms = {
       uTime: { value: 0 },
-      uDeepColor: { value: new THREE.Color('#071A2B') },      // Deep Sapphire Navy
-      uShallowColor: { value: new THREE.Color('#1FA7A6') },   // Crystal Coastal Turquoise
-      uUltraShallowColor: { value: new THREE.Color('#2ED1C8') }, // Bright Aqua Shallows
+      uDeepColor: { value: new THREE.Color('#071A2B') },      // Deep Offshore Sapphire (#071A2B)
+      uShallowColor: { value: new THREE.Color('#158F93') },   // Rich Coastal Turquoise (#158F93)
+      uUltraShallowColor: { value: new THREE.Color('#25C4C0') }, // Crystal Cyan Shallows (#25C4C0)
       uSubmergedSandColor: { value: new THREE.Color('#DEC4A0') }, // Illuminated Sandbar Tone
       uSunColor: { value: new THREE.Color('#FFF4E0') },       // 5500K Golden Sun Glint
       uSkyColor: { value: new THREE.Color('#98C4DB') },       // Atmospheric Sky Reflection
@@ -209,7 +209,7 @@ export const OceanWater: React.FC = () => {
         vec3 normal = normalize(vNormal);
 
         // 1. Water Depth Color Gradient
-        // Ultra-shallow aqua (#2ED1C8) -> Coastal Turquoise (#1FA7A6) -> Deep Sapphire Navy (#071A2B)
+        // Crystal Cyan Shallows (#25C4C0) -> Rich Coastal Turquoise (#158F93) -> Deep Offshore Sapphire (#071A2B)
         float shallowGrad = smoothstep(195.0, 218.0, vWorldPosition.z);
         vec3 shallowColor = mix(uUltraShallowColor, uShallowColor, shallowGrad);
         vec3 baseWaterColor = mix(shallowColor, uDeepColor, vDepthFactor);

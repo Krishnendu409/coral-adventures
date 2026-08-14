@@ -178,6 +178,12 @@ const MalpeFishingTrawler: React.FC<TrawlerProps> = ({ radarRef, isSecondary = f
         roughness: 0.6,
         metalness: 0.15
       }),
+      // Yellow Boom Derrick Mast (Karnataka Marine Yellow)
+      derrickYellowMat: new THREE.MeshStandardMaterial({
+        color: '#E5A93C',
+        roughness: 0.5,
+        metalness: 0.25
+      }),
       // Weathered Sal / Teak Timber Working Deck
       timberDeckMat: new THREE.MeshStandardMaterial({
         color: '#6E4F38',
@@ -664,8 +670,8 @@ const MalpeFishingTrawler: React.FC<TrawlerProps> = ({ radarRef, isSecondary = f
             <boxGeometry args={[0.12, 1.2, 0.12]} />
           </mesh>
 
-          {/* Trawl Boom Derrick & Lifting Tackle Pulleys */}
-          <mesh position={[0, 2.4, 0.4]} rotation={[0.35, 0, 0]} material={materials.steelMat}>
+          {/* Yellow Boom Derrick Mast & Lifting Tackle Pulleys */}
+          <mesh position={[0, 2.4, 0.4]} rotation={[0.35, 0, 0]} material={materials.derrickYellowMat} castShadow>
             <boxGeometry args={[0.18, 2.6, 0.18]} />
           </mesh>
           <mesh position={[0, 3.4, 1.2]} material={materials.brassMat}>
@@ -1027,11 +1033,15 @@ const BeachStagingEquipment: React.FC = () => {
       {/* Launch Rollers / Sand Skids under craft */}
       {[-4, 0, 4].map((xOff, i) => (
         <group key={`skid-${i}`} position={[xOff, 0.05, 0]}>
-          <mesh rotation={[0, 0, Math.PI / 2]} material={materials.timberMat}>
+          <mesh rotation={[0, 0, Math.PI / 2]} material={materials.timberMat} castShadow>
             <cylinderGeometry args={[0.08, 0.08, 1.8, 8]} />
           </mesh>
-          <mesh position={[0, 0, 1.5]} rotation={[0, 0, Math.PI / 2]} material={materials.timberMat}>
+          <mesh position={[0, 0, 1.5]} rotation={[0, 0, Math.PI / 2]} material={materials.timberMat} castShadow>
             <cylinderGeometry args={[0.08, 0.08, 1.8, 8]} />
+          </mesh>
+          {/* Hemp Rope Tie-Down Lines on Weathered Timber Launching Skids */}
+          <mesh position={[0, 0.12, 0.75]} rotation={[Math.PI / 2, 0, 0]} material={materials.ropeMat}>
+            <torusGeometry args={[0.42, 0.025, 6, 12]} />
           </mesh>
         </group>
       ))}

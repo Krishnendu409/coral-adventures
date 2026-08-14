@@ -21,11 +21,13 @@ describe('OceanWater Living Arabian Sea Component', () => {
 
   it('verifies Arabian Sea color tokens and PBR optical uniform definitions', () => {
     const deepSapphire = new THREE.Color('#071A2B');
-    const coastalTurquoise = new THREE.Color('#1FA7A6');
+    const coastalTurquoise = new THREE.Color('#158F93');
+    const crystalCyan = new THREE.Color('#25C4C0');
     const goldenSun = new THREE.Color('#FFF4E0');
 
     expect(deepSapphire.getHexString().toLowerCase()).toBe('071a2b');
-    expect(coastalTurquoise.getHexString().toLowerCase()).toBe('1fa7a6');
+    expect(coastalTurquoise.getHexString().toLowerCase()).toBe('158f93');
+    expect(crystalCyan.getHexString().toLowerCase()).toBe('25c4c0');
     expect(goldenSun.getHexString().toLowerCase()).toBe('fff4e0');
   });
 
