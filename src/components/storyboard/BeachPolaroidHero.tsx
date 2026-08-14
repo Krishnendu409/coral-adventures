@@ -30,15 +30,15 @@ export function BeachPolaroidHero({
   priority = true,
 }: BeachPolaroidHeroProps) {
   const shadowStyles = {
-    day: "shadow-[18px_26px_45px_rgba(70,45,20,0.28),_3px_6px_12px_rgba(0,0,0,0.12)]",
-    sunset: "shadow-[32px_38px_60px_rgba(90,40,10,0.38),_5px_8px_16px_rgba(0,0,0,0.18)]",
-    night: "shadow-[12px_18px_36px_rgba(4,10,25,0.55),_2px_4px_10px_rgba(0,0,0,0.35)]",
+    day: "shadow-[24px_34px_55px_rgba(70,45,20,0.35),_4px_8px_16px_rgba(0,0,0,0.16)]",
+    sunset: "shadow-[36px_44px_70px_rgba(90,40,10,0.45),_6px_10px_20px_rgba(0,0,0,0.22)]",
+    night: "shadow-[18px_24px_48px_rgba(4,10,25,0.65),_3px_6px_14px_rgba(0,0,0,0.45)]",
   }[shadowAngle];
 
   return (
     <div
       className={cn(
-        "relative w-full max-w-3xl sm:max-w-4xl transition-all duration-500 transform-gpu hover:scale-[1.01] hover:z-30 select-none group",
+        "relative w-full max-w-4xl sm:max-w-5xl md:max-w-6xl transition-all duration-500 transform-gpu hover:scale-[1.01] hover:z-30 select-none group",
         className
       )}
       style={{
@@ -48,7 +48,7 @@ export function BeachPolaroidHero({
       {/* Top Left Masking Tape Strip with Peeling Edge */}
       {tapeTopLeft && (
         <div
-          className="absolute -top-4 -left-3 w-28 sm:w-36 h-8 bg-[#F4EBD9]/85 backdrop-blur-[1px] border-t border-b border-black/5 shadow-sm z-30 pointer-events-none"
+          className="absolute -top-5 -left-4 w-32 sm:w-44 h-9 bg-[#F4EBD9]/90 backdrop-blur-[1px] border-t border-b border-black/10 shadow-md z-30 pointer-events-none"
           style={{
             transform: "rotate(-12deg)",
             clipPath: "polygon(0% 12%, 5% 0%, 95% 0%, 100% 15%, 98% 88%, 93% 100%, 7% 100%, 0% 85%)",
@@ -59,7 +59,7 @@ export function BeachPolaroidHero({
       {/* Top Right Masking Tape Strip */}
       {tapeTopRight && (
         <div
-          className="absolute -top-4 -right-3 w-28 sm:w-36 h-8 bg-[#F4EBD9]/85 backdrop-blur-[1px] border-t border-b border-black/5 shadow-sm z-30 pointer-events-none"
+          className="absolute -top-5 -right-4 w-32 sm:w-44 h-9 bg-[#F4EBD9]/90 backdrop-blur-[1px] border-t border-b border-black/10 shadow-md z-30 pointer-events-none"
           style={{
             transform: "rotate(8deg)",
             clipPath: "polygon(3% 10%, 8% 0%, 97% 0%, 100% 12%, 96% 90%, 91% 100%, 4% 100%, 0% 88%)",
@@ -67,10 +67,10 @@ export function BeachPolaroidHero({
         />
       )}
 
-      {/* Oversized Heavy Physical Photographic Print (55-70% visual field) */}
+      {/* Massive Heavy Physical Photographic Print (60-80% visual field) */}
       <div
         className={cn(
-          "bg-[#FCFAF7] border border-[#E8E1D3] rounded-[2px] p-3.5 sm:p-5 pb-10 sm:pb-14 transition-shadow duration-300",
+          "bg-[#FCFAF7] border-2 border-[#E5DDD0] rounded-[2px] p-4 sm:p-7 pb-12 sm:pb-16 transition-shadow duration-300",
           shadowStyles
         )}
       >
@@ -80,34 +80,34 @@ export function BeachPolaroidHero({
             src={imageSrc}
             alt={caption}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1440px) 75vw, 1200px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1440px) 90vw, 1400px"
             priority={priority}
             className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
           />
           {/* Natural Film Vignette */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/15 pointer-events-none" />
 
           {/* Micro Corner Annotation Badge */}
           {annotation && (
-            <div className="absolute top-3 left-3 px-2 py-1 bg-black/65 backdrop-blur-xs text-[#FAF6EE] font-mono text-[10px] uppercase tracking-widest rounded-xs pointer-events-none">
+            <div className="absolute top-4 left-4 px-2.5 py-1.5 bg-black/75 backdrop-blur-xs text-[#FAF6EE] font-mono text-[11px] sm:text-xs uppercase tracking-widest rounded-xs pointer-events-none shadow-sm">
               {annotation}
             </div>
           )}
         </div>
 
         {/* Handwritten Bottom Margin Area */}
-        <div className="pt-3 sm:pt-4 px-1.5 flex items-baseline justify-between">
+        <div className="pt-4 sm:pt-6 px-2 flex items-baseline justify-between">
           <div>
-            <h3 className="font-serif italic text-base sm:text-xl md:text-2xl text-[#241D17] leading-snug tracking-tight">
+            <h3 className="font-serif italic text-lg sm:text-2xl md:text-3xl text-[#241D17] leading-snug tracking-tight">
               {caption}
             </h3>
             {subcaption && (
-              <p className="font-mono text-[10px] sm:text-xs text-[#7A6C5D] uppercase tracking-widest mt-0.5">
+              <p className="font-mono text-xs sm:text-sm text-[#7A6C5D] uppercase tracking-widest mt-1">
                 {subcaption}
               </p>
             )}
           </div>
-          <span className="font-mono text-[10px] text-[#A39686] uppercase tracking-widest hidden sm:inline-block">
+          <span className="font-mono text-xs text-[#A39686] uppercase tracking-widest hidden sm:inline-block">
             CORAL ARCHIVE · 2026
           </span>
         </div>

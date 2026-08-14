@@ -5,135 +5,162 @@ import React from "react";
 export function BeachShorelineCanvas() {
   return (
     <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {/* 1. Base Diurnal Sand & Shoreline Gradient */}
+      {/* 1. Full-Width Base Sand & Ocean Diurnal Gradient */}
       <div
         className="absolute inset-0 w-full h-full"
         style={{
           background: `linear-gradient(
             to bottom,
-            #E8DFC8 0%,       /* Top 01: Shoreline wet/damp sand */
-            #F2E7D0 8%,       /* Morning dry golden sand */
-            #EADBBE 20%,      /* 02 Watersports: Turquoise reflected beach */
-            #DFCEAD 35%,      /* 03 Catamaran: High sun golden sand */
-            #D4BE98 48%,      /* 04 Onboard: Warm afternoon sand */
-            #B88E5E 62%,      /* 05 Basalt Island: Low raking golden sand */
-            #8A562B 74%,      /* 06 Sunset: Molten gold & fiery sand */
-            #182338 84%,      /* 07 Night: Blue hour to midnight sand */
-            #07101C 94%,      /* 08 Drone Show: Obsidian ocean night */
-            #03070E 100%
+            #0B6673 0%,       /* Top 0-150px: Full Arabian Sea blue water across entire width */
+            #14B8A6 2%,       /* Shallow turquoise water swash */
+            #B8A282 3.5%,     /* Wet sand margin across full width */
+            #E2D5BE 5%,       /* Damp transition sand */
+            #F4E8D1 10%,      /* 01 Arrival: Warm golden dry sand */
+            #EAD9B8 20%,      /* 02 Watersports: High sun golden sand */
+            #D8C49E 34%,      /* 03 Catamaran: Ocean breeze golden sand */
+            #CAA97B 48%,      /* 04 Onboard: Afternoon warm amber sand */
+            #9A6B42 62%,      /* 05 Basalt Island: Laterite & rock sand */
+            #7A3F1E 74%,      /* 06 Sunset: Molten gold fiery sand */
+            #151F33 84%,      /* 07 Night: Deep midnight blue sand */
+            #060B14 94%,      /* 08 Drone Show: Obsidian ocean night */
+            #02050A 100%
           )`,
         }}
       />
 
-      {/* 2. Procedural SVG Sand Micro-Grain Noise */}
-      <svg className="absolute inset-0 w-full h-full opacity-40 mix-blend-multiply" xmlns="http://www.w3.org/2000/svg">
-        <filter id="coastalSandGrains">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="0.33 0 0 0 0.55  0 0.33 0 0 0.48  0 0 0.33 0 0.38  0 0 0 0.5 0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#coastalSandGrains)" />
-      </svg>
-
-      {/* 3. Shoreline Water Swash & Ocean Foam at Top-Left (Z=0 to 1200px) */}
-      <div className="absolute -top-12 -left-20 w-[650px] h-[750px] pointer-events-none">
-        {/* Shallow Turquoise Ocean Water Layer */}
+      {/* 2. Full-Width Ocean Water & Foaming Shoreline Swash at Top (Z=0 to 380px) */}
+      <div className="absolute top-0 left-0 right-0 h-[380px] pointer-events-none z-2">
+        {/* Full-width water surface gradient with wave depth */}
         <div 
-          className="absolute inset-0 rounded-[45%_55%_65%_35%/40%_60%_40%_60%] opacity-45 blur-md"
+          className="absolute inset-0 w-full h-[220px]"
           style={{
-            background: "radial-gradient(ellipse at top left, #14B8A6 0%, #0D9488 45%, #065E6B 75%, transparent 100%)",
+            background: "linear-gradient(180deg, #074751 0%, #0D7A87 40%, #14B8A6 75%, transparent 100%)",
           }}
         />
 
-        {/* Wet Sand Sheen & Wave Edge Foam (SVG Shoreline) */}
-        <svg viewBox="0 0 600 700" className="w-full h-full opacity-65" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Wet Sand Glisten Boundary */}
+        {/* SVG Full-Width Foaming Surf Swash & Wet Sand Waves */}
+        <svg viewBox="0 0 1440 380" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full opacity-90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Deep Turquoise Water Body with Swell Curves */}
           <path
-            d="M -50 0 Q 180 120 280 260 T 420 540 Q 480 660 520 800 L -50 800 Z"
-            fill="#C9B89D"
-            opacity="0.6"
-          />
-          {/* Swashing Wave Crest 1 */}
-          <path
-            d="M -50 40 Q 160 150 250 290 T 380 570 Q 440 680 480 800"
-            stroke="#FFFFFF"
-            strokeWidth="14"
-            strokeLinecap="round"
+            d="M 0 0 L 1440 0 L 1440 160 Q 1180 190 920 150 T 460 175 Q 220 195 0 165 Z"
+            fill="#0D8997"
             opacity="0.85"
-            filter="blur(3px)"
           />
-          {/* White Sea Foam Bubbles 2 */}
+
+          {/* Wet Reflective Sand Glisten Layer */}
           <path
-            d="M -50 20 Q 140 130 230 270 T 360 550 Q 420 660 460 800"
-            stroke="#E0F2FE"
-            strokeWidth="6"
-            strokeDasharray="12 8 20 6"
-            strokeLinecap="round"
-            opacity="0.9"
+            d="M 0 0 L 1440 0 L 1440 240 Q 1200 270 940 230 T 480 255 Q 240 275 0 245 Z"
+            fill="#AFA089"
+            opacity="0.55"
           />
-          {/* Thin Effervescent Foam Swash Boundary */}
+
+          {/* Main Foaming Surf Wave 1 */}
           <path
-            d="M -50 65 Q 175 165 265 310 T 395 590 Q 455 700 495 800"
+            d="M 0 170 Q 240 205 480 185 T 940 205 Q 1200 170 1440 200"
             stroke="#FFFFFF"
-            strokeWidth="3.5"
+            strokeWidth="18"
+            strokeLinecap="round"
+            opacity="0.8"
+            filter="blur(4px)"
+          />
+
+          {/* Sharp Wave Crest Foam Line */}
+          <path
+            d="M 0 180 Q 235 212 485 192 T 945 212 Q 1205 178 1440 208"
+            stroke="#F0FDFA"
+            strokeWidth="8"
             strokeLinecap="round"
             opacity="0.95"
+          />
+
+          {/* Effervescent White Sea Foam Bubbles */}
+          <path
+            d="M 0 195 Q 230 225 470 205 T 930 225 Q 1190 195 1440 220"
+            stroke="#FFFFFF"
+            strokeWidth="4"
+            strokeDasharray="25 15 40 10 15 20"
+            strokeLinecap="round"
+            opacity="0.95"
+          />
+
+          {/* Thin Swash Wash Limit onto Damp Sand */}
+          <path
+            d="M 0 245 Q 240 275 480 255 T 940 275 Q 1200 240 1440 268"
+            stroke="#FFFFFF"
+            strokeWidth="3"
+            strokeDasharray="18 12 35 15"
+            strokeLinecap="round"
+            opacity="0.75"
           />
         </svg>
       </div>
 
-      {/* 4. Natural Beach Imperfections: Wind Ripples, Footprints, Shells & Coastal Plants */}
+      {/* 3. Procedural SVG Sand Micro-Grain Noise */}
+      <svg className="absolute inset-0 w-full h-full opacity-40 mix-blend-multiply pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+        <filter id="coastalSandGrainsLarge">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="0.33 0 0 0 0.55  0 0.33 0 0 0.48  0 0 0.33 0 0.38  0 0 0 0.5 0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#coastalSandGrainsLarge)" />
+      </svg>
+
+      {/* 4. Rich Physical Debris & Natural Coastal Details on Sand */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-        {/* Footprint Trail Walking from Shoreline Inland (Z=400 to 1400px) */}
-        <g opacity="0.2" fill="#6E5034" transform="translate(340, 520) rotate(-24)">
-          <ellipse cx="0" cy="0" rx="13" ry="28" />
-          <ellipse cx="2" cy="-34" rx="4.5" ry="6" />
-          <ellipse cx="9" cy="-30" rx="3.5" ry="5" />
-          <ellipse cx="14" cy="-24" rx="3" ry="4" />
+        {/* Footprint Trail Walking from Shoreline Inland (Z=380 to 1400px) */}
+        <g opacity="0.22" fill="#5A3E25" transform="translate(320, 420) rotate(-24)">
+          <ellipse cx="0" cy="0" rx="14" ry="30" />
+          <ellipse cx="2" cy="-36" rx="5" ry="7" />
+          <ellipse cx="10" cy="-32" rx="4" ry="6" />
+          <ellipse cx="15" cy="-26" rx="3.5" ry="5" />
         </g>
-        <g opacity="0.18" fill="#6E5034" transform="translate(390, 720) rotate(-16)">
-          <ellipse cx="0" cy="0" rx="13" ry="28" />
-          <ellipse cx="-2" cy="-34" rx="4.5" ry="6" />
-          <ellipse cx="-9" cy="-30" rx="3.5" ry="5" />
-          <ellipse cx="-14" cy="-24" rx="3" ry="4" />
+        <g opacity="0.2" fill="#5A3E25" transform="translate(380, 640) rotate(-16)">
+          <ellipse cx="0" cy="0" rx="14" ry="30" />
+          <ellipse cx="-2" cy="-36" rx="5" ry="7" />
+          <ellipse cx="-10" cy="-32" rx="4" ry="6" />
+          <ellipse cx="-15" cy="-26" rx="3.5" ry="5" />
         </g>
-        <g opacity="0.16" fill="#6E5034" transform="translate(450, 930) rotate(-22)">
-          <ellipse cx="0" cy="0" rx="13" ry="28" />
-          <ellipse cx="2" cy="-34" rx="4.5" ry="6" />
-        </g>
-
-        {/* Small Coconut Husk Fragment near Arrival (Z=880px) */}
-        <g transform="translate(780, 880) rotate(35) scale(0.85)" opacity="0.75">
-          <path d="M0 0 C15 -10 35 5 30 25 C25 45 5 40 0 0 Z" fill="#5A3820" className="drop-shadow-md" />
-          <path d="M5 8 C18 0 28 12 24 24" stroke="#8D5B38" strokeWidth="1.5" fill="none" />
-          <path d="M8 15 C18 10 24 20 20 28" stroke="#8D5B38" strokeWidth="1" fill="none" />
+        <g opacity="0.18" fill="#5A3E25" transform="translate(450, 880) rotate(-22)">
+          <ellipse cx="0" cy="0" rx="14" ry="30" />
+          <ellipse cx="2" cy="-36" rx="5" ry="7" />
         </g>
 
-        {/* Driftwood Stick Fragment near Watersports (Z=2400px) */}
-        <g transform="translate(180, 2420) rotate(-42) scale(0.9)" opacity="0.7">
-          <path d="M0 0 L140 12 Q145 16 140 20 L0 8 Q-5 4 0 0 Z" fill="#8C7D6B" className="drop-shadow-md" />
-          <line x1="15" y1="5" x2="125" y2="14" stroke="#63574A" strokeWidth="1" opacity="0.6" />
-          <line x1="35" y1="7" x2="95" y2="12" stroke="#63574A" strokeWidth="1" opacity="0.6" />
+        {/* Half-Buried Coconut Husk near Arrival (Z=880px) */}
+        <g transform="translate(820, 890) rotate(35) scale(0.95)" opacity="0.8">
+          <path d="M0 0 C18 -12 40 6 35 30 C30 52 6 46 0 0 Z" fill="#4D2E17" />
+          <path d="M6 10 C20 2 32 15 28 28" stroke="#7A4E2B" strokeWidth="2" fill="none" />
+          <path d="M10 18 C20 12 28 24 24 32" stroke="#7A4E2B" strokeWidth="2" fill="none" />
         </g>
 
-        {/* Coastal Dune Grass Cluster appearing inland (Z=3800px) */}
-        <g transform="translate(1220, 3850) rotate(12) scale(0.9)" opacity="0.65">
-          <path d="M0 40 Q-15 10 -35 -20 Q-15 15 0 40" fill="#607D3B" />
-          <path d="M0 40 Q-5 5 -15 -35 Q-2 10 0 40" fill="#4D682D" />
-          <path d="M0 40 Q10 8 20 -40 Q5 12 0 40" fill="#6B8A42" />
-          <path d="M0 40 Q18 15 42 -15 Q20 18 0 40" fill="#557332" />
+        {/* Weathered Driftwood Stick near Watersports (Z=2350px) */}
+        <g transform="translate(160, 2380) rotate(-38) scale(1.1)" opacity="0.75">
+          <path d="M0 0 L160 14 Q165 18 160 22 L0 10 Q-6 5 0 0 Z" fill="#756756" />
+          <line x1="18" y1="6" x2="145" y2="16" stroke="#524639" strokeWidth="1.5" opacity="0.7" />
+          <line x1="40" y1="8" x2="110" y2="14" stroke="#524639" strokeWidth="1.5" opacity="0.7" />
         </g>
 
-        {/* Palm Leaf Shadow cast across sand (Z=5200px) */}
-        <g transform="translate(80, 5200) rotate(-35) scale(1.4)" opacity="0.12" fill="#1E2D12">
-          <path d="M0 0 L200 40 C180 60 140 80 0 0 Z" />
-          <line x1="0" y1="0" x2="220" y2="44" stroke="#1E2D12" strokeWidth="4" />
-          <path d="M40 8 L60 35 M80 16 L110 50 M120 24 L155 65 M160 32 L200 80" stroke="#1E2D12" strokeWidth="3" />
+        {/* Tropical Coastal Dune Grass Cluster (Z=3750px) */}
+        <g transform="translate(1260, 3780) rotate(14) scale(1.1)" opacity="0.7">
+          <path d="M0 45 Q-18 12 -42 -22 Q-18 18 0 45" fill="#557032" />
+          <path d="M0 45 Q-6 6 -18 -40 Q-2 12 0 45" fill="#445D25" />
+          <path d="M0 45 Q12 10 24 -45 Q6 14 0 45" fill="#62803B" />
+          <path d="M0 45 Q22 18 50 -18 Q24 20 0 45" fill="#4D682B" />
         </g>
 
-        {/* Basalt Rock Shards & Coastal Gravel near Island (Z=6700px) */}
-        <polygon points="190,6720 220,6690 250,6735 225,6765 185,6745" fill="#242124" opacity="0.75" className="drop-shadow-md" />
-        <polygon points="255,6730 285,6710 305,6740 275,6760" fill="#383338" opacity="0.7" />
-        <ellipse cx="270" cy="6775" rx="8" ry="5" fill="#504A50" opacity="0.6" />
+        {/* Palm Frond Shadow cast diagonally across sand (Z=5100px) */}
+        <g transform="translate(60, 5150) rotate(-32) scale(1.6)" opacity="0.14" fill="#18240D">
+          <path d="M0 0 L240 48 C215 72 165 95 0 0 Z" />
+          <line x1="0" y1="0" x2="260" y2="52" stroke="#18240D" strokeWidth="5" />
+          <path d="M45 10 L70 42 M95 20 L130 60 M145 30 L185 78 M190 40 L240 98" stroke="#18240D" strokeWidth="3.5" />
+        </g>
+
+        {/* Hexagonal Basalt Column Shards near Island (Z=6650px) */}
+        <polygon points="175,6680 210,6645 245,6695 218,6732 170,6708" fill="#1C1A1D" opacity="0.85" />
+        <polygon points="250,6690 288,6665 310,6702 278,6725" fill="#2E2A30" opacity="0.8" />
+        <polygon points="315,6710 335,6695 348,6720 330,6735" fill="#443F47" opacity="0.75" />
+        <ellipse cx="295" cy="6745" rx="10" ry="6" fill="#4B4550" opacity="0.65" />
+
+        {/* Raking Sunset Shadows on Sand (Z=7900px) */}
+        <ellipse cx="980" cy="7950" rx="120" ry="18" fill="#3D1D09" opacity="0.25" transform="rotate(12 980 7950)" />
       </svg>
     </div>
   );
