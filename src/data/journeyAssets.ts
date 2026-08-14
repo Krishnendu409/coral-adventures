@@ -15,7 +15,7 @@ export interface Dimensions {
 export interface VerifiedAsset {
   id: string;
   name: string;
-  category: 'terrain' | 'architecture' | 'vegetation' | 'marine' | 'atmosphere';
+  category: 'terrain' | 'architecture' | 'vegetation' | 'marine' | 'atmosphere' | 'prop' | 'wildlife';
   repository: string;
   sourceUrl: string;
   license: 'CC0' | 'CC-BY';
@@ -29,6 +29,7 @@ export interface PalmVariant {
   name: string;
   heightRange: [number, number];
   bendMaxDeg: number;
+  localPath: string;
 }
 
 export interface TexturePBRDefinition {
@@ -36,33 +37,238 @@ export interface TexturePBRDefinition {
   normal?: string;
   roughnessMap?: string;
   displacement?: string;
+  aoMap?: string;
   color?: string;
   darkColor?: string;
   roughness: number;
   metalness: number;
 }
 
+export interface HeroModelDefinition {
+  id: string;
+  name: string;
+  category: 'terrain' | 'architecture' | 'vegetation' | 'marine' | 'atmosphere' | 'prop' | 'wildlife';
+  localPath: string;
+  dracoCompressed?: boolean;
+  meshoptCompressed?: boolean;
+  pbrTextures?: TexturePBRDefinition;
+  dimensions?: Dimensions;
+}
+
 export const JOURNEY_ASSETS = {
-  // 1. Authoritative PBR Materials & Textures
+  // 1. Centralized Hero GLB/glTF Model Asset Entries
+  models: {
+    palmTall: {
+      id: 'cocos-nucifera-tall-glb',
+      name: 'Tall Bent Coastal Coconut Palm',
+      category: 'vegetation',
+      localPath: '/models/palms/cocos_nucifera_tall.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/palm_pbr/frond_diffuse.png',
+        normal: '/textures/palm_pbr/frond_normal.png',
+        roughnessMap: '/textures/palm_pbr/frond_roughness.png',
+        roughness: 0.7,
+        metalness: 0.0
+      },
+      dimensions: { width: 5.2, height: 14.5, depth: 5.2 }
+    } as HeroModelDefinition,
+
+    palmSlender: {
+      id: 'cocos-nucifera-slender-glb',
+      name: 'Slender Curved Shoreline Palm',
+      category: 'vegetation',
+      localPath: '/models/palms/cocos_nucifera_slender.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/palm_pbr/frond_diffuse.png',
+        normal: '/textures/palm_pbr/frond_normal.png',
+        roughnessMap: '/textures/palm_pbr/frond_roughness.png',
+        roughness: 0.7,
+        metalness: 0.0
+      },
+      dimensions: { width: 4.5, height: 11.0, depth: 4.5 }
+    } as HeroModelDefinition,
+
+    palmDwarf: {
+      id: 'cocos-nucifera-dwarf-glb',
+      name: 'Dwarf Dune Palm',
+      category: 'vegetation',
+      localPath: '/models/palms/cocos_nucifera_dwarf.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/palm_pbr/frond_diffuse.png',
+        normal: '/textures/palm_pbr/frond_normal.png',
+        roughnessMap: '/textures/palm_pbr/frond_roughness.png',
+        roughness: 0.75,
+        metalness: 0.0
+      },
+      dimensions: { width: 3.8, height: 7.5, depth: 3.8 }
+    } as HeroModelDefinition,
+
+    palmCluster: {
+      id: 'cocos-nucifera-cluster-glb',
+      name: 'Twin Cluster Palm',
+      category: 'vegetation',
+      localPath: '/models/palms/cocos_nucifera_cluster.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/palm_pbr/frond_diffuse.png',
+        normal: '/textures/palm_pbr/frond_normal.png',
+        roughnessMap: '/textures/palm_pbr/frond_roughness.png',
+        roughness: 0.7,
+        metalness: 0.0
+      },
+      dimensions: { width: 6.8, height: 12.5, depth: 6.5 }
+    } as HeroModelDefinition,
+
+    coralPortal: {
+      id: 'coral-portal-glb',
+      name: 'Weathered Teak Expedition Portal',
+      category: 'architecture',
+      localPath: '/models/architecture/coral_portal.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/wood_pbr/diffuse.jpg',
+        normal: '/textures/wood_pbr/normal.png',
+        roughnessMap: '/textures/wood_pbr/roughness.jpg',
+        roughness: 0.72,
+        metalness: 0.04
+      },
+      dimensions: { width: 4.0, height: 6.2, depth: 1.5 }
+    } as HeroModelDefinition,
+
+    expeditionPavilion: {
+      id: 'expedition-pavilion-glb',
+      name: 'Open-Air Weathered Teak Pavilion',
+      category: 'architecture',
+      localPath: '/models/architecture/expedition_pavilion.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/wood_pbr/diffuse.jpg',
+        normal: '/textures/wood_pbr/normal.png',
+        roughnessMap: '/textures/wood_pbr/roughness.jpg',
+        roughness: 0.75,
+        metalness: 0.04
+      },
+      dimensions: { width: 12.0, height: 5.5, depth: 18.0 }
+    } as HeroModelDefinition,
+
+    chartTableProps: {
+      id: 'chart-table-props-glb',
+      name: 'Inhabited Nautical Chart Table Props',
+      category: 'prop',
+      localPath: '/models/props/chart_table_props.glb',
+      dracoCompressed: true,
+      pbrTextures: {
+        diffuse: '/textures/brass_diffuse.jpg',
+        normal: '/textures/brass_normal.png',
+        roughness: 0.35,
+        metalness: 0.85
+      },
+      dimensions: { width: 2.2, height: 1.1, depth: 1.4 }
+    } as HeroModelDefinition,
+
+    coastalTrawler: {
+      id: 'coastal-trawler-glb',
+      name: 'Traditional Malpe Wooden Fishing Trawler',
+      category: 'marine',
+      localPath: '/models/coastal_trawler.glb',
+      dracoCompressed: true,
+      dimensions: { width: 4.5, height: 8.0, depth: 16.0 }
+    } as HeroModelDefinition,
+
+    catamaran: {
+      id: 'luxury-catamaran-glb',
+      name: 'Coral Expedition Luxury Catamaran',
+      category: 'marine',
+      localPath: '/models/marine/catamaran.glb',
+      dracoCompressed: true,
+      dimensions: { width: 8.5, height: 6.0, depth: 18.0 }
+    } as HeroModelDefinition,
+
+    jetSki: {
+      id: 'watersports-jetski-glb',
+      name: 'Malpe Watersports Jet Ski',
+      category: 'marine',
+      localPath: '/models/marine/jet_ski.glb',
+      dracoCompressed: true,
+      dimensions: { width: 1.2, height: 1.1, depth: 3.2 }
+    } as HeroModelDefinition,
+
+    speedBoat: {
+      id: 'watersports-speedboat-glb',
+      name: 'Malpe Watersports Speedboat',
+      category: 'marine',
+      localPath: '/models/marine/speed_boat.glb',
+      dracoCompressed: true,
+      dimensions: { width: 2.4, height: 2.0, depth: 7.5 }
+    } as HeroModelDefinition,
+
+    stMarysBasalt: {
+      id: 'st-marys-basalt-glb',
+      name: "St. Mary's Basalt Rock Formation",
+      category: 'terrain',
+      localPath: '/models/st_marys_basalt_island.glb',
+      dracoCompressed: true,
+      dimensions: { width: 120.0, height: 25.0, depth: 220.0 }
+    } as HeroModelDefinition,
+
+    brahminyKite: {
+      id: 'brahminy-kite-glb',
+      name: 'Brahminy Kite Coastal Raptor',
+      category: 'wildlife',
+      localPath: '/models/wildlife/brahminy_kite.glb',
+      dracoCompressed: true,
+      dimensions: { width: 1.4, height: 0.4, depth: 0.6 }
+    } as HeroModelDefinition,
+
+    seaTurtle: {
+      id: 'olive-ridley-turtle-glb',
+      name: 'Olive Ridley Sea Turtle',
+      category: 'wildlife',
+      localPath: '/models/wildlife/sea_turtle.glb',
+      dracoCompressed: true,
+      dimensions: { width: 0.9, height: 0.4, depth: 1.1 }
+    } as HeroModelDefinition,
+
+    dolphin: {
+      id: 'humpback-dolphin-glb',
+      name: 'Indian Ocean Humpback Dolphin',
+      category: 'wildlife',
+      localPath: '/models/wildlife/dolphin.glb',
+      dracoCompressed: true,
+      dimensions: { width: 0.8, height: 0.7, depth: 2.3 }
+    } as HeroModelDefinition
+  },
+
+  // 2. Authoritative PBR Materials & Textures
   textures: {
     sandPbr: {
       diffuse: '/textures/sand_diffuse.jpg',
       normal: '/textures/sand_normal.png',
-      roughness: '/textures/sand_roughness.jpg',
+      roughnessMap: '/textures/sand_roughness.jpg',
       displacement: '/textures/sand_displacement.png',
+      roughness: 0.85,
+      metalness: 0.0,
       roughnessVal: 0.85,
       metalnessVal: 0.0
     },
     lateritePbr: {
       diffuse: '/textures/laterite_diffuse.jpg',
       normal: '/textures/laterite_normal.png',
-      roughness: '/textures/laterite_roughness.jpg',
+      roughnessMap: '/textures/laterite_roughness.jpg',
+      roughness: 0.92,
+      metalness: 0.0,
       roughnessVal: 0.92,
       metalnessVal: 0.0
     },
     teakPbr: {
       color: '#5C3E29',
       darkColor: '#3B281A',
+      diffuse: '/textures/wood_pbr/diffuse.jpg',
+      normal: '/textures/wood_pbr/normal.png',
+      roughnessMap: '/textures/wood_pbr/roughness.jpg',
       roughness: 0.72,
       metalness: 0.04
     },
@@ -70,52 +276,61 @@ export const JOURNEY_ASSETS = {
       color: '#2A282A',
       diffuse: '/textures/basalt_diffuse.jpg',
       normal: '/textures/basalt_normal.png',
+      roughnessMap: '/textures/basalt_roughness.jpg',
       roughness: 0.85,
       metalness: 0.15
     },
     sailclothPbr: {
       color: '#F4EFE6',
+      diffuse: '/textures/sailcloth_diffuse.jpg',
       roughness: 0.9,
       metalness: 0.0
     },
     brassPbr: {
       color: '#C5A059',
+      diffuse: '/textures/brass_diffuse.jpg',
+      normal: '/textures/brass_normal.png',
       roughness: 0.35,
       metalness: 0.85
     },
     hempRopePbr: {
       color: '#8C6F4B',
+      diffuse: '/textures/hemp_diffuse.jpg',
       roughness: 0.95,
       metalness: 0.0
     }
   },
 
-  // 2. Botanical Vegetation Population Registry (Cocos nucifera & Coastal Undergrowth)
+  // 3. Botanical Vegetation Population Registry (Cocos nucifera & Coastal Undergrowth)
   vegetation: {
     palms: [
       {
         id: 'cocos-nucifera-tall',
         name: 'Tall Bent Coastal Coconut Palm',
         heightRange: [12, 16] as [number, number],
-        bendMaxDeg: 28
+        bendMaxDeg: 28,
+        localPath: '/models/palms/cocos_nucifera_tall.glb'
       },
       {
         id: 'cocos-nucifera-slender',
         name: 'Slender Curved Shoreline Palm',
         heightRange: [9, 13] as [number, number],
-        bendMaxDeg: 22
+        bendMaxDeg: 22,
+        localPath: '/models/palms/cocos_nucifera_slender.glb'
       },
       {
         id: 'cocos-nucifera-dwarf',
         name: 'Dwarf Dune Palm',
         heightRange: [6, 9] as [number, number],
-        bendMaxDeg: 15
+        bendMaxDeg: 15,
+        localPath: '/models/palms/cocos_nucifera_dwarf.glb'
       },
       {
         id: 'cocos-nucifera-cluster',
         name: 'Twin Cluster Palm',
         heightRange: [10, 14] as [number, number],
-        bendMaxDeg: 25
+        bendMaxDeg: 25,
+        localPath: '/models/palms/cocos_nucifera_cluster.glb'
       }
     ] as PalmVariant[],
     undergrowth: {
@@ -125,12 +340,13 @@ export const JOURNEY_ASSETS = {
     }
   },
 
-  // 3. Expedition Architecture & Inhabited Micro-Storytelling Props
+  // 4. Expedition Architecture & Inhabited Micro-Storytelling Props
   architectureProps: {
     portal: {
       teakBeamDimensions: [0.55, 6.2, 0.55] as [number, number, number],
       coordinatesText: 'MALPE EXPEDITION BASE · 13°21′02″ N · 74°42′08″ E',
-      plinthMaterial: 'laterite_stone'
+      plinthMaterial: 'laterite_stone',
+      modelPath: '/models/architecture/coral_portal.glb'
     },
     chartTableProps: {
       seaChart: 'St. Marys Island Coastal Hydrographic Chart (1894)',
@@ -138,11 +354,12 @@ export const JOURNEY_ASSETS = {
       compass: 'Gimballed Marine Compass',
       weatherLedger: 'Expedition Weather & Swell Ledger',
       lanternColor: '#FFB74D',
-      lanternIntensity: 2.5
+      lanternIntensity: 2.5,
+      modelPath: '/models/props/chart_table_props.glb'
     }
   },
 
-  // 4. Living Arabian Sea Ocean Engine & Swash Parameters
+  // 5. Living Arabian Sea Ocean Engine & Swash Parameters
   ocean: {
     gerstnerWaves: {
       swellAmplitude: 0.8,
@@ -160,7 +377,7 @@ export const JOURNEY_ASSETS = {
     }
   },
 
-  // 5. Calibrated Atmosphere, Lighting & St. Mary's Basalt Silhouette
+  // 6. Calibrated Atmosphere, Lighting & St. Mary's Basalt Silhouette
   environment: {
     hdriMap: '/environments/coastal_golden_hour.hdr',
     sunColor: '#FFF4E0',
