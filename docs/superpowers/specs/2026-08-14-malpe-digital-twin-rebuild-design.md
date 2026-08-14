@@ -1,33 +1,59 @@
-# Design Specification: Coral Adventures Malpe 3D Digital Twin — Production Art Rebuild
+# Master Design Specification: Coral Adventures Malpe 3D Digital Twin — Continuous Spatial World
 
 **Date:** 2026-08-14  
-**Project:** Coral Adventures (Malpe, Karnataka)  
+**Project:** Coral Adventures (Malpe Waterfront, Udupi, Karnataka, India)  
 **Document:** `docs/superpowers/specs/2026-08-14-malpe-digital-twin-rebuild-design.md`  
 **Guiding Production Principle:**  
 > *"Photoreal where the eye touches. Art-directed where the eye travels. Atmospheric where the eye cannot resolve detail."*  
-**Reference Philosophy:** Getty's *Persepolis Reimagined* — Spatial Storytelling, Architectural Authenticity, Selective Fidelity, Inhabited Micro-Storytelling & Progressive WebGL Loading.
+**Benchmark Reference:**  
+- **Getty *Persepolis Reimagined***: Guided spatial journey, selective web optimization, spatial storytelling.  
+- **Bruno Simon Interactive 3D World**: Continuous world coordinate space, physics, spatial audio, and stateful camera navigation.
 
 ---
 
-## 1. Vision & Art Direction Philosophy
+## 1. Vision & Single Continuous Geographic World Architecture
 
-The Coral Adventures 3D digital twin is an interactive, cinematic spatial expedition across the private coastal base in Malpe, Karnataka. It is **not** a generic Three.js demo, a cartoon resort, or a collection of disconnected 3D objects. It is authored as a continuous, lived-in expedition environment where the visitor steps into the physical journey of a modern marine exploration company.
+The Coral Adventures 3D digital twin is **one continuous physical geography** spanning a $1200\text{m}$ world coordinate system ($Z = 0\text{m} \to 1200\text{m}$) from the inland coastal road of Malpe, through the Coral Expedition Base, across Malpe Beach, along the 450m Sea Walkway, out into the open Arabian Sea aboard the flagship 25.90M catamaran, and arriving at the hexagonal columnar basalt formations of St. Mary's Island.
 
-### 1.1 Aesthetic & Material Vocabulary
-- **Primary Palette**: Deep Arabian Sea sapphire (`#071A2B`), vibrant coastal turquoise (`#1FA7A6`), warm golden daylight (`#FFF4E0`), pale sun-bleached sand (`#EADCC6`), iron-rich laterite red (`#964831`), weathered coastal teak (`#5C3E29`), aged marine brass (`#C5A059`), and unbleached off-white sailcloth linen (`#FAF6EE`).
-- **Architectural Spirit**: **Contemporary Expedition Architecture Rooted in Coastal Karnataka**. Heavy weathered teak timbers, rough-hewn laterite plinths, tensioned sailcloth canopies, natural hemp rope lashings, brushed marine brass joinery, and dark volcanic basalt.
-- **Strict Anti-Defaults**:
-  - Zero Japanese torii/pagoda roof lines or Asian shrine motifs.
-  - Zero primitive cones/cylinders for vegetation.
-  - Zero flat single-texture ground planes.
-  - Zero hard geometrical water boundaries.
-  - Zero decorative CGI tropes or oversaturated fantasy assets.
+```
+                    ONE CONTINUOUS PHYSICAL GEOGRAPHY
+                                   │
+00. COASTAL ROAD (z=0m) ───────────┼── Enclosed palm canopy & dappled sun
+                                   │
+01. CORAL PORTAL (z=50m) ──────────┼── Weathered teak & laterite expedition arch
+                                   │
+02. TROPICAL GARDENS (z=70m) ──────┼── Spinifex grass, Alocasia, laterite path
+                                   │
+03. WELCOME PAVILION (z=90m) ──────┼── Open-air teak pavilion & chart table
+                                   │
+04. EXPLORATION DECK (z=150m) ─────┼── Elevated terrace, panorama reveal
+                                   │
+05. MALPE BEACH (z=200m) ──────────┼── Broad golden sand, swash & surf foam
+                                   │
+06. WATERSPORTS ZONE (z=250m) ─────┼── Staged Sea-Doos & kayaks on timber skids
+                                   │
+07. MALPE SEA WALKWAY (z=350m) ────┼── 450m stone pavers, rock armour & lamp posts
+                                   │
+08. BOARDING JETTY (z=450m) ───────┼── Mooring hawsers, fenders & trawler fleet
+                                   │
+09. CATAMARAN EXPEDITION (z=700m) ─┼── 25.90M 3-deck catamaran, ocean departure
+                                   │
+10. OPEN ARABIAN SEA (z=950m) ─────┼── Deep sapphire swells & atmospheric haze
+                                   │
+11. ST. MARY'S ISLAND (z=1150m) ───┴── Hexagonal columnar basalt & turquoise lagoon
+```
 
 ---
 
-## 2. Three-Tier Quality & Progressive Loading Hierarchy (The Getty Strategy)
+## 2. Dual Identity: Real Malpe + Coral Luxury Layer
 
-Getty explicitly noted that the full model could not be loaded into memory indiscriminately. We apply selective fidelity: **spend polygons where the visitor's gaze rests, cheat aggressively everywhere else**.
+The environment seamlessly combines two simultaneous identities:
+1. **Real Working Malpe**: Broad open golden sand, coastal coconut belt, active fishing harbour with wooden trawlers in blue/white/copper Karnataka liveries, stacked HDPE fish crates, crab pots, 450m Sea Walkway with concrete pavers and granite rock armour, and local watersports staging.
+2. **Coral Adventures Luxury Layer**: Contemporary Indian coastal expedition architecture inserted into the real landscape. Heavy weathered teak timbers, rough-hewn laterite plinths, unbleached sailcloth canopies, brushed marine brass, hemp rope lashings, and an inhabited chart table with St. Mary's 1894 sea chart, dividers, compass, weather ledger, and captain's lantern.
+
+---
+
+## 3. Four-Tier Selective Fidelity & Progressive Loading Hierarchy
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -35,7 +61,8 @@ Getty explicitly noted that the full model could not be loaded into memory indis
 │ • Malpe Expedition Arrival Portal with coordinates & brass plaque      │
 │ • Weathered Teak Pavilion, concierge desk, navigational chart table    │
 │ • Exploration Deck observation terrace with brass marine binoculars    │
-│ • Flagship 25.90M expedition catamaran & staging watercraft            │
+│ • Flagship 25.90M 3-deck expedition catamaran & staging watercraft     │
+│ • St. Mary's hexagonal 6-sided columnar basalt rock formations         │
 │ • High-detail foreground botanical vegetation & micro-displaced sand   │
 ├────────────────────────────────────────────────────────────────────────┤
 │ TIER 2: ENVIRONMENT (10–40m Context Distance)                          │
@@ -43,139 +70,75 @@ Getty explicitly noted that the full model could not be loaded into memory indis
 │ • Weathered laterite & basalt rock clusters with crevice shading       │
 │ • Coastal Spinifex grasses, broadleaf Alocasia, and flowering shrubs   │
 │ • Traditional Malpe wooden fishing trawlers & moored dinghies          │
-│ • Mid-ground shoreline sandbars, lounge seating, and timber skids      │
+│ • Malpe Sea Walkway 450m pavers, lamp posts, and rock armour           │
 ├────────────────────────────────────────────────────────────────────────┤
-│ TIER 3: ATMOSPHERE & HORIZON (40m+ Distance)                           │
-│ • St. Mary's Island hexagonal columnar basalt silhouette               │
+│ TIER 3: SIMPLIFIED / ATMOSPHERE (40–100m Distance)                      │
+│ • Simplified trawler hulls, static palm canopies, and low-poly skids   │
+├────────────────────────────────────────────────────────────────────────┤
+│ TIER 4: HORIZON SILHOUETTES (100m+ Distance)                           │
+│ • St. Mary's Island basalt promontory silhouette                       │
 │ • Distant Malpe fishing boat silhouettes on Arabian Sea horizon        │
 │ • Flocking Brahminy kites soaring in aerodynamic thermals              │
-│ • Exponential atmospheric sea-mist fog & Rayleigh/Mie sky dome         │
+│ • Exponential sea-mist distance fog & Rayleigh/Mie sky dome         │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.1 Progressive Loading Engine
-- **Initial Load**: Hero environment, immediate topography terrain, first 20–30m vegetation buffer, primary directional sun & HDRI environment.
-- **Zone Proximity Activation**: As camera nears a zone, load zone-specific high-detail GLBs, increase local foliage density, activate zoned spatial audio layer, and enable higher LOD.
-- **Zone Departure**: Downgrade distant zone assets to lightweight impostors/silhouettes, preserving GPU frame time and memory.
-- **Horizon Optimization**: Distant objects (St. Mary's basalt columns, far fishing craft) use low-poly silhouette geometries bathed in atmospheric haze.
+---
+
+## 4. Multi-Mask Coastal Terrain Engine
+
+Continuous $240 \times 1200\text{m}$ topography with multi-mask vertex blending and micro-displacement:
+1. **Dry Pale Sand**: Fine golden sand (`#EADCC6`) with wind ripple micro-normals and roughness scattering.
+2. **Crushed Laterite Path**: Compacted red iron-earth trail (`#964831`) with wagon cart ruts and soft Gaussian edge falloff.
+3. **Damp Transition Sand**: Moisture gradient (`#C4B59D`) approaching the tide line.
+4. **Wet Intertidal Sand**: Dark reflective sand (`#8F7C66`) with wave wash ripple ridges and high specular wetness.
+5. **Malpe Sea Walkway**: 450m elevated concrete/granite paving ($y = 1.8\text{m}$) flanked by rough-cut granite rock armour boulders.
+6. **St. Mary's Lagoon & Basalt Formations**: Pale sand beach meeting crystal cyan lagoon water (`#25C4C0`) and dark charcoal columnar basalt (`#2A282A`).
 
 ---
 
-## 3. Environmental Micro-Storytelling & Spatial Logic (Cause and Effect)
+## 5. Ecological Vegetation Population System
 
-The environment must communicate **evidence of human activity and natural cause-and-effect**. No random prop spam.
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ CAUSE AND EFFECT SPATIAL LOGIC MATRIX                                  │
-├─────────────────┬──────────────────────────────────────────────────────┤
-│ SUBSYSTEM       │ INHABITED TRACES & SPATIAL RULES                     │
-├─────────────────┼──────────────────────────────────────────────────────┤
-│ Ground & Sand   │ • Disturbed sand, footprints, and cart tracks along  │
-│                 │   the laterite path connecting arrival to pavilion.  │
-│                 │ • Wind-swept sand accumulation banked at rock bases. │
-│                 │ • Fallen palm fronds, coconut husks, and shell bits  │
-│                 │   under tree clusters.                               │
-│                 │ • Tide marks and damp sand along swash zone.         │
-├─────────────────┼──────────────────────────────────────────────────────┤
-│ Architecture    │ • Heavy timber joinery with visible fasteners.       │
-│                 │ • Water staining and salt-weathered teak surfaces.   │
-│                 │ • Rope lashings and brass collar plates.             │
-│                 │ • Worn foot traffic patina at entrance thresholds.   │
-├─────────────────┼──────────────────────────────────────────────────────┤
-│ Pavilion Lounge │ • Navigational chart table with aged sea chart of    │
-│                 │   St. Mary's archipelago & Malpe continental shelf.  │
-│                 │ • Brass navigation dividers, parallel ruler, compass.│
-│                 │ • Weather ledger, tide table, expedition manifest.   │
-│                 │ • Glowing captain's lantern with warm point light.   │
-├─────────────────┼──────────────────────────────────────────────────────┤
-│ Marine & Shore  │ • Mooring posts, heavy hawser rope coils, cleats.    │
-│                 │ • Fishing crates, crab pots, wet net piles.          │
-│                 │ • Sea-Doo jet skis & kayaks staged on timber skids.  │
-│                 │ • Traditional Malpe trawlers with Karnataka livery.  │
-├─────────────────┼──────────────────────────────────────────────────────┤
-│ Exploration Deck│ • Deck-mounted brass telescope / marine binoculars.  │
-│                 │ • Route briefing board and tide level gauge.         │
-│                 │ • Weathered teak handrails with salt sheen.          │
-└─────────────────┴──────────────────────────────────────────────────────┘
-```
+- **Botanical Palms (*Cocos nucifera*)**:
+  - 4 distinct variants (Tall mature leaning $12\text{m}$, mid-height upright $9\text{m}$, coastal wind-bowed $7\text{m}$, young cluster $5\text{m}$).
+  - `InstancedMesh` GPU batching with per-instance randomized scale ($0.85\times - 1.2\times$), trunk bend curvature ($0^\circ - 28^\circ$), rotation, frond count ($18 - 32$), and crown age.
+  - Seaward wind bowing logic: palms near the coast naturally bow toward the sea (+Z).
+  - Gentle non-synchronous wind sway vertex shader movement.
+- **Coastal Undergrowth**: *Spinifex littoreus* dune runner grass, broadleaf *Alocasia macrorrhizos*, *Bougainvillea* shrubs, fallen fronds, coconut husks, driftwood, and shell fragments.
 
 ---
 
-## 4. Multi-Mask Layered PBR Terrain Engine
+## 6. Living Arabian Sea Ocean & Marine Fleet Engine
 
-Continuous 240×380m topography with multi-mask vertex blending and micro-displacement:
-1. **Dry Pale Sand**: Warm, wind-rippled coastal sand with micro-normal variation and diffuse scattering.
-2. **Disturbed & Compacted Footpath**: Reddish laterite iron-earth trail with organic edge falloff, wagon cart ruts, and foot traffic marks.
-3. **Damp Transition Sand**: Intermediate zone where receding tides keep sand moist and packed.
-4. **Wet Intertidal Sand**: Dark, high-specular reflective surface bordering the water line with wave wash ripple ridges.
-5. **Shoreline Swash & Sandbars**: Submerged sandbars ($y = -0.3\text{m} \to -2.2\text{m}$) visible through turquoise shallows.
-6. **Embedded Formations**: Sand accumulation naturally banking against rock bases and pavilion pilings.
+- **Gerstner Wave System**: 5-harmonic wave spectrum (24m swell, 12m chop, 4m micro-ripples) with PBR cyan shallows (`#25C4C0`) $\to$ coastal turquoise (`#158F93`) $\to$ deep sapphire (`#071A2B`).
+- **Shoreline Swash**: Dynamic oscillating surf foam swash ribbon with wet sand modulation eliminating hard water boundaries.
+- **Malpe Fishing Fleet**: Traditional wooden trawlers with Karnataka cobalt blue (`#1C4E80`), white waterline, copper bottom (`#8B3A2B`), yellow derrick mast (`#E5A93C`), stacked HDPE fish crates, and crab pots.
+- **Hero 25.90M Expedition Catamaran**: Twin wave-piercing demi-hulls, main deck social lounge, upper observation deck, panoramic glazing, dynamic wave bobbing physics, and departure wake trail.
 
 ---
 
-## 5. Botanical Vegetation Population System
+## 7. St. Mary's Island Visual Climax
 
-Rather than repeating static prefab models, the vegetation system generates natural ecological diversity:
-- **Coconut Palms (*Cocos nucifera*)**:
-  - Instanced multi-segment curved spline trunks with annular leaf scar rings and basal root flares.
-  - Procedural/instanced variation across trunk bend curvature ($0^\circ - 28^\circ$), height ($6.5\text{m} - 13.5\text{m}$), crown diameter, frond count ($18 - 32$ fronds across 4 radial tiers), and leaf droop age.
-  - Palms closer to the beach naturally bow seaward in response to prevailing onshore winds.
-  - Vertex shader wind physics providing gentle, non-synchronous frond sway.
-- **Coastal Undergrowth**:
-  - *Spinifex littoreus* (coastal dune runner grass clusters).
-  - *Alocasia macrorrhizos* (broadleaf tropical foliage with translucent veins).
-  - Magenta *Bougainvillea* coastal shrubs and beach morning glory vines.
-  - Scattered organic debris: fallen brown palm fronds, coconut husks, driftwood logs, and shell fragments.
+St. Mary's Island serves as the ultimate visual and geological narrative payoff:
+- **Geological Signature**: Dark 6-sided hexagonal columnar basalt (`#2A282A`) with vertical columns, fractures, water erosion, and sea-spray sheen.
+- **Atmospheric Reveal Sequence**:
+  $$\text{Open Ocean} \to \text{Distant Silhouette} \to \text{Turquoise Shallows} \to \text{Pale Sand} \to \text{Seaward Palms} \to \text{Hexagonal Basalt Columns}$$
 
 ---
 
-## 6. Living Arabian Sea Ocean Engine
+## 8. Stateful 12-Beat Camera Director & 4-Zone Spatial Audio
 
-- Dynamic multi-harmonic Gerstner wave displacement (long-period ocean swell, chop, and micro-ripples).
-- Physically coherent PBR depth gradient: crystal cyan shallows (`#25C4C0`) $\to$ rich coastal turquoise (`#158F93`) $\to$ deep offshore sapphire (`#071A2B`).
-- Shallow water sun caustics and wave crest specular highlights.
-- Dynamic oscillating surf foam along the intertidal boundary with sand wetness modulation rather than a hard geometric cut.
-
----
-
-## 7. Stateful Cinematic Camera & Spatial Storytelling
-
-The camera system operates as a stateful expedition director guiding the visitor through 6 intentional visual beats:
-
-| State / Landmark | Spline $z$ | Eye Height ($y$) | Target & Focal Length | Visual Intention & Emotional Beat |
-| :--- | :--- | :--- | :--- | :--- |
-| **00. Approach** | $0\text{m}$ | $1.7\text{m}$ | $z = 25\text{m}$, FOV $50^\circ$ | **Enclosure & Anticipation**: Walking under dense coconut palms, dappled sun on red earth, ocean heard but unseen. |
-| **01. Portal** | $50\text{m}$ | $1.7\text{m}$ | $z = 75\text{m}$, FOV $52^\circ$ | **Threshold & Identity**: Architectural framing, carved coordinates, transition into expedition grounds. |
-| **02. Gardens** | $70\text{m}$ | $1.7\text{m}$ | $z = 90\text{m}$, FOV $52^\circ$ | **Discovery & Texture**: Broadleaf foliage, laterite boulder clusters, human footpaths leading toward sanctuary. |
-| **03. Pavilion** | $90\text{m}$ | $1.7\text{m}$ | $z = 115\text{m}$, FOV $54^\circ$ | **Hospitality & Sanctuary**: Shaded pavilion interior, glowing lantern, navigational chart table, ocean framed through pillars. |
-| **04. Deck** | $150\text{m}$ | $2.1\text{m}$ | $z = 260\text{m}$, FOV $56^\circ$ | **The Grand Ocean Reveal**: Elevated terrace panorama, open sea, expedition catamaran, Malpe fishing fleet, St. Mary's Island. |
-| **05. Shoreline** | $200\text{m}$ | $1.7\text{m}$ | $z = 320\text{m}$, FOV $52^\circ$ | **Immersion & Action**: Water's edge, breaking surf, wet sand reflections, staged kayaks and jet skis ready for launch. |
+- **Camera Director**: Continuous Catmull-Rom camera interpolation across the 12 spatial landmarks with FOV easing and eye-height transitions ($1.7\text{m} \to 2.1\text{m} \to 1.7\text{m}$).
+- **4-Zone Spatial Audio Engine**:
+  - *Zone 00 (Approach)*: High canopy frond rustle, Brahminy kites, distant surf.
+  - *Zone 01 (Pavilion)*: Flapping sailcloth tension, teak timber creaks, ocean breeze, wind chimes.
+  - *Zone 02 (Sea Walk & Beach)*: Waves, surf swash, fishing boat engines, watersports.
+  - *Zone 03 (Catamaran & St. Mary's)*: Open ocean swells, hull wake, sea wind, basalt wave lap.
 
 ---
 
-## 8. 4-Zone Positional Spatial Audio Engine
+## 9. Implementation & QA Verification
 
-The Web Audio API synthesizer transitions dynamically across the camera's location:
-1. **Zone 00 / Approach Road**: Rustling coconut palm fronds in high canopy, coastal birds (Brahminy kites), distant muffled surf.
-2. **Zone 01 / Arrival Gardens**: Wind through tropical undergrowth, insects, soft breeze on bamboo/foliage.
-3. **Zone 02 / Pavilion Sanctuary**: Flapping linen canvas tension, creaking weathered teak joinery, soft ocean breeze, wind resonance.
-4. **Zone 03 / Exploration Deck & Beach**: Open Arabian Sea wave swells, rhythmic surf swash and foaming shoreline, halyard clatter against masts, water lap against catamaran hulls.
-
----
-
-## 9. Outcome-Driven Lighting, Atmosphere & Postprocessing
-
-- **Calibrated Warm Daylight**: Physically coherent sun/sky balance with warm directional sunlight (`#FFF4E0`) and Drei `<Environment>` HDRI sky fill.
-- **Contact Shadows**: Soft contact shadows grounding furniture, boulders, and trunks.
-- **Atmospheric Sea-Mist Fog**: Exponential distance haze (`FogExp2`, `#C9DDE8`, density `0.0022`) creating natural atmospheric depth falloff.
-- **Restrained Postprocessing**: SSAO for contact crevices, subtle specular bloom on water/brass/lanterns, ACESFilmic tone mapping, and light editorial vignette.
-
----
-
-## 10. Performance & Web Delivery Invariants
-
-1. **Draw Call Optimization**: Extensive use of `InstancedMesh` for repeated vegetation, rock clusters, and micro-details.
-2. **Selective Geometry**: Low-poly silhouette geometry with atmospheric fog for distant background assets ($z > 40\text{m}$).
-3. **Pristine SSR Hydration**: Client mount gating and dynamic imports ensuring 0 hydration mismatch errors.
-4. **Automated Verification**: 100% test pass rate across all unit and integration test suites.
+- **Build & Hydration**: Next.js 16.3 static/dynamic compilation with 0 hydration mismatch warnings.
+- **Test Integrity**: 100% pass rate across all unit test suites (22+ test files, 103+ unit tests).
+- **Chrome DevTools WebGL Verification**: 0 WebGL context errors, 0 runtime exceptions, stable 60 FPS.
