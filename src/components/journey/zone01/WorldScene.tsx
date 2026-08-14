@@ -31,24 +31,21 @@ const CameraController: React.FC<CameraControllerProps> = ({
   const isFirstFrame = useRef(true);
 
   useFrame(() => {
-    const { position, lookAt, currentLandmark, nextLandmark } = getInterpolatedCameraState(
+    const { position, lookAt, fov, currentLandmark } = getInterpolatedCameraState(
       spline,
       splineProgress,
       LANDMARK_NODES
     );
 
-    // Smooth continuous interpolation of human eye height (1.7m eye-level, 2.1m on Exploration Deck)
-    let eyeHeight = 1.7;
-    if (currentLandmark && nextLandmark) {
-      const span = nextLandmark.splineProgress - currentLandmark.splineProgress;
-      const safeT = Math.max(0, Math.min(1, splineProgress));
-      const progressInSpan = span > 0 ? (safeT - currentLandmark.splineProgress) / span : 0;
-      eyeHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, progressInSpan);
-    } else if (currentLandmark) {
-      eyeHeight = currentLandmark.cameraHeight;
-    }
+    const targetPos = position.clone();
 
-    const targetPos = new THREE.Vector3(position.x, position.y + eyeHeight, position.z);
+    // Dynamically update camera FOV smoothly
+    if (camera instanceof THREE.PerspectiveCamera) {
+      if (Math.abs(camera.fov - fov) > 0.001) {
+        camera.fov = THREE.MathUtils.lerp(camera.fov, fov, 0.08);
+        camera.updateProjectionMatrix();
+      }
+    }
 
     // Controlled Look-Mode: apply allowable yaw/pitch limits from current landmark
     const targetLookAt = lookAt.clone();

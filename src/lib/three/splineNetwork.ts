@@ -19,6 +19,7 @@ export interface SplineLandmark {
   position: THREE.Vector3;
   lookAt: THREE.Vector3;
   cameraHeight: number;
+  fov: number; // Camera field of view in degrees
   arrivalVelocity: number;
   departureVelocity: number;
   allowableLookRange: {
@@ -35,11 +36,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "road-entrance",
     name: "MALPE COASTAL ROAD",
-    subtitle: "Approaching the Coral Gateway",
+    subtitle: "Approach Road: Dense Canopy & Coastal Anticipation",
     splineProgress: 0.0,
     position: new THREE.Vector3(WORLD_ANCHORS.ROAD_ENTRANCE.x, WORLD_ANCHORS.ROAD_ENTRANCE.y, WORLD_ANCHORS.ROAD_ENTRANCE.z),
     lookAt: new THREE.Vector3(0, 1.7, 25),
     cameraHeight: 1.7,
+    fov: 50,
     arrivalVelocity: 0,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -45, maxYaw: 45, minPitch: -20, maxPitch: 25 },
@@ -62,11 +64,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "coral-portal",
     name: "CORAL GATEWAY & WAYFINDING",
-    subtitle: "Carved Teak Totem (13°21′02″ N · 74°42′08″ E)",
+    subtitle: "Expedition Portal: Architectural Threshold (13°21′02″ N · 74°42′08″ E)",
     splineProgress: 0.2,
     position: new THREE.Vector3(WORLD_ANCHORS.CORAL_PORTAL.x, WORLD_ANCHORS.CORAL_PORTAL.y, WORLD_ANCHORS.CORAL_PORTAL.z),
     lookAt: new THREE.Vector3(0, 1.7, 75),
     cameraHeight: 1.7,
+    fov: 52,
     arrivalVelocity: 1,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -55, maxYaw: 55, minPitch: -25, maxPitch: 30 },
@@ -89,11 +92,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "garden-path",
     name: "COASTAL ARRIVAL GARDENS",
-    subtitle: "Indigenous Karnataka Flora & Laterite Walkway",
+    subtitle: "Arrival Gardens: Indigenous Flora & Laterite Walkway",
     splineProgress: 0.4,
     position: new THREE.Vector3(WORLD_ANCHORS.GARDEN_PATH.x, WORLD_ANCHORS.GARDEN_PATH.y, WORLD_ANCHORS.GARDEN_PATH.z),
     lookAt: new THREE.Vector3(0, 1.7, 90),
     cameraHeight: 1.7,
+    fov: 52,
     arrivalVelocity: 1,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -60, maxYaw: 60, minPitch: -25, maxPitch: 35 },
@@ -116,11 +120,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "pavilion-center",
     name: "CORAL ARRIVAL PAVILION",
-    subtitle: "Open-Air Shaded Teak Lounge & Reception",
+    subtitle: "Welcome Pavilion: Open-Air Shaded Teak Lounge & Reception",
     splineProgress: 0.6,
     position: new THREE.Vector3(WORLD_ANCHORS.PAVILION_CENTER.x, WORLD_ANCHORS.PAVILION_CENTER.y, WORLD_ANCHORS.PAVILION_CENTER.z),
-    lookAt: new THREE.Vector3(0, 1.7, 130),
+    lookAt: new THREE.Vector3(0, 1.7, 115),
     cameraHeight: 1.7,
+    fov: 54,
     arrivalVelocity: 1,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -75, maxYaw: 75, minPitch: -30, maxPitch: 40 },
@@ -143,11 +148,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "exploration-deck",
     name: "CORAL EXPLORATION DECK",
-    subtitle: "Elevated Terrace Framing Malpe Beach & Sea",
+    subtitle: "Exploration Deck: Elevated Panorama Reveal Framing Open Arabian Sea",
     splineProgress: 0.8,
     position: new THREE.Vector3(WORLD_ANCHORS.EXPLORATION_DECK.x, WORLD_ANCHORS.EXPLORATION_DECK.y, WORLD_ANCHORS.EXPLORATION_DECK.z),
-    lookAt: new THREE.Vector3(0, 1.7, 200),
+    lookAt: new THREE.Vector3(0, 1.7, 260),
     cameraHeight: 2.1,
+    fov: 56,
     arrivalVelocity: 1,
     departureVelocity: 1,
     allowableLookRange: { minYaw: -90, maxYaw: 90, minPitch: -35, maxPitch: 45 },
@@ -170,11 +176,12 @@ export const LANDMARK_NODES: SplineLandmark[] = [
   {
     id: "beach-shoreline",
     name: "MALPE BEACH PROMENADE & SHORELINE",
-    subtitle: "Golden Sands, Turquoise Shallows & Marine Fleet",
+    subtitle: "Living Beach & Shoreline: Intertidal Edge, Surf Swash & Fleet",
     splineProgress: 1.0,
     position: new THREE.Vector3(WORLD_ANCHORS.BEACH_SHORELINE.x, WORLD_ANCHORS.BEACH_SHORELINE.y, WORLD_ANCHORS.BEACH_SHORELINE.z),
-    lookAt: new THREE.Vector3(0, 1.5, 250),
+    lookAt: new THREE.Vector3(0, 1.5, 320),
     cameraHeight: 1.7,
+    fov: 52,
     arrivalVelocity: 1,
     departureVelocity: 0,
     allowableLookRange: { minYaw: -110, maxYaw: 110, minPitch: -35, maxPitch: 45 },
@@ -208,6 +215,8 @@ export function getInterpolatedCameraState(
 ): {
   position: THREE.Vector3;
   lookAt: THREE.Vector3;
+  fov: number;
+  cameraHeight: number;
   currentLandmark: SplineLandmark | null;
   nextLandmark: SplineLandmark | null;
 } {
@@ -227,12 +236,17 @@ export function getInterpolatedCameraState(
   }
 
   let lookAt = currentLandmark ? currentLandmark.lookAt.clone() : position.clone().add(new THREE.Vector3(0, 0, 10));
+  let fov = currentLandmark ? currentLandmark.fov : 52;
+  let cameraHeight = currentLandmark ? currentLandmark.cameraHeight : 1.7;
 
   if (currentLandmark && nextLandmark) {
     const span = nextLandmark.splineProgress - currentLandmark.splineProgress;
     const progressInSpan = span > 0 ? (safeT - currentLandmark.splineProgress) / span : 0;
     lookAt.lerp(nextLandmark.lookAt, progressInSpan);
+    fov = THREE.MathUtils.lerp(currentLandmark.fov, nextLandmark.fov, progressInSpan);
+    cameraHeight = THREE.MathUtils.lerp(currentLandmark.cameraHeight, nextLandmark.cameraHeight, progressInSpan);
   }
 
-  return { position, lookAt, currentLandmark, nextLandmark };
+  return { position, lookAt, fov, cameraHeight, currentLandmark, nextLandmark };
 }
+
