@@ -11,11 +11,11 @@ export function BeachShorelineCanvas() {
         style={{
           background: `linear-gradient(
             to bottom,
-            #074751 0%,       /* Top 0-140px: Deep Arabian Sea turquoise water across entire width */
+            #063B44 0%,       /* Top 0-140px: Deep Arabian Sea turquoise water across entire width */
             #0D9488 2.2%,     /* Shallow turquoise water swash */
             #A69070 3.8%,     /* Wet reflective sand wash line */
             #D8C9B0 5.5%,     /* Damp transition sand with wind ripples */
-            #F5EADB 10%,      /* 01 Arrival: Warm golden dry sand */
+            #F6EBDE 10%,      /* 01 Arrival: Warm golden dry sand */
             #EBDAB8 20%,      /* 02 Watersports: High sun golden sand */
             #D8C49E 34%,      /* 03 Catamaran: Ocean breeze golden sand */
             #CAA97B 48%,      /* 04 Onboard: Afternoon warm amber sand */
@@ -34,7 +34,7 @@ export function BeachShorelineCanvas() {
         <div 
           className="absolute inset-0 w-full h-[220px]"
           style={{
-            background: "linear-gradient(180deg, #053B44 0%, #0B7480 35%, #14B8A6 75%, transparent 100%)",
+            background: "linear-gradient(180deg, #043038 0%, #096874 35%, #14B8A6 75%, transparent 100%)",
           }}
         />
 
@@ -44,14 +44,14 @@ export function BeachShorelineCanvas() {
           <path
             d="M 0 0 L 1440 0 L 1440 160 Q 1180 190 920 150 T 460 175 Q 220 195 0 165 Z"
             fill="#0D8997"
-            opacity="0.88"
+            opacity="0.9"
           />
 
           {/* Wet Reflective Sand Glisten Layer */}
           <path
             d="M 0 0 L 1440 0 L 1440 240 Q 1200 270 940 230 T 480 255 Q 240 275 0 245 Z"
             fill="#AFA089"
-            opacity="0.6"
+            opacity="0.65"
           />
 
           {/* Main Foaming Surf Wave 1 */}
@@ -60,7 +60,7 @@ export function BeachShorelineCanvas() {
             stroke="#FFFFFF"
             strokeWidth="18"
             strokeLinecap="round"
-            opacity="0.85"
+            opacity="0.88"
             filter="blur(3px)"
           />
 
@@ -87,26 +87,26 @@ export function BeachShorelineCanvas() {
           <path
             d="M 0 245 Q 240 275 480 255 T 940 275 Q 1200 240 1440 268"
             stroke="#FFFFFF"
-            strokeWidth="3"
+            strokeWidth="3.2"
             strokeDasharray="18 12 35 15"
             strokeLinecap="round"
-            opacity="0.8"
+            opacity="0.85"
           />
 
           {/* Washed-Up Dark Seaweed Strands along Shoreline (Z=260px) */}
-          <path d="M 120 250 Q 140 255 165 248 T 210 254" stroke="#253518" strokeWidth="2.5" opacity="0.75" />
-          <path d="M 680 265 Q 705 272 730 266 T 770 270" stroke="#2A3B1C" strokeWidth="3" opacity="0.7" />
-          <path d="M 1120 252 Q 1145 260 1175 255 T 1220 258" stroke="#253518" strokeWidth="2.5" opacity="0.75" />
+          <path d="M 120 250 Q 140 255 165 248 T 210 254" stroke="#253518" strokeWidth="2.5" opacity="0.8" />
+          <path d="M 680 265 Q 705 272 730 266 T 770 270" stroke="#2A3B1C" strokeWidth="3" opacity="0.75" />
+          <path d="M 1120 252 Q 1145 260 1175 255 T 1220 258" stroke="#253518" strokeWidth="2.5" opacity="0.8" />
         </svg>
       </div>
 
       {/* 3. Procedural SVG Sand Micro-Grain Noise */}
       <svg className="absolute inset-0 w-full h-full opacity-45 mix-blend-multiply pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-        <filter id="coastalSandGrainsMaster">
+        <filter id="coastalSandGrainsUltra">
           <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch" />
           <feColorMatrix type="matrix" values="0.33 0 0 0 0.55  0 0.33 0 0 0.48  0 0 0.33 0 0.38  0 0 0 0.5 0" />
         </filter>
-        <rect width="100%" height="100%" filter="url(#coastalSandGrainsMaster)" />
+        <rect width="100%" height="100%" filter="url(#coastalSandGrainsUltra)" />
       </svg>
 
       {/* 4. Rich Physical Debris, Footprints & Natural Coastal Artifacts on Sand */}
@@ -140,7 +140,7 @@ export function BeachShorelineCanvas() {
         </g>
 
         {/* Subtle Handmade Sand Turtle Sculpture near Arrival (Z=740px) */}
-        <g transform="translate(160, 740) rotate(-18) scale(0.85)" opacity="0.3" fill="#422915">
+        <g transform="translate(160, 740) rotate(-18) scale(0.85)" opacity="0.32" fill="#422915">
           <ellipse cx="0" cy="0" rx="28" ry="36" />
           <ellipse cx="0" cy="-42" rx="10" ry="12" />
           <ellipse cx="-28" cy="-20" rx="8" ry="16" transform="rotate(-30 -28 -20)" />

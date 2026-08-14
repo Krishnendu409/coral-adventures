@@ -30,9 +30,9 @@ export function BeachPolaroidHero({
   priority = true,
 }: BeachPolaroidHeroProps) {
   const shadowStyles = {
-    day: "shadow-[24px_34px_55px_rgba(70,45,20,0.35),_4px_8px_16px_rgba(0,0,0,0.16)]",
-    sunset: "shadow-[36px_44px_70px_rgba(90,40,10,0.45),_6px_10px_20px_rgba(0,0,0,0.22)]",
-    night: "shadow-[18px_24px_48px_rgba(4,10,25,0.65),_3px_6px_14px_rgba(0,0,0,0.45)]",
+    day: "shadow-[28px_38px_60px_rgba(70,45,20,0.38),_4px_8px_16px_rgba(0,0,0,0.18)]",
+    sunset: "shadow-[42px_50px_75px_rgba(90,40,10,0.48),_6px_12px_22px_rgba(0,0,0,0.25)]",
+    night: "shadow-[20px_28px_52px_rgba(4,10,25,0.7),_3px_8px_16px_rgba(0,0,0,0.5)]",
   }[shadowAngle];
 
   return (
