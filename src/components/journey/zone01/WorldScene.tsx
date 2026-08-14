@@ -194,8 +194,19 @@ function checkWebGLSupport(): boolean {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
     if (!gl) return false;
-    const attrs = typeof gl.getContextAttributes === 'function' ? gl.getContextAttributes() : null;
-    return !!(window.WebGLRenderingContext && attrs && typeof attrs.alpha !== 'undefined');
+
+    // Check context is valid, then immediately release it to avoid
+    // exhausting the browser's WebGL context limit (typically 8-16).
+    const supported = !!window.WebGLRenderingContext;
+    const ext = gl.getExtension('WEBGL_lose_context');
+    if (ext) {
+      ext.loseContext();
+    }
+    // Detach canvas from any references
+    canvas.width = 0;
+    canvas.height = 0;
+
+    return supported;
   } catch {
     return false;
   }
@@ -320,13 +331,21 @@ export const WorldScene: React.FC<WorldSceneProps> = ({
             shadows
             dpr={[1, 1.5]}
             gl={{
+              alpha: true,
               antialias: true,
               preserveDrawingBuffer: true,
               toneMapping: THREE.ACESFilmicToneMapping,
               toneMappingExposure: 1.15,
-              powerPreference: 'high-performance'
+              powerPreference: 'high-performance',
+              failIfMajorPerformanceCaveat: false
             }}
             camera={{ fov: 52, near: 0.1, far: 2000 }}
+            onCreated={({ gl }) => {
+              // Ensure context is valid after creation
+              if (!gl.getContext()?.getContextAttributes()) {
+                console.warn('WebGL context attributes unavailable, scene may have rendering limitations');
+              }
+            }}
           >
             <color attach="background" args={['#F5E8D8']} />
 
