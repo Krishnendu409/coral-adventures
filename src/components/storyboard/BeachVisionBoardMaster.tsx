@@ -9,6 +9,14 @@ import { BeachPolaroidHero } from "./BeachPolaroidHero";
 import { PhysicalPolaroid } from "./PhysicalPolaroid";
 import { PhysicalPaperNote } from "./PhysicalPaperNote";
 import { RubberStamp, BrassCompass, Seashell } from "./PhysicalEphemera";
+import {
+  CoiledRope,
+  ActivityWristband,
+  BuoyTag,
+  LifeJacketStrap,
+  DrinkCoaster,
+  SeaGlass,
+} from "./PhysicalBeachDebris";
 import { BoardingPassStub } from "../editorial/ephemera/BoardingPassStub";
 import { AmbientSoundToggle } from "./AmbientSoundToggle";
 
@@ -181,7 +189,7 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
-          {/* Ephemera on Sand */}
+          {/* Physical Debris on Sand */}
           <div className="absolute top-[520px] left-[52%] z-20">
             <RubberStamp
               label="CORAL EXPEDITION"
@@ -193,6 +201,9 @@ export function BeachVisionBoardMaster() {
           </div>
           <div className="absolute top-[1260px] left-[46%] z-20">
             <Seashell type="cowrie" rotation={28} />
+          </div>
+          <div className="absolute top-[1380px] left-[28%] z-20">
+            <SeaGlass color="turquoise" rotation={15} />
           </div>
         </section>
 
@@ -263,6 +274,20 @@ export function BeachVisionBoardMaster() {
               rotation={-3}
               shadowIntensity="day"
             />
+          </div>
+
+          {/* Physical Beach Objects in Watersports Zone */}
+          <div className="absolute top-[680px] right-[42%] z-25">
+            <ActivityWristband color="cyan" code="ACT-24KT" label="MALPE SURF PASS" rotation={-6} />
+          </div>
+          <div className="absolute top-[820px] right-[36%] z-25">
+            <BuoyTag rotation={14} />
+          </div>
+          <div className="absolute top-[1180px] right-[40%] z-20">
+            <CoiledRope rotation={-22} />
+          </div>
+          <div className="absolute top-[1340px] left-[32%] z-20">
+            <LifeJacketStrap rotation={-12} />
           </div>
 
           {/* Torn Paper Note: Watersports */}
@@ -350,6 +375,17 @@ export function BeachVisionBoardMaster() {
               rotation={2.5}
               shadowIntensity="day"
             />
+          </div>
+
+          {/* Physical Objects: Marine Coiled Rope & Vessel Tag */}
+          <div className="absolute top-[680px] left-[45%] z-20">
+            <CoiledRope rotation={18} />
+          </div>
+          <div className="absolute top-[880px] left-[38%] z-25">
+            <ActivityWristband color="amber" code="CAT-25.90M" label="FLAGSHIP MANIFEST" rotation={4} />
+          </div>
+          <div className="absolute top-[1320px] right-[44%] z-20">
+            <SeaGlass color="amber" rotation={-25} />
           </div>
 
           {/* Brass Pocket Compass on Sand */}
@@ -441,6 +477,14 @@ export function BeachVisionBoardMaster() {
             />
           </div>
 
+          {/* Physical Onboard Ephemera: Drink Coaster & DJ Pass */}
+          <div className="absolute top-[620px] right-[46%] z-25">
+            <DrinkCoaster rotation={8} />
+          </div>
+          <div className="absolute top-[820px] right-[40%] z-25">
+            <ActivityWristband color="orange" code="DJ-SUNSET" label="UPPER DECK PASS" rotation={-5} />
+          </div>
+
           {/* Torn Paper Note: Gastronomy */}
           <div className="absolute top-[1100px] right-8 sm:right-28 z-25">
             <PhysicalPaperNote
@@ -522,6 +566,14 @@ export function BeachVisionBoardMaster() {
               rotation={3}
               shadowIntensity="sunset"
             />
+          </div>
+
+          {/* Physical Basalt Props */}
+          <div className="absolute top-[720px] left-[44%] z-20">
+            <BuoyTag rotation={-8} />
+          </div>
+          <div className="absolute top-[1340px] left-[42%] z-20">
+            <SeaGlass color="white" rotation={35} />
           </div>
 
           {/* Torn Paper Note: Geology */}
