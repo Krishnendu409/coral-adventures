@@ -10,6 +10,20 @@ import { createPalmFrondTexture, createBroadleafTexture } from '../lib/three/tex
 import { resourceManager } from '../lib/three/ResourceManager';
 import { JOURNEY_ASSETS } from '../data/journeyAssets';
 
+// Mock fetch and ResourceManager to prevent unhandled network requests in unit tests
+beforeAll(() => {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    arrayBuffer: async () => new ArrayBuffer(0),
+    json: async () => ({}),
+  } as any);
+  vi.spyOn(resourceManager, 'loadModel').mockResolvedValue(null as any);
+});
+
+afterAll(() => {
+  vi.restoreAllMocks();
+});
+
 vi.mock('@react-three/fiber', async () => {
   const actual = await vi.importActual<any>('@react-three/fiber');
   return {

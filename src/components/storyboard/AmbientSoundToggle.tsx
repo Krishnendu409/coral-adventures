@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 export function AmbientSoundToggle() {
@@ -78,18 +78,19 @@ export function AmbientSoundToggle() {
   return (
     <button
       onClick={toggleAudio}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-3 py-2 bg-[#FAF6EE]/90 hover:bg-[#FAF6EE] text-[#0A2540] backdrop-blur-md rounded-full shadow-lg border border-[#0A2540]/15 transition-all text-xs font-mono tracking-wider cursor-pointer"
+      aria-label="Toggle gentle ocean ambient sound"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-3.5 py-2 bg-[#FAF7F0]/95 hover:bg-[#FAF7F0] text-[#0A2540] backdrop-blur-md rounded-full shadow-lg border border-[#0A2540]/20 transition-all text-xs font-mono tracking-wider cursor-pointer active:scale-95"
       title="Toggle gentle ocean ambient sound"
     >
       {isPlaying ? (
         <>
           <Volume2 className="w-4 h-4 text-[#C2410C] animate-pulse" />
-          <span className="text-[11px] font-semibold text-[#C2410C]">ARABIAN SEA SURF</span>
+          <span className="text-[11px] font-bold text-[#C2410C]">ARABIAN SEA SURF</span>
         </>
       ) : (
         <>
-          <VolumeX className="w-4 h-4 text-[#0A2540]/60" />
-          <span className="text-[11px] text-[#0A2540]/75">ENABLE AMBIENCE</span>
+          <VolumeX className="w-4 h-4 text-[#0A2540]/70" />
+          <span className="text-[11px] font-semibold text-[#0A2540]/80">ENABLE AMBIENCE</span>
         </>
       )}
     </button>

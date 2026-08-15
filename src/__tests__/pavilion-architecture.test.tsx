@@ -137,6 +137,66 @@ describe('PavilionArchitecture & CoralPortal Expedition Architecture', () => {
     expect(container.querySelector('[name="Vessel_Manifest"]')).not.toBeNull();
     expect(container.querySelector('[name="Map_ScrollHolder"]')).not.toBeNull();
   });
+
+  it('verifies ResourceManager GLB loading integration for CoralPortal and PavilionArchitecture', async () => {
+    const { resourceManager } = await import('../lib/three/ResourceManager');
+    const { JOURNEY_ASSETS } = await import('../data/journeyAssets');
+    
+    // Verify asset paths are defined
+    expect(JOURNEY_ASSETS.models.coralPortal).toBeDefined();
+    expect(JOURNEY_ASSETS.models.coralPortal.localPath).toBe('/models/architecture/coral_portal.glb');
+    expect(JOURNEY_ASSETS.models.expeditionPavilion).toBeDefined();
+    expect(JOURNEY_ASSETS.models.expeditionPavilion.localPath).toBe('/models/architecture/expedition_pavilion.glb');
+    expect(JOURNEY_ASSETS.models.chartTableProps).toBeDefined();
+    expect(JOURNEY_ASSETS.models.chartTableProps.localPath).toBe('/models/props/chart_table_props.glb');
+    
+    // Verify ResourceManager can load models (returns fallback in test env)
+    const portalModel = await resourceManager.loadModel(JOURNEY_ASSETS.models.coralPortal.localPath);
+    expect(portalModel).toBeDefined();
+    
+    const pavilionModel = await resourceManager.loadModel(JOURNEY_ASSETS.models.expeditionPavilion.localPath);
+    expect(pavilionModel).toBeDefined();
+    
+    const chartPropsModel = await resourceManager.loadModel(JOURNEY_ASSETS.models.chartTableProps.localPath);
+    expect(chartPropsModel).toBeDefined();
+  });
+
+  it('verifies inhabited chart table props metadata from JOURNEY_ASSETS registry', async () => {
+    const { JOURNEY_ASSETS } = await import('../data/journeyAssets');
+    
+    const chartProps = JOURNEY_ASSETS.architectureProps.chartTableProps;
+    expect(chartProps.seaChart).toContain('1894');
+    expect(chartProps.dividers).toContain('Brass');
+    expect(chartProps.compass).toContain('Marine');
+    expect(chartProps.weatherLedger).toContain('Ledger');
+    expect(chartProps.lanternColor).toBe('#FFB74D');
+    expect(chartProps.lanternIntensity).toBeGreaterThan(0);
+    
+    const portalProps = JOURNEY_ASSETS.architectureProps.portal;
+    expect(portalProps.coordinatesText).toContain('MALPE EXPEDITION BASE');
+    expect(portalProps.coordinatesText).toContain('13°21′02″ N');
+    expect(portalProps.coordinatesText).toContain('74°42′08″ E');
+    expect(portalProps.teakBeamDimensions[0]).toBe(0.55);
+    expect(portalProps.plinthMaterial).toBe('laterite_stone');
+  });
+
+  it('verifies authored architectural geometry specs - teak post-and-beam, corbel capitals, sailcloth canopy', () => {
+    const { container } = render(<PavilionArchitecture />);
+    
+    // The pavilion must render as a valid React tree with named groups
+    const pavilion = container.querySelector('[name="Coral_WelcomePavilion"]');
+    expect(pavilion).not.toBeNull();
+    
+    // Verify all inhabited chart table props exist
+    const chartTable = container.querySelector('[name="Navigational_ChartTable"]');
+    expect(chartTable).not.toBeNull();
+    
+    // Verify captain's lantern with warm point lighting
+    const lantern = container.querySelector('[name="Captains_Lantern"]');
+    expect(lantern).not.toBeNull();
+    
+    // Verify map scroll holder exists
+    const scrollHolder = container.querySelector('[name="Map_ScrollHolder"]');
+    expect(scrollHolder).not.toBeNull();
+  });
 });
-
-

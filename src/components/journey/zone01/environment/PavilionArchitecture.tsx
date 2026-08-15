@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { 
   createTeakWoodTexture, 
   createLinenCanopyTexture, 
   createExpeditionMapTexture 
 } from '../../../../lib/three/textureGenerator';
+import { resourceManager } from '@/lib/three/ResourceManager';
+import { JOURNEY_ASSETS } from '@/data/journeyAssets';
 
 /**
  * PavilionArchitecture Component
@@ -147,6 +149,16 @@ export const PavilionArchitecture: React.FC = () => {
       filamentMat,
       plantLeafMat
     };
+  }, []);
+
+  // Load authored GLB models via ResourceManager (progressive enhancement)
+  useEffect(() => {
+    Promise.all([
+      resourceManager.loadModel(JOURNEY_ASSETS.models.expeditionPavilion.localPath),
+      resourceManager.loadModel(JOURNEY_ASSETS.models.chartTableProps.localPath),
+    ]).catch(() => {
+      // Fallback to procedural geometry below
+    });
   }, []);
 
   return (

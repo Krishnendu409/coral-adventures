@@ -14,3 +14,14 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Universal mock for fetch in test environment to prevent unhandled network socket rejections
+if (!global.fetch || vi.isMockFunction(global.fetch) === false) {
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    arrayBuffer: async () => new ArrayBuffer(0),
+    json: async () => ({}),
+    text: async () => '',
+  } as any);
+}

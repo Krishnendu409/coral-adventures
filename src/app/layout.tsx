@@ -28,6 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${instrumentSerif.variable}`}>
+      <head>
+        {/* Asynchronous background preload of the 3D Catamaran asset */}
+        <link
+          rel="preload"
+          href="/models/catamaran.glb"
+          as="fetch"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
         <SmoothScroll>
           {/* Global tactile noise texture */}

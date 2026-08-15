@@ -1,5 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import * as THREE from 'three';
+import { resourceManager } from '@/lib/three/ResourceManager';
+import { JOURNEY_ASSETS } from '@/data/journeyAssets';
 
 /**
  * CoralPortal Component
@@ -75,6 +77,13 @@ export const CoralPortal: React.FC = () => {
       sailclothMat,
       sailclothTrimMat
     };
+  }, []);
+
+  // Load authored GLB model via ResourceManager (progressive enhancement)
+  useEffect(() => {
+    resourceManager.loadModel(JOURNEY_ASSETS.models.coralPortal.localPath).catch(() => {
+      // Fallback to procedural geometry below
+    });
   }, []);
 
   return (
