@@ -19,10 +19,11 @@ import { ExpeditionFAQ } from '@/components/editorial/ExpeditionFAQ';
 import { ExploreGateway } from '@/components/editorial/ExploreGateway';
 
 describe('Editorial Homepage Compositions', () => {
-  it('renders Scene 01: ArrivalComposition with title and statement', () => {
+  it('renders Scene 01: ArrivalComposition with colossal title and expedition statement', () => {
     render(<ArrivalComposition />);
-    expect(screen.getByRole('heading', { level: 1, name: /coral/i })).toBeInTheDocument();
-    expect(screen.getByText(/the coast is only the beginning/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /coral adventures/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/expedition atelier/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/scroll to begin the expedition/i)).toBeInTheDocument();
   });
 
   it('renders Scene 02: CoastComposition with basalt storytelling and coordinates', () => {
