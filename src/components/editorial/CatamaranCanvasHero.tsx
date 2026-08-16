@@ -31,7 +31,7 @@ function getOrLoadCatamaranGltf(): Promise<THREE.Group> {
             if ((child as THREE.Mesh).isMesh) {
               const m = child as THREE.Mesh;
               m.castShadow = true;
-              m.receiveShadow = true;
+              m.receiveShadow = false; // Optimize GPU rasterization
 
               if (m.geometry) {
                 m.geometry.computeVertexNormals();
@@ -67,7 +67,7 @@ function getOrLoadCatamaranGltf(): Promise<THREE.Group> {
                 if ((child as THREE.Mesh).isMesh) {
                   const m = child as THREE.Mesh;
                   m.castShadow = true;
-                  m.receiveShadow = true;
+                  m.receiveShadow = false;
                   if (m.geometry) {
                     m.geometry.computeVertexNormals();
                     m.geometry.center();
@@ -151,7 +151,7 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     cameraRef.current = camera;
 
     // 3. Performance-Tuned WebGL Renderer
-    const maxDpr = isMobile ? 1.25 : 1.75;
+    const maxDpr = isMobile ? 1.25 : 1.5;
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -167,8 +167,8 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     const keyLight = new THREE.DirectionalLight(0xfff7ed, 2.7);
     keyLight.position.set(6, 8, 7);
     keyLight.castShadow = true;
-    keyLight.shadow.mapSize.width = 1024;
-    keyLight.shadow.mapSize.height = 1024;
+    keyLight.shadow.mapSize.width = 512;
+    keyLight.shadow.mapSize.height = 512;
     keyLight.shadow.bias = -0.0008;
     scene.add(keyLight);
     keyLightRef.current = keyLight;
@@ -215,15 +215,18 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
         console.error("Failed to load catamaran mesh:", err);
       });
 
-    // 7. IntersectionObserver for GPU Saving
-    let isVisible = true;
+    // 7. Strict Visibility Culling: Watch parent #vessel section to fully sleep Three.js when off-screen
+    let isSectionVisible = true;
+    const vesselSection = document.getElementById("vessel");
+    const observerTarget = vesselSection || container;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isVisible = entry.isIntersecting;
+        isSectionVisible = entry.isIntersecting;
       },
-      { rootMargin: "300px" }
+      { rootMargin: "100px", threshold: 0 }
     );
-    observer.observe(container);
+    observer.observe(observerTarget);
 
     // 8. Resize Handler with Debouncing
     let resizeTimeout: NodeJS.Timeout;
@@ -249,14 +252,18 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      if (!isVisible) return;
+      // CRITICAL: Stop rendering completely when scrolled away to prevent CPU/GPU frame drops on subsequent sections
+      if (!isSectionVisible) return;
 
       const delta = Math.min(clock.getDelta(), 0.1);
       const elapsedTime = clock.getElapsedTime();
 
-      // Exponential smooth damping for silky smooth scroll interpolation
-      const targetP = Math.min(1, Math.max(0, scrollProgressRef.current ?? 0));
-      smoothedProgress += (targetP - smoothedProgress) * (1.0 - Math.exp(-9.0 * delta));
+      // Normalize progress with soft ramp to resting pose by progress = 0.90
+      // This guarantees the boat is completely settled before the pin releases, eliminating the end-of-transition jerk!
+      const rawP = Math.min(1, Math.max(0, scrollProgressRef.current ?? 0));
+      const normalizedP = Math.min(1, rawP / 0.92);
+      
+      smoothedProgress += (normalizedP - smoothedProgress) * (1.0 - Math.exp(-12.0 * delta));
       const p = smoothedProgress;
 
       if (modelGroupRef.current) {
@@ -279,9 +286,9 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
 
         modelGroupRef.current.position.set(targetX, targetY, targetZ);
 
-        // 2. CONTINUOUS SMOOTH YAW ROTATION (Turns seamlessly without piecewise angle kinks)
-        const startYaw = 0.45; // 3/4 bow angle (looks fast and sleek)
-        const endYaw = 1.95;   // Full broadside profile
+        // 2. CONTINUOUS SMOOTH YAW ROTATION
+        const startYaw = 0.45;
+        const endYaw = 1.95;
         const targetYaw = THREE.MathUtils.lerp(startYaw, endYaw, smoothP);
 
         const targetPitch = THREE.MathUtils.lerp(0.05, 0.08, smoothP) + pitch;

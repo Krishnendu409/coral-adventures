@@ -34,8 +34,10 @@ export function VesselComposition() {
         trigger: sectionRef.current,
         pin: pinWrapperRef.current,
         start: "top top",
-        end: "+=160%",
-        scrub: 0.8,
+        end: "+=150%",
+        scrub: 1.0,
+        anticipatePin: 1,
+        pinSpacing: true,
         onUpdate: (self) => {
           scrollProgressRef.current = self.progress;
         },
@@ -49,8 +51,8 @@ export function VesselComposition() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
-            end: "+=160%",
-            scrub: 0.8,
+            end: "+=150%",
+            scrub: 1.0,
           },
         });
       }
@@ -66,9 +68,9 @@ export function VesselComposition() {
             force3D: true,
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top+=40% top",
-              end: "top+=70% top",
-              scrub: 0.8,
+              start: "top+=35% top",
+              end: "top+=65% top",
+              scrub: 1.0,
             },
           }
         );
@@ -81,7 +83,7 @@ export function VesselComposition() {
         trigger: sectionRef.current,
         start: "top bottom",
         end: "bottom top",
-        scrub: 0.8,
+        scrub: 1.0,
         onUpdate: (self) => {
           scrollProgressRef.current = self.progress;
         },
@@ -100,7 +102,7 @@ export function VesselComposition() {
       {/* Viewport Stage */}
       <div
         ref={pinWrapperRef}
-        className="relative w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden bg-[#0A2540] py-6 sm:py-8 px-6 sm:px-10 lg:px-14 select-none"
+        className="relative w-full h-screen min-h-[640px] flex flex-col justify-between overflow-hidden bg-[#0A2540] py-6 sm:py-8 px-6 sm:px-10 lg:px-14 select-none will-change-transform"
       >
         {/* Soft Radial Ambient Glow */}
         <div className="absolute top-1/3 right-10 lg:right-28 w-[30rem] lg:w-[45rem] h-[30rem] lg:h-[45rem] bg-[#0D9488]/15 rounded-full blur-3xl pointer-events-none" />
@@ -136,7 +138,7 @@ export function VesselComposition() {
           <CatamaranCanvasHero scrollProgressRef={scrollProgressRef} />
         </div>
 
-        {/* 4. Left Editorial Narrative Column with BIGGER Headline */}
+        {/* 4. Left Editorial Narrative Column */}
         <div className="relative z-20 w-full my-auto flex items-center pointer-events-none">
           <div
             ref={textColRef}
