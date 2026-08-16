@@ -15,6 +15,8 @@ interface TypologyItem {
   imageSrc: string;
   imageAlt: string;
   highlightColor: string;
+  duration: string;
+  vibe: string;
 }
 
 const TYPOLOGIES: TypologyItem[] = [
@@ -24,10 +26,12 @@ const TYPOLOGIES: TypologyItem[] = [
     count: "(04)",
     title: "Sunset Westbound Voyage",
     subtitle: "GOLDEN HOUR HORIZON",
-    description: "Chase the light across the Arabian Sea as the sky shifts into burnt amber and lavender twilight.",
+    description: "Chase the light across the Arabian Sea as the sky shifts into burnt amber and lavender twilight with open sky deck cocktails.",
     imageSrc: "/images/sunset_catamaran.jpg",
     imageAlt: "Sunset cruise catamaran",
     highlightColor: "text-[#D97706]",
+    duration: "2.5 HOURS · 17:00 — 19:30",
+    vibe: "TRANQUIL & CINEMATIC",
   },
   {
     id: "basalt",
@@ -39,6 +43,8 @@ const TYPOLOGIES: TypologyItem[] = [
     imageSrc: "/images/st_marys_island.jpg",
     imageAlt: "Basalt rock columns",
     highlightColor: "text-[#0D9488]",
+    duration: "3.5 HOURS · 09:30 — 13:00",
+    vibe: "EXPLORATION & HERITAGE",
   },
   {
     id: "charter",
@@ -46,10 +52,12 @@ const TYPOLOGIES: TypologyItem[] = [
     count: "(08)",
     title: "Private Catamaran Charter",
     subtitle: "EXCLUSIVE PASSAGE",
-    description: "The entire 25.90M vessel reserved exclusively for your private party, family reunion, or milestone celebration.",
+    description: "The entire 25.90M vessel reserved exclusively for your private party, family reunion, or milestone celebration with bespoke service.",
     imageSrc: "/images/vessel_catamaran.jpg",
     imageAlt: "Private luxury catamaran",
     highlightColor: "text-[#C2410C]",
+    duration: "CUSTOM TIMELINE · EXCLUSIVE",
+    vibe: "ULTRA-LUXURY & PRIVACY",
   },
   {
     id: "watersports",
@@ -61,6 +69,8 @@ const TYPOLOGIES: TypologyItem[] = [
     imageSrc: "/images/wave_foam_crest.jpg",
     imageAlt: "Active wave crest and spray",
     highlightColor: "text-[#0D9488]",
+    duration: "4.0 HOURS · FULL AQUATIC PASS",
+    vibe: "HIGH ADRENALINE",
   },
   {
     id: "dinner",
@@ -68,10 +78,12 @@ const TYPOLOGIES: TypologyItem[] = [
     count: "(06)",
     title: "Open Teak Twilight Gastronomy",
     subtitle: "CANDLELIT TEAK DECK",
-    description: "Fresh coastal seafood and artisanal pairings served under twilight on open teak tables with no walls.",
+    description: "Fresh coastal seafood and artisanal Karavali pairings served under twilight on open teak tables with no walls.",
     imageSrc: "/images/dining_deck.jpg",
     imageAlt: "Candlelit teak dining at sea",
     highlightColor: "text-[#C2410C]",
+    duration: "3.0 HOURS · 19:30 — 22:30",
+    vibe: "FINE COASTAL DINING",
   },
 ];
 
@@ -134,7 +146,7 @@ export function ExpeditionTypology() {
             </div>
 
             {/* Interactive Options List with Enhanced Active/Inactive Contrast */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3.5">
               {TYPOLOGIES.map((item) => {
                 const isCurrent = item.id === selectedId;
                 return (
@@ -142,16 +154,21 @@ export function ExpeditionTypology() {
                     key={item.id}
                     onClick={() => setSelectedId(item.id)}
                     className={cn(
-                      "text-left group flex items-baseline justify-between py-4 px-5 sm:px-7 transition-all duration-300 rounded-xs cursor-pointer border",
+                      "text-left group relative flex items-baseline justify-between py-4 sm:py-5 px-5 sm:px-7 transition-all duration-300 rounded-xs cursor-pointer border",
                       isCurrent
-                        ? "bg-[#FAF6EE] text-[#0A2540] shadow-2xl border-white translate-x-2"
+                        ? "bg-[#FAF6EE] text-[#0A2540] shadow-[0_12px_30px_rgba(0,0,0,0.25)] border-white translate-x-2"
                         : "border-white/15 bg-[#0F3931]/60 hover:bg-[#0F3931]/90 text-white/90 hover:text-white hover:translate-x-1 backdrop-blur-xs"
                     )}
                   >
+                    {/* Active Accent Indicator */}
+                    {isCurrent && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#F59E0B] rounded-l-xs" />
+                    )}
+
                     <div className="flex items-baseline gap-4 sm:gap-6">
                       <span className={cn(
-                        "text-xs font-mono font-bold",
-                        isCurrent ? "text-[#0A2540]/60" : "text-white/50"
+                        "text-xs font-mono font-bold tracking-wider",
+                        isCurrent ? "text-[#0A2540]/60" : "text-[#FDE68A]/80"
                       )}>
                         {item.number}
                       </span>
@@ -165,8 +182,8 @@ export function ExpeditionTypology() {
                       </span>
                     </div>
                     <span className={cn(
-                      "text-xs font-mono tracking-widest shrink-0 ml-4",
-                      isCurrent ? "text-[#0A2540]/70 font-semibold" : "text-white/60"
+                      "text-xs font-mono tracking-widest shrink-0 ml-4 font-semibold",
+                      isCurrent ? "text-[#0A2540]/70" : "text-white/60"
                     )}>
                       {item.count}
                     </span>
@@ -197,24 +214,35 @@ export function ExpeditionTypology() {
                 </div>
               </div>
 
-              {/* Dynamic Description */}
+              {/* Dynamic Description & Metadata */}
               <div className="mt-4 px-1">
-                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#C2410C] font-bold block mb-1">
-                  {selected.subtitle}
-                </span>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#C2410C] font-bold">
+                    {selected.subtitle}
+                  </span>
+                  <span className="text-[8.5px] font-mono uppercase tracking-[0.16em] text-[#0A2540]/60 bg-[#0A2540]/5 px-2 py-0.5 rounded-xs">
+                    {selected.vibe}
+                  </span>
+                </div>
                 <h4 className="font-serif text-2xl text-[#0A2540] tracking-tight leading-snug mb-2">
                   {selected.title}
                 </h4>
                 <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light mb-4">
                   {selected.description}
                 </p>
-                <Link
-                  href="#concierge"
-                  className="inline-flex items-center gap-2 text-[10.5px] font-mono uppercase tracking-[0.22em] text-[#0A2540] font-bold hover:text-[#C2410C] transition-colors"
-                >
-                  <span>INQUIRE THIS PASSAGE</span>
-                  <span>→</span>
-                </Link>
+                
+                <div className="pt-3 border-t border-[#0A2540]/10 flex items-center justify-between gap-2">
+                  <span className="text-[9px] font-mono text-[#0A2540]/70 uppercase tracking-widest font-medium">
+                    {selected.duration}
+                  </span>
+                  <Link
+                    href="#concierge"
+                    className="inline-flex items-center gap-1.5 text-[10.5px] font-mono uppercase tracking-[0.22em] text-[#0A2540] font-bold hover:text-[#C2410C] transition-colors"
+                  >
+                    <span>INQUIRE</span>
+                    <span>→</span>
+                  </Link>
+                </div>
               </div>
 
             </div>

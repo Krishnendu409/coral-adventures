@@ -47,7 +47,7 @@ export function SunsetComposition() {
       <div className="absolute top-0 left-1/4 w-[700px] h-[700px] bg-[#F59E0B]/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* 2. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
         <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.26em] uppercase border-b border-white/25 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FDE68A] animate-pulse" />
@@ -60,55 +60,57 @@ export function SunsetComposition() {
         </div>
       </div>
 
-      {/* 2. Layered Stage: Giant Editorial Heading + Breathing Space (8-12vh) + Hero Photograph */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-2">
-        
-        {/* Giant Editorial Title: Fully visible and commanding */}
-        <div className="relative w-full z-10 pointer-events-none select-none">
-          <h2
-            ref={wordmarkRef}
-            className="font-serif text-[14.5vw] sm:text-[14vw] lg:text-[13vw] text-white leading-[0.8] tracking-[-0.04em] uppercase"
-          >
-            CHASE THE LIGHT
-          </h2>
-        </div>
+      {/* 3. Layered Stage: Colossal Display Heading BEHIND Sunset Photo Plate with subtle ~20% overlap */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-4">
+        <div className="relative w-full">
 
-        {/* Main Sunset Catamaran Frame Overlapping in Front (z-20) with deliberate 8-12vh breathing gap */}
-        <div className="relative w-full lg:w-[86%] lg:ml-auto z-20 mt-[8vh] sm:mt-[10vh] lg:mt-[12vh]">
-          <div
-            ref={sunsetPhotoRef}
-            className="relative w-full h-[52vh] sm:h-[64vh] lg:h-[72vh] overflow-hidden bg-[#0A2540] border border-white/30 will-change-transform shadow-2xl rounded-xs"
-          >
-            <Image
-              src="/images/sunset_catamaran.jpg"
-              alt="25.90M catamaran sailing westward into a golden sunset on the Arabian Sea"
-              fill
-              sizes="(max-width: 1024px) 100vw, 88vw"
-              className="object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent pointer-events-none" />
-            
-            <div className="absolute bottom-4 left-4 bg-[#FAF6EE] text-[#0A2540] px-4 py-2 text-[9.5px] font-sans tracking-[0.22em] uppercase font-bold border border-[#E2D9C8] shadow-md">
-              WESTBOUND HORIZON · GOLDEN HOUR PASSAGE
+          {/* Colossal Display Heading BEHIND Image (z-0) */}
+          <div className="relative lg:absolute top-0 left-0 w-full z-0 pointer-events-none select-none">
+            <h2
+              ref={wordmarkRef}
+              className="font-serif text-[14.5vw] sm:text-[14vw] lg:text-[13vw] text-white leading-[0.78] tracking-[-0.04em] uppercase"
+            >
+              CHASE THE LIGHT
+            </h2>
+          </div>
+
+          {/* Main Sunset Catamaran Frame Overlapping in Front (z-10) with subtle ~20% overlap */}
+          <div className="relative w-full lg:w-[86%] lg:ml-auto pt-[5vw] sm:pt-[6.5vw] lg:pt-[7.5vw] z-10">
+            <div
+              ref={sunsetPhotoRef}
+              className="relative w-full h-[52vh] sm:h-[64vh] lg:h-[72vh] overflow-hidden bg-[#0A2540] border border-white/30 will-change-transform shadow-2xl rounded-xs"
+            >
+              <Image
+                src="/images/sunset_catamaran.jpg"
+                alt="25.90M catamaran sailing westward into a golden sunset on the Arabian Sea"
+                fill
+                sizes="(max-width: 1024px) 100vw, 88vw"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent pointer-events-none" />
+              
+              <div className="absolute bottom-4 left-4 bg-[#FAF6EE] text-[#0A2540] px-4 py-2 text-[9.5px] font-sans tracking-[0.22em] uppercase font-bold border border-[#E2D9C8] shadow-md">
+                WESTBOUND HORIZON · GOLDEN HOUR PASSAGE
+              </div>
             </div>
-          </div>
 
-          {/* Colliding Sunset Postcard Plate (Bottom Left, z-40) */}
-          <div className="absolute -bottom-16 -left-3 lg:-left-20 w-[88%] sm:w-[52%] lg:w-[380px] z-40 transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[-2deg] cursor-pointer">
-            <PostcardPlate
-              imageSrc="/images/hero_ocean.jpg"
-              imageAlt="Golden sunlight glistening on ocean waters"
-              title="Golden Horizon"
-              caption="The Arabian Sea dissolving into amber twilight."
-              coords="13°22′00″ N · 74°35′00″ E"
-              stampLocation="HORIZON"
-              stampColor="sun"
-              rotationDeg={-3}
-            />
+            {/* Colliding Sunset Postcard Plate (Bottom Left, z-40) */}
+            <div className="absolute -bottom-16 -left-3 lg:-left-20 w-[88%] sm:w-[52%] lg:w-[380px] z-40 transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[-2deg] cursor-pointer">
+              <PostcardPlate
+                imageSrc="/images/hero_ocean.jpg"
+                imageAlt="Golden sunlight glistening on ocean waters"
+                title="Golden Horizon"
+                caption="The Arabian Sea dissolving into amber twilight."
+                coords="13°22′00″ N · 74°35′00″ E"
+                stampLocation="HORIZON"
+                stampColor="sun"
+                rotationDeg={-3}
+              />
+            </div>
+
           </div>
 
         </div>
-
       </div>
 
       {/* 4. Narrative Floor Bar */}
