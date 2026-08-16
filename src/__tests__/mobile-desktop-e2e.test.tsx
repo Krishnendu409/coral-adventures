@@ -105,14 +105,14 @@ describe('Cross-Device Mobile & Desktop Navigation Bar E2E Audit', () => {
     render(<ExploreGateway />);
 
     // 3D Journey link
-    const exploreBtn = screen.getByRole('link', { name: /explore journey/i });
+    const exploreBtn = screen.getByRole('link', { name: /enter 3d journey|explore journey/i });
     expect(exploreBtn).toHaveAttribute('href', '/journey');
     fireEvent.click(exploreBtn);
 
     // Concierge Form inputs
     const nameInput = screen.getByLabelText(/full name/i);
     const emailInput = screen.getByLabelText(/email address/i);
-    const phoneInput = screen.getByLabelText(/contact phone/i);
+    const phoneInput = screen.getByLabelText(/phone/i);
     const submitBtn = screen.getByRole('button', { name: /request expedition consultation/i });
 
     expect(nameInput).toBeInTheDocument();

@@ -9,24 +9,25 @@ interface BoardingPassStubProps {
   vesselName?: string;
   season?: string;
   className?: string;
-  colorTheme?: "coral" | "cyan" | "gold";
+  colorTheme?: "coral" | "cyan" | "gold" | "azure";
 }
 
 export function BoardingPassStub({
-  passNumber = "CR-2026-084",
-  routeFrom = "MALPE HARBOR",
-  routeTo = "ST. MARY'S ISLES",
-  departureTime = "17:30 WESTBOUND",
+  passNumber = "CR-2026-MALPE",
+  routeFrom = "MALPE PIER",
+  routeTo = "ST. MARY'S ARCHIPELAGO",
+  departureTime = "DAILY EXPEDITIONS",
   vesselName = "CORAL EXPLORER · 25.90M",
-  season = "OCT — MAY · CALM SEA",
+  season = "OCTOBER — MAY CALM WINDOW",
   className,
-  colorTheme = "coral",
+  colorTheme = "azure",
 }: BoardingPassStubProps) {
   const themeStyles = {
-    coral: "border-[#C2410C]/40 bg-[#FAF6EE] text-[#0A2540] shadow-md",
-    cyan: "border-[#0D9488]/40 bg-[#FAF6EE] text-[#0A2540] shadow-md",
-    gold: "border-[#D97706]/50 bg-[#FAF6EE] text-[#0A2540] shadow-md",
-  }[colorTheme];
+    coral: "border-[#0284C7]/40 bg-[#FAF6EE] text-[#0A2540] shadow-lg",
+    azure: "border-[#0284C7]/40 bg-[#FAF6EE] text-[#0A2540] shadow-lg",
+    cyan: "border-[#0D9488]/40 bg-[#FAF6EE] text-[#0A2540] shadow-lg",
+    gold: "border-[#C5A059]/50 bg-[#FAF6EE] text-[#0A2540] shadow-lg",
+  }[colorTheme] || "border-[#0284C7]/40 bg-[#FAF6EE] text-[#0A2540] shadow-lg";
 
   return (
     <div
@@ -37,14 +38,14 @@ export function BoardingPassStub({
       )}
     >
       {/* Header Band */}
-      <div className="flex items-center justify-between border-b border-[#0A2540]/15 pb-2.5 mb-3">
+      <div className="flex items-center justify-between border-b border-[#0A2540]/12 pb-2.5 mb-3">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#C2410C]" />
-          <span className="text-[9px] font-mono uppercase tracking-[0.22em] font-bold text-[#0A2540]">
+          <span className="w-2 h-2 rounded-full bg-[#0284C7]" />
+          <span className="text-[8.5px] font-sans uppercase tracking-[0.22em] font-bold text-[#0A2540]">
             EXPEDITION BOARDING PASS
           </span>
         </div>
-        <span className="text-[8.5px] font-mono tracking-[0.2em] text-[#C2410C] font-semibold">
+        <span className="text-[8.5px] font-mono tracking-[0.2em] text-[#0284C7] font-semibold">
           {passNumber}
         </span>
       </div>
@@ -52,7 +53,7 @@ export function BoardingPassStub({
       {/* Route & Departure */}
       <div className="grid grid-cols-2 gap-3 mb-3">
         <div>
-          <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#0A2540]/60 uppercase block">
+          <span className="text-[7.5px] font-sans tracking-[0.2em] text-[#0A2540]/60 uppercase block">
             DEPARTURE
           </span>
           <span className="font-serif text-sm font-semibold text-[#0A2540] leading-tight block">
@@ -60,7 +61,7 @@ export function BoardingPassStub({
           </span>
         </div>
         <div>
-          <span className="text-[7.5px] font-mono tracking-[0.2em] text-[#0A2540]/60 uppercase block">
+          <span className="text-[7.5px] font-sans tracking-[0.2em] text-[#0A2540]/60 uppercase block">
             DESTINATION
           </span>
           <span className="font-serif text-sm font-semibold text-[#0A2540] leading-tight block">
@@ -72,7 +73,7 @@ export function BoardingPassStub({
       {/* Vessel & Season telemetry */}
       <div className="flex items-center justify-between border-t border-b border-[#0A2540]/10 py-2 mb-3 text-[8.5px] font-mono tracking-[0.15em] text-[#0A2540]/80">
         <span>{vesselName}</span>
-        <span className="font-semibold text-[#C2410C]">{departureTime}</span>
+        <span className="font-semibold text-[#0284C7]">{departureTime}</span>
       </div>
 
       {/* Barcode graphic & notch */}

@@ -92,34 +92,34 @@ export function MinimalHUD({
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 pointer-events-none p-5 sm:p-8 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-40 pointer-events-none p-4 sm:p-6 lg:p-8 flex items-center justify-between">
       
       {/* Top Left: Authentic Coral Adventures Logo */}
       <div className="pointer-events-auto flex items-center gap-4">
         <Link href="/" className="flex items-center gap-3.5 group" title="Return to Homepage">
-          <div className="relative w-10 h-10 sm:w-11 sm:h-11 shrink-0 transition-transform duration-300 group-hover:scale-105">
+          <div className="relative w-9 h-9 sm:w-10 sm:h-10 shrink-0 transition-transform duration-300 group-hover:scale-105">
             <Image
               src="/images/coral_logo_mark.png"
               alt="Coral Adventures Official Emblem"
               fill
-              sizes="(max-width: 640px) 40px, 44px"
+              sizes="(max-width: 640px) 36px, 40px"
               className="object-contain drop-shadow-md"
               priority
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-base sm:text-lg tracking-wide text-alabaster drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] group-hover:text-coral-sun transition-colors">
+            <span className="font-serif text-base sm:text-lg tracking-wide text-[#FAF6EE] drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] group-hover:text-[#0284C7] transition-colors">
               CORAL ADVENTURES
             </span>
-            <span className="text-[8.5px] sm:text-[9px] font-mono tracking-[0.25em] text-coral-sun uppercase font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+            <span className="text-[8px] sm:text-[8.5px] font-mono tracking-[0.25em] text-[#C5A059] uppercase font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
               VIRTUAL EXPEDITION
             </span>
           </div>
         </Link>
 
         {/* Minimalist Location Tag */}
-        <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-alabaster/20 text-[10px] font-mono tracking-[0.2em] text-alabaster/80 uppercase">
-          <span className="w-1.5 h-1.5 rounded-full bg-coral-sun animate-pulse" />
+        <div className="hidden lg:flex items-center gap-2 pl-4 border-l border-white/20 text-[9.5px] font-mono tracking-[0.2em] text-[#FAF6EE]/80 uppercase">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#0284C7] animate-pulse" />
           <span>{locationLabel}</span>
         </div>
       </div>
@@ -130,19 +130,19 @@ export function MinimalHUD({
         <button
           onClick={toggleAudio}
           className={cn(
-            "flex items-center gap-2 px-3.5 py-2 rounded-full text-[10px] font-mono uppercase tracking-[0.18em] font-semibold backdrop-blur-md transition-all shadow-md",
+            "flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[9.5px] font-mono uppercase tracking-[0.18em] font-semibold backdrop-blur-md transition-all shadow-md",
             isAudioPlaying
-              ? "bg-coral-sun/30 border border-coral-sun text-coral-sun"
-              : "bg-marine-espresso/60 border border-alabaster/20 text-alabaster/90 hover:border-coral-sun"
+              ? "bg-[#C5A059]/30 border border-[#C5A059] text-[#C5A059]"
+              : "bg-[#0A2540]/70 border border-white/20 text-[#FAF6EE]/90 hover:border-[#C5A059]"
           )}
           title="Toggle Coastal Ambience"
           aria-label="Toggle Ambient Audio"
         >
           <span className="relative flex h-2 w-2">
             {isAudioPlaying && (
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral-sun opacity-75" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C5A059] opacity-75" />
             )}
-            <span className={cn("relative inline-flex rounded-full h-2 w-2", isAudioPlaying ? "bg-coral-sun" : "bg-alabaster/40")} />
+            <span className={cn("relative inline-flex rounded-full h-2 w-2", isAudioPlaying ? "bg-[#C5A059]" : "bg-white/40")} />
           </span>
           <span className="hidden sm:inline">{isAudioPlaying ? "SOUND ON" : "SOUND"}</span>
         </button>
@@ -151,7 +151,7 @@ export function MinimalHUD({
         {onToggleMap && (
           <button
             onClick={onToggleMap}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-mono uppercase tracking-[0.18em] font-bold bg-marine-espresso/60 border border-coral-sun/50 text-coral-sun hover:bg-coral-sun hover:text-marine-espresso backdrop-blur-md transition-all shadow-md"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-[9.5px] font-mono uppercase tracking-[0.18em] font-bold bg-[#0A2540]/70 border border-[#C5A059]/50 text-[#C5A059] hover:bg-[#C5A059] hover:text-[#0A2540] backdrop-blur-md transition-all shadow-md"
             aria-label="Open Nautical Map"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -166,7 +166,7 @@ export function MinimalHUD({
         {/* Exit / Return */}
         <Link
           href="/"
-          className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] font-mono uppercase tracking-[0.18em] font-semibold bg-alabaster/95 hover:bg-coral-orange text-marine-espresso hover:text-alabaster transition-colors shadow-md"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[9.5px] font-mono uppercase tracking-[0.18em] font-semibold bg-[#FAF6EE]/95 hover:bg-[#0284C7] text-[#0A2540] hover:text-[#FAF6EE] transition-colors shadow-md"
           title="Return to Main Website"
         >
           <span>EXIT</span>

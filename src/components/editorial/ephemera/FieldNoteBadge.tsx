@@ -8,7 +8,7 @@ interface FieldNoteBadgeProps {
   author?: string;
   coords?: string;
   className?: string;
-  color?: "palm" | "ocean" | "coral" | "sun";
+  color?: "palm" | "ocean" | "coral" | "sun" | "azure" | "gold";
 }
 
 export function FieldNoteBadge({
@@ -23,15 +23,19 @@ export function FieldNoteBadge({
   const accentDotMap = {
     palm: "bg-[#1E5E48]",
     ocean: "bg-[#1E40AF]",
-    coral: "bg-[#C2410C]",
-    sun: "bg-[#D97706]",
+    coral: "bg-[#0284C7]",
+    azure: "bg-[#0284C7]",
+    sun: "bg-[#C5A059]",
+    gold: "bg-[#C5A059]",
   };
 
   const tagColorMap = {
     palm: "text-[#1E5E48]",
     ocean: "text-[#1E40AF]",
-    coral: "text-[#C2410C]",
-    sun: "text-[#D97706]",
+    coral: "text-[#0284C7]",
+    azure: "text-[#0284C7]",
+    sun: "text-[#C5A059]",
+    gold: "text-[#C5A059]",
   };
 
   return (
@@ -43,8 +47,8 @@ export function FieldNoteBadge({
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className={cn("w-2 h-2 rounded-full", accentDotMap[color])} />
-          <span className={cn("text-[8.5px] font-mono tracking-[0.25em] font-bold uppercase", tagColorMap[color])}>
+          <span className={cn("w-2 h-2 rounded-full", accentDotMap[color] || accentDotMap.azure)} />
+          <span className={cn("text-[8.5px] font-sans tracking-[0.25em] font-bold uppercase", tagColorMap[color] || tagColorMap.azure)}>
             {noteNumber}
           </span>
         </div>
@@ -60,9 +64,9 @@ export function FieldNoteBadge({
         </h4>
       )}
       <p className="font-serif italic text-sm text-[#0A2540]/85 leading-relaxed mb-3">
-        "{body}"
+        &ldquo;{body}&rdquo;
       </p>
-      <div className="text-[8px] font-mono tracking-[0.2em] text-[#0A2540]/60 uppercase border-t border-[#0A2540]/10 pt-2">
+      <div className="text-[8px] font-sans tracking-[0.2em] text-[#0A2540]/60 uppercase border-t border-[#0A2540]/10 pt-2">
         {author}
       </div>
     </div>

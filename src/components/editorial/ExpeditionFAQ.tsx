@@ -33,82 +33,107 @@ const FAQS: FAQItem[] = [
 
 export function ExpeditionFAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <section className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-24 sm:py-32 overflow-hidden border-b border-[#E8DFD0]">
+    <section className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-20 sm:py-28 overflow-hidden border-b border-[#E2D9C8]">
       {/* 1. Header Telemetry */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-[#0A2540]/15 pb-3">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-[#0A2540]/12 pb-2.5">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1E5E48]" />
-            <span className="font-bold text-[#1E5E48]">EXPEDITION INQUIRIES · CLARIFICATIONS</span>
+            <span className="w-2 h-2 rounded-full bg-[#1E5E48]" />
+            <span className="font-semibold text-[#1E5E48]">EXPEDITION INQUIRIES · CLARIFICATIONS</span>
           </div>
-          <div className="flex items-center gap-4 text-[#0A2540]/70 font-semibold">
-            <span>FREQUENTLY ANSWERED QUESTIONS</span>
-            <span className="text-[#E05A36]">MALPE DESK</span>
+          <div className="flex items-center gap-4 text-[#0A2540]/70 font-medium">
+            <span>MALPE CONCIERGE DESK</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Main Grid: Stacked Physical Tickets on Left, Editorial FAQ on Right */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10">
-        <div className="editorial-grid items-start gap-12 lg:gap-16">
+      {/* 2. Main Grid */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10">
+        <div className="editorial-grid items-start gap-10 lg:gap-14">
           
-          {/* Left Column: Stack of 3 Physical Vacation Tickets */}
+          {/* Left Column: Context & Interactive Stacked Tickets */}
           <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
             <div>
-              <span className="font-serif italic text-3xl sm:text-5xl text-[#1E5E48] block mb-1">
-                What you might
-              </span>
-              <h3 className="font-serif text-4xl sm:text-6xl text-[#0A2540] tracking-tight leading-none mb-6">
-                be wondering
+              <h3 className="font-serif text-3xl sm:text-5xl text-[#0A2540] tracking-tight leading-tight uppercase mb-4">
+                Frequently asked
+                <br />
+                <span className="italic font-light text-[#0284C7]">clarifications.</span>
               </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light mb-8 max-w-md">
-                We've compiled everything you need to know about weather windows, private charters, vessel stability, and onboarding in Malpe.
+              <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light max-w-md">
+                Essential details regarding weather windows, private charters, catamaran stability, and harbor boarding procedures in Malpe. Hover over the passes below to expand them.
               </p>
             </div>
 
-            {/* Stacked Physical Tickets Graphic */}
-            <div className="relative min-h-[340px] sm:min-h-[380px] w-full max-w-sm mt-4 select-none">
+            {/* Interactive Fan-Out Stacked Tickets Graphic */}
+            <div 
+              className="relative min-h-[380px] w-full max-w-md mt-4 select-none cursor-pointer group py-4"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              aria-label="Interactive Expedition Passes Stack"
+            >
               
-              {/* Ticket 1 (Bottom): Deep Palm Green */}
-              <div className="absolute top-0 left-0 w-full bg-[#1E5E48] text-[#FAF6EE] p-5 rounded-xs border border-[#1E5E48] postcard-shadow rotate-[-4deg] transition-transform duration-300 hover:rotate-0 hover:z-30">
-                <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-3">
-                  <span className="text-[9px] font-mono tracking-[0.2em] uppercase font-bold text-[#F59E0B]">
-                    EXPEDITION TICKET
-                  </span>
-                  <span className="text-[8px] font-mono text-white/60">NO. 01-GEO</span>
+              {/* Ticket 1: Deep Pine Green (#1E5E48) */}
+              <div 
+                className={cn(
+                  "absolute left-0 right-4 top-2 bg-[#1B4D3E] text-[#FAF6EE] p-4 sm:p-5 border border-[#143B30] shadow-md transition-all duration-500 cubic-bezier(0.16,1,0.3,1) will-change-transform rounded-xs group-hover:-translate-y-12 group-hover:-rotate-6 group-hover:scale-[1.03] group-hover:shadow-2xl group-hover:z-30",
+                  isHovered 
+                    ? "-translate-y-12 -rotate-6 scale-[1.03] shadow-2xl z-30" 
+                    : "translate-y-0 rotate-[-4deg] z-10"
+                )}
+              >
+                <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-2 text-[8.5px] font-sans tracking-[0.22em] uppercase">
+                  <span className="font-bold text-[#F59E0B]">EXPEDITION TICKET</span>
+                  <span className="text-white/70 font-mono">NO. 01-GEO</span>
                 </div>
-                <div className="font-serif text-2xl mb-1">St. Mary's Basalt Pass</div>
-                <div className="text-[9px] font-mono tracking-widest text-white/70 uppercase">
-                  MALPE PIER → BASALT ARCHIPELAGO
+                <div className="font-serif text-xl sm:text-2xl text-white tracking-tight mb-1">
+                  St. Mary's Basalt Discovery
                 </div>
-              </div>
-
-              {/* Ticket 2 (Middle): Turquoise Water */}
-              <div className="absolute top-16 left-3 w-full bg-[#0D9488] text-[#0A2540] p-5 rounded-xs border border-[#0D9488] postcard-shadow rotate-[3deg] transition-transform duration-300 hover:rotate-0 hover:z-30">
-                <div className="flex items-center justify-between border-b border-[#0A2540]/20 pb-2 mb-3">
-                  <span className="text-[9px] font-mono tracking-[0.2em] uppercase font-bold text-[#0A2540]">
-                    WATERS & TENDER PASS
-                  </span>
-                  <span className="text-[8px] font-mono text-[#0A2540]/60">NO. 02-ACT</span>
-                </div>
-                <div className="font-serif text-2xl mb-1 text-white">Active Marine & Kayak</div>
-                <div className="text-[9px] font-mono tracking-widest text-white/80 uppercase">
-                  OPEN SHALLOWS · SPEED TENDER
+                <div className="text-[8.5px] font-mono tracking-widest text-white/75 uppercase">
+                  MALPE PIER → 88M-YR BASALT ARCHIPELAGO
                 </div>
               </div>
 
-              {/* Ticket 3 (Top): Coral Orange */}
-              <div className="absolute top-32 left-6 w-full bg-[#E05A36] text-[#FAF6EE] p-5 rounded-xs border border-[#E05A36] postcard-shadow rotate-[-2deg] transition-transform duration-300 hover:rotate-0 hover:z-30">
-                <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-3">
-                  <span className="text-[9px] font-mono tracking-[0.2em] uppercase font-bold text-white">
-                    PRIVATE CHARTER PASS
-                  </span>
-                  <span className="text-[8px] font-mono text-white/70">NO. 03-VIP</span>
+              {/* Ticket 2: Vibrant Ocean Teal (#0D9488) */}
+              <div 
+                className={cn(
+                  "absolute left-2 right-2 top-14 bg-[#0D9488] text-[#FAF6EE] p-4 sm:p-5 border border-[#0F766E] shadow-lg transition-all duration-500 cubic-bezier(0.16,1,0.3,1) will-change-transform rounded-xs group-hover:translate-y-12 group-hover:rotate-1 group-hover:scale-[1.04] group-hover:shadow-2xl group-hover:z-40",
+                  isHovered 
+                    ? "translate-y-12 rotate-1 scale-[1.04] shadow-2xl z-40" 
+                    : "translate-y-0 rotate-[3deg] z-20"
+                )}
+              >
+                <div className="flex items-center justify-between border-b border-[#0A2540]/20 pb-2 mb-2 text-[8.5px] font-sans tracking-[0.22em] uppercase">
+                  <span className="font-bold text-[#0A2540]">WATERS & TENDER PASS</span>
+                  <span className="text-[#0A2540]/70 font-mono">NO. 02-ACT</span>
                 </div>
-                <div className="font-serif text-2xl mb-1">Sunset Horizon & Dinner</div>
-                <div className="text-[9px] font-mono tracking-widest text-white/80 uppercase">
+                <div className="font-serif text-xl sm:text-2xl text-white tracking-tight mb-1">
+                  Active Marine & Watersports
+                </div>
+                <div className="text-[8.5px] font-mono tracking-widest text-white/85 uppercase">
+                  OPEN SHALLOWS · SEA KAYAKS · PARASAIL
+                </div>
+              </div>
+
+              {/* Ticket 3: Warm Coral Terracotta (#E05A36) */}
+              <div 
+                className={cn(
+                  "absolute left-4 right-0 top-28 bg-[#E05A36] text-[#FAF6EE] p-4 sm:p-5 border border-[#C2410C] shadow-xl transition-all duration-500 cubic-bezier(0.16,1,0.3,1) will-change-transform rounded-xs group-hover:translate-y-36 group-hover:rotate-6 group-hover:scale-[1.05] group-hover:shadow-2xl group-hover:z-50",
+                  isHovered 
+                    ? "translate-y-36 rotate-6 scale-[1.05] shadow-2xl z-50" 
+                    : "translate-y-0 rotate-[-2deg] z-30"
+                )}
+              >
+                <div className="flex items-center justify-between border-b border-white/20 pb-2 mb-2 text-[8.5px] font-sans tracking-[0.22em] uppercase">
+                  <span className="font-bold text-white tracking-wider">PRIVATE CHARTER PASS</span>
+                  <span className="text-white/80 font-mono">NO. 03-VIP</span>
+                </div>
+                <div className="font-serif text-xl sm:text-2xl text-white tracking-tight mb-1">
+                  Sunset Horizon & Dinner
+                </div>
+                <div className="text-[8.5px] font-mono tracking-widest text-white/90 uppercase">
                   25.90M CATAMARAN · 17:30 WESTBOUND
                 </div>
               </div>
@@ -117,25 +142,32 @@ export function ExpeditionFAQ() {
           </div>
 
           {/* Right Column: Editorial FAQ Accordion */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col divide-y divide-[#0A2540]/15 pt-4">
+          <div className="col-span-12 lg:col-span-7 flex flex-col divide-y divide-[#0A2540]/12 pt-2">
             {FAQS.map((faq, idx) => {
               const isOpen = openIdx === idx;
               return (
-                <div key={idx} className="py-5 sm:py-6">
+                <div key={idx} className="py-4 sm:py-5">
                   <button
                     onClick={() => setOpenIdx(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${idx}`}
                     className="w-full flex items-center justify-between text-left group cursor-pointer focus:outline-hidden"
                   >
-                    <span className="font-serif text-xl sm:text-2xl text-[#0A2540] tracking-tight group-hover:text-[#E05A36] transition-colors pr-4">
+                    <span className="font-serif text-lg sm:text-xl text-[#0A2540] tracking-tight group-hover:text-[#0284C7] transition-colors pr-4">
                       {faq.question}
                     </span>
-                    <span className="text-xl font-mono text-[#E05A36] transition-transform duration-300 shrink-0">
+                    <span className="text-lg font-mono text-[#0284C7] transition-transform duration-300 shrink-0">
                       {isOpen ? "−" : "+"}
                     </span>
                   </button>
 
                   {isOpen && (
-                    <div className="mt-3.5 pr-6 animate-in fade-in duration-300">
+                    <div
+                      id={`faq-answer-${idx}`}
+                      role="region"
+                      aria-labelledby={`faq-question-${idx}`}
+                      className="mt-2.5 pr-6"
+                    >
                       <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light">
                         {faq.answer}
                       </p>

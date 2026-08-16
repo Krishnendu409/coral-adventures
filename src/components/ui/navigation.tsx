@@ -13,9 +13,28 @@ interface NavigationProps {
 export function Navigation({ onOpenJourney }: NavigationProps) {
   const [themeState, setThemeState] = useState<"transparent" | "light" | "dark">("transparent");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [localTime, setLocalTime] = useState<string>("");
 
   useEffect(() => {
-    // Strategic Colored and Dark Chapters (White text / blur backdrop)
+    // Update live Malpe local time (IST = UTC+5:30)
+    const updateTime = () => {
+      const now = new Date();
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      };
+      setLocalTime(new Intl.DateTimeFormat("en-GB", options).format(now));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Strategic Dark Chapters (White text / blur backdrop)
     const darkSections = ["typology", "turnkey", "vessel", "sunset", "night"];
 
     const handleScroll = () => {
@@ -26,7 +45,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
         return;
       }
 
-      // Check which section is in view around the header line (y=80px)
+      // Check which section is in view around the header line (y=90px)
       let currentTheme: "light" | "dark" = "light";
       const probeY = 90;
 
@@ -90,57 +109,67 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out",
         isTransparent
-          ? "bg-[#FAF7F0]/80 backdrop-blur-xs py-4 sm:py-5 text-[#0A2540] border-b border-[#0A2540]/10"
+          ? "bg-[#FAF6EE]/90 backdrop-blur-md py-3 sm:py-3.5 text-[#0A2540] border-b border-[#0A2540]/10"
           : isDark
-            ? "bg-[#0A2540]/94 backdrop-blur-lg border-b border-white/15 py-3 sm:py-3.5 shadow-xl text-[#FAF6EE]"
-            : "bg-[#FAF6EE]/94 backdrop-blur-lg border-b border-[#E8DFD0] py-3 sm:py-3.5 shadow-md text-[#0A2540]"
+            ? "bg-[#0A2540]/96 backdrop-blur-lg border-b border-white/15 py-3 sm:py-3.5 shadow-xl text-[#FAF6EE]"
+            : "bg-[#FAF6EE]/96 backdrop-blur-lg border-b border-[#E2D9C8] py-3 sm:py-3.5 shadow-md text-[#0A2540]"
       )}
     >
-      <div className="container mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between">
+      <div className="w-full px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-3">
         
-        {/* Brand Official Logo & Location */}
+        {/* Brand Official Logo & Live Malpe Telemetry */}
         <Link 
           href="/" 
-          className="group flex items-center gap-3 sm:gap-3.5 focus-visible:ring-2 focus-visible:ring-[#E05A36] focus-visible:outline-hidden rounded-xs"
+          className="group flex items-center gap-2.5 sm:gap-3 shrink-0 focus-visible:ring-2 focus-visible:ring-[#0284C7] focus-visible:outline-hidden rounded-xs"
         >
-          <div className="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0 transition-transform duration-300 group-hover:scale-105">
+          <div className="relative w-8 h-8 sm:w-8.5 sm:h-8.5 shrink-0 transition-transform duration-300 group-hover:scale-105">
             <Image
               src="/images/coral_logo_mark.png"
               alt="Coral Adventures Emblem"
               fill
-              sizes="(max-width: 640px) 32px, 40px"
+              sizes="(max-width: 640px) 32px, 34px"
               className="object-contain"
               priority
             />
           </div>
           
-          <div className="flex flex-col">
+          <div className="flex flex-col whitespace-nowrap">
             <span className={cn(
-              "font-serif text-base sm:text-lg md:text-xl font-normal tracking-wide transition-colors",
-              isDark ? "text-[#FAF6EE]" : "text-[#0A2540] group-hover:text-[#E05A36]"
+              "font-serif text-base sm:text-lg lg:text-xl font-normal tracking-wide transition-colors",
+              isDark ? "text-[#FAF6EE]" : "text-[#0A2540] group-hover:text-[#0284C7]"
             )}>
               CORAL ADVENTURES
             </span>
-            <span className={cn(
-              "text-[8px] sm:text-[9px] font-mono tracking-[0.22em] uppercase transition-colors",
-              isDark ? "text-[#FAF6EE]/75" : "text-[#E05A36] font-semibold"
-            )}>
-              MALPE · ARABIAN SEA
-            </span>
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                "text-[7.5px] sm:text-[8px] font-sans tracking-[0.2em] uppercase transition-colors font-bold",
+                isDark ? "text-[#0284C7]" : "text-[#0284C7]"
+              )}>
+                MALPE · ARABIAN SEA
+              </span>
+              {localTime && (
+                <span className={cn(
+                  "hidden xl:inline-block text-[7.5px] font-mono tracking-wider opacity-60 transition-colors",
+                  isDark ? "text-white/60" : "text-[#0A2540]/60"
+                )}>
+                  · {localTime} IST
+                </span>
+              )}
+            </div>
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden xl:flex items-center gap-6 text-[10.5px] font-mono tracking-[0.2em] font-medium" aria-label="Main Navigation">
+        {/* Desktop Navigation Links (Centered, with strict whitespace-nowrap) */}
+        <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 text-[9.5px] 2xl:text-[10px] font-sans tracking-[0.2em] font-medium shrink-0" aria-label="Main Navigation">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               className={cn(
-                "relative py-1 transition-colors duration-200 uppercase focus-visible:ring-2 focus-visible:ring-[#E05A36] focus-visible:outline-hidden",
+                "relative py-1 whitespace-nowrap transition-colors duration-200 uppercase focus-visible:ring-2 focus-visible:ring-[#0284C7] focus-visible:outline-hidden",
                 isDark 
-                  ? "text-[#FAF6EE]/80 hover:text-[#FBBF24]" 
-                  : "text-[#0A2540]/80 hover:text-[#E05A36]"
+                  ? "text-[#FAF6EE]/80 hover:text-[#C5A059]" 
+                  : "text-[#0A2540]/80 hover:text-[#0284C7]"
               )}
             >
               {link.name}
@@ -148,55 +177,55 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
           ))}
         </nav>
 
-        {/* Uniform, Subtly-Highlighted Editorial Action Buttons */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Action Capsule Buttons (Guaranteed whitespace-nowrap, zero wrapping) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Storyboard Dossier Button */}
           <Link
             href="/storyboard"
             className={cn(
-              "hidden md:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
+              "hidden md:inline-flex items-center justify-center gap-1 px-3 h-8 rounded-xs font-sans text-[8.5px] sm:text-[9px] uppercase tracking-[0.16em] font-medium border transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0",
               isDark
-                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-[#F87171] hover:text-[#F87171] hover:bg-white/10"
-                : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#E05A36] hover:text-[#E05A36] hover:bg-[#E05A36]/5"
+                ? "border-white/20 bg-white/5 text-[#FAF6EE]/90 hover:border-[#0284C7] hover:text-[#0284C7] hover:bg-white/10"
+                : "border-[#0A2540]/20 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0284C7] hover:text-[#0284C7] hover:bg-[#0284C7]/5"
             )}
           >
             <span>STORYBOARD</span>
-            <span className="text-[10px] opacity-70">↗</span>
+            <span className="text-[9px] opacity-70">↗</span>
           </Link>
 
           {/* 3D World Digital Twin Button */}
           <Link
             href="/journey"
             className={cn(
-              "hidden sm:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
+              "hidden sm:inline-flex items-center justify-center gap-1 px-3 h-8 rounded-xs font-sans text-[8.5px] sm:text-[9px] uppercase tracking-[0.16em] font-medium border transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0",
               isDark
-                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-[#FBBF24] hover:text-[#FBBF24] hover:bg-white/10"
-                : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0A2540] hover:text-[#0A2540] hover:bg-[#0A2540]/5"
+                ? "border-white/20 bg-white/5 text-[#FAF6EE]/90 hover:border-[#C5A059] hover:text-[#C5A059] hover:bg-white/10"
+                : "border-[#0A2540]/20 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0A2540] hover:text-[#0A2540] hover:bg-[#0A2540]/5"
             )}
           >
             <span>3D WORLD</span>
-            <span className="text-[10px] opacity-70">→</span>
+            <span className="text-[9px] opacity-70">→</span>
           </Link>
 
           {/* Reserve / Booking Button */}
           <Link
             href="#book"
             className={cn(
-              "hidden lg:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
+              "hidden lg:inline-flex items-center justify-center gap-1 px-3.5 h-8 rounded-xs font-sans text-[8.5px] sm:text-[9px] uppercase tracking-[0.16em] font-semibold border transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0",
               isDark
-                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-white hover:bg-white hover:text-[#0A2540]"
-                : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0A2540] hover:bg-[#0A2540] hover:text-[#FAF6EE]"
+                ? "border-[#0284C7] bg-[#0284C7] text-white hover:bg-[#0369A1] shadow-sm"
+                : "border-[#0A2540] bg-[#0A2540] text-[#FAF6EE] hover:bg-[#0284C7] hover:border-[#0284C7] shadow-sm"
             )}
           >
             <span>RESERVE</span>
-            <span className="text-[10px] opacity-70">↗</span>
+            <span className="text-[9px] opacity-80">↗</span>
           </Link>
 
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={cn(
-              "xl:hidden p-2 h-8 w-8 flex items-center justify-center focus-visible:ring-2 focus-visible:ring-[#E05A36] focus-visible:outline-hidden rounded-[2px] transition-colors border cursor-pointer",
+              "xl:hidden p-1.5 h-8 w-8 flex items-center justify-center focus-visible:ring-2 focus-visible:ring-[#0284C7] focus-visible:outline-hidden rounded-xs transition-colors border cursor-pointer shrink-0",
               isDark 
                 ? "text-[#FAF6EE] border-white/25 hover:bg-white/10" 
                 : "text-[#0A2540] border-[#0A2540]/25 hover:bg-[#0A2540]/5"
@@ -205,7 +234,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -217,7 +246,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
 
       </div>
 
-      {/* Mobile Drawer Menu & Overlay Attached Directly to Header */}
+      {/* Mobile Drawer Menu & Overlay */}
       {mobileMenuOpen && (
         <>
           {/* Backdrop Blur Overlay */}
@@ -238,7 +267,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
               <Link
                 href="/journey"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3.5 border border-white/25 bg-white/5 text-[#FAF6EE] font-mono text-xs uppercase tracking-[0.2em] font-medium rounded-[2px] shadow-sm hover:border-[#FBBF24] hover:text-[#FBBF24] transition-colors"
+                className="flex items-center justify-between p-3.5 border border-white/25 bg-white/5 text-[#FAF6EE] font-sans text-xs uppercase tracking-[0.2em] font-medium rounded-xs shadow-xs hover:border-[#C5A059] hover:text-[#C5A059] transition-colors"
               >
                 <span>3D WORLD DIGITAL TWIN</span>
                 <span className="text-sm">→</span>
@@ -247,7 +276,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
               <Link
                 href="/storyboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3.5 border border-white/25 bg-white/5 text-[#FAF6EE] font-mono text-xs uppercase tracking-[0.2em] font-medium rounded-[2px] shadow-sm hover:border-[#F87171] hover:text-[#F87171] transition-colors"
+                className="flex items-center justify-between p-3.5 border border-white/25 bg-white/5 text-[#FAF6EE] font-sans text-xs uppercase tracking-[0.2em] font-medium rounded-xs shadow-xs hover:border-[#0284C7] hover:text-[#0284C7] transition-colors"
               >
                 <span>EXPEDITION STORYBOARD</span>
                 <span className="text-sm">↗</span>
@@ -261,7 +290,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="font-serif text-xl sm:text-2xl text-[#FAF6EE] hover:text-[#FBBF24] transition-colors border-b border-white/10 pb-2.5 flex items-center justify-between"
+                  className="font-serif text-xl sm:text-2xl text-[#FAF6EE] hover:text-[#C5A059] transition-colors border-b border-white/10 pb-2.5 flex items-center justify-between"
                 >
                   <span>{link.name}</span>
                   <span className="font-mono text-xs text-[#FAF6EE]/40">#</span>
@@ -274,11 +303,11 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
               <Link
                 href="#book"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-3.5 border border-white/40 bg-white/10 text-[#FAF6EE] font-mono text-xs uppercase tracking-[0.2em] font-semibold hover:bg-white hover:text-[#0A2540] transition-colors rounded-[2px]"
+                className="w-full text-center py-3.5 border border-[#0284C7] bg-[#0284C7] text-white font-sans text-xs uppercase tracking-[0.2em] font-semibold hover:bg-[#0369A1] transition-colors rounded-xs shadow-xs"
               >
                 RESERVE EXPEDITION ↗
               </Link>
-              <div className="text-[9.5px] font-mono text-[#FAF6EE]/60 text-center tracking-[0.2em]">
+              <div className="text-[9px] font-mono text-[#FAF6EE]/60 text-center tracking-[0.2em]">
                 MALPE · {WAYPOINTS.malpeHarbor.coords} · ARABIAN SEA
               </div>
             </div>

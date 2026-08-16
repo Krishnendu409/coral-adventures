@@ -39,8 +39,8 @@ export default function RootLayout({
       </head>
       <body>
         <SmoothScroll>
-          {/* Global tactile noise texture */}
-          <div className="noise-overlay" aria-hidden="true" />
+          {/* Global tactile film grain texture */}
+          <div className="film-grain" aria-hidden="true" />
           {children}
         </SmoothScroll>
       </body>

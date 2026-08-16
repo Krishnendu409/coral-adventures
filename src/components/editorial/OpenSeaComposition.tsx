@@ -23,13 +23,13 @@ export function OpenSeaComposition() {
 
     if (openSeaImgRef.current) {
       gsap.to(openSeaImgRef.current, {
-        scale: 1.05,
+        scale: 1.03,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.5,
+          scrub: 1.2,
         },
       });
     }
@@ -39,37 +39,46 @@ export function OpenSeaComposition() {
     <section
       ref={sectionRef}
       id="opensea"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-28 sm:py-36 overflow-hidden border-b border-[#E2D9C8]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-20 sm:py-28 overflow-hidden border-b border-[#E2D9C8]"
     >
       {/* 1. Header Telemetry Bar */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-[#0A2540]/15 pb-3">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-[#0A2540]/12 pb-2.5">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1E40AF]" />
-            <span className="font-bold text-[#1E40AF]">06 / OPEN SEA · ARABIAN SEA HORIZON</span>
+            <span className="w-2 h-2 rounded-full bg-[#1E40AF]" />
+            <span className="font-semibold text-[#1E40AF]">06 / OPEN SEA · ARABIAN SEA HORIZON</span>
           </div>
-          <div className="flex items-center gap-4 text-[#0A2540]/70 font-semibold">
+          <div className="flex items-center gap-4 text-[#0A2540]/70 font-medium">
             <span>{WAYPOINTS.openArabianSea.coords}</span>
-            <span className="text-[#0D9488]">DEPTH: 30 FATHOMS</span>
+            <span>DEPTH: 30 FATHOMS</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Colossal Display Typography */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10 select-none overflow-visible mb-6">
-        <h2 className="font-serif text-[17vw] sm:text-[15vw] lg:text-[14vw] text-[#0A2540] leading-[0.78] tracking-[-0.03em] uppercase">
-          OPEN SEA.
-        </h2>
+      {/* 2. Editorial Headline & Introduction */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-8">
+        <div className="editorial-grid items-start">
+          <div className="col-span-12 lg:col-span-7">
+            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#0A2540] leading-[0.95] tracking-tight uppercase">
+              Open sea.
+            </h2>
+          </div>
+          <div className="col-span-12 lg:col-span-5 pt-2">
+            <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light max-w-lg">
+              Beyond the coastal archipelago, land falls away entirely. The catamaran glides at 14 knots across deep blue water under an unrestricted 360° Arabian horizon.
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* 3. Radical Negative Space & Open Ocean Photographic Frame */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 -mt-4 sm:-mt-8 lg:-mt-12 z-20">
+      {/* 3. Photographic Immersion & Field Note */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20">
         <div className="editorial-grid items-start relative">
           
-          <div className="col-span-12 lg:col-span-12 relative">
+          <div className="col-span-12 relative">
             <div
               ref={openSeaImgRef}
-              className="relative w-full h-[55vh] sm:h-[68vh] lg:h-[78vh] overflow-hidden postcard-shadow border border-[#E2D9C8] will-change-transform bg-[#F2ECE1]"
+              className="relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform shadow-xl"
             >
               <Image
                 src="/images/nightfall_ocean.jpg"
@@ -78,25 +87,25 @@ export function OpenSeaComposition() {
                 sizes="100vw"
                 className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/40 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/35 via-transparent to-transparent pointer-events-none" />
               
-              <div className="absolute bottom-6 right-6 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-4 py-2 text-[9.5px] font-mono tracking-[0.2em] uppercase border border-[#E2D9C8]">
+              <div className="absolute bottom-4 right-4 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-3.5 py-1.5 text-[8.5px] font-sans tracking-[0.2em] uppercase border border-[#E2D9C8]">
                 30 FATHOM WAYPOINT · UNRESTRICTED HORIZON
               </div>
             </div>
           </div>
 
-          {/* Minimalist Floating Italic Statement */}
-          <div className="col-span-12 lg:col-start-7 lg:col-span-6 relative mt-8 z-30">
-            <div className="p-6 bg-[#F7F3E9] border border-[#E2D9C8] postcard-shadow">
-              <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-[#1E40AF] font-bold block mb-2">
+          {/* Minimalist Note */}
+          <div className="col-span-12 lg:col-start-7 lg:col-span-6 relative mt-6 z-30">
+            <div className="p-5 bg-[#F7F3E9] border border-[#E2D9C8] shadow-md">
+              <span className="text-[8.5px] font-sans uppercase tracking-[0.22em] text-[#1E40AF] font-bold block mb-1.5">
                 FIELD NOTE 06 · HORIZON
               </span>
-              <p className="font-serif italic text-3xl sm:text-4xl text-[#0A2540] leading-tight tracking-tight">
-                "No road ahead. Just horizon."
+              <p className="font-serif italic text-xl sm:text-2xl text-[#0A2540] leading-snug tracking-tight">
+                "No roads. Just horizon and open water."
               </p>
-              <p className="font-sans text-xs sm:text-sm text-[#0A2540]/75 mt-3 leading-relaxed font-light">
-                Out here, land falls away entirely. The catamaran glides at 14 knots across open blue waters with only the ocean breeze and seabirds following our wake.
+              <p className="font-sans text-xs text-[#0A2540]/75 mt-2 leading-relaxed font-light">
+                Out here, silence returns. The twin hulls carve a clean white wake through deep water with only the ocean breeze and seabirds following our passage.
               </p>
             </div>
           </div>

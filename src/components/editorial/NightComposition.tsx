@@ -22,13 +22,13 @@ export function NightComposition() {
 
     if (nightPhotoRef.current) {
       gsap.to(nightPhotoRef.current, {
-        scale: 1.05,
+        scale: 1.03,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.5,
+          scrub: 1.2,
         },
       });
     }
@@ -38,41 +38,51 @@ export function NightComposition() {
     <section
       ref={sectionRef}
       id="night"
-      className="relative w-full bg-[#071A2B] text-[#FAF6EE] py-28 sm:py-36 overflow-hidden border-b border-white/10"
+      className="relative w-full bg-[#071A2B] text-[#FAF6EE] py-20 sm:py-28 overflow-hidden border-b border-white/10"
     >
-      {/* Ambient Starlight & Cyan Reflections */}
+      {/* Ambient Starlight Glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0D9488]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#C2410C]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Telemetry Bar */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/15 pb-3">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-white/15 pb-2.5">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488] animate-pulse" />
-            <span className="font-bold text-[#0D9488]">09 / MIDNIGHT · DEEP SAPPHIRE SEA UNDER STARS</span>
+            <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
+            <span className="font-semibold text-white/90">09 / MIDNIGHT · DEEP SAPPHIRE SEA UNDER STARS</span>
           </div>
-          <div className="flex items-center gap-4 text-white/70 font-semibold">
+          <div className="flex items-center gap-4 text-white/70 font-medium">
             <span>21:00 — LATE</span>
-            <span className="text-[#F59E0B]">STAR NAVIGATION</span>
+            <span>CELESTIAL NAVIGATION</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Colossal Display Typography */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10 select-none overflow-visible mb-6">
-        <h2 className="font-serif text-[17vw] sm:text-[13vw] lg:text-[10.5vw] text-[#FAF6EE] leading-[0.78] tracking-[-0.03em] uppercase">
-          NIGHT BELONGS TO THE SEA.
-        </h2>
+      {/* 2. Editorial Headline & Introduction */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-8">
+        <div className="editorial-grid items-start">
+          <div className="col-span-12 lg:col-span-7">
+            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white leading-[0.95] tracking-tight uppercase">
+              Night belongs
+              <br />
+              <span className="italic font-light text-[#0D9488]">to the sea.</span>
+            </h2>
+          </div>
+          <div className="col-span-12 lg:col-span-5 pt-2">
+            <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed font-light max-w-lg">
+              When the mainland falls quiet, the Arabian Sea opens its nocturnal theater. Starlight reflects across volcanic basalt cliffs as the catamaran drifts in deep sapphire calm.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* 3. Deep Midnight Photographic Composition */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 -mt-4 sm:-mt-8 lg:-mt-12 z-20">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20">
         <div className="editorial-grid items-start relative">
           
-          <div className="col-span-12 lg:col-span-12 relative">
+          <div className="col-span-12 relative">
             <div
               ref={nightPhotoRef}
-              className="relative w-full h-[55vh] sm:h-[68vh] lg:h-[78vh] overflow-hidden shadow-2xl border border-white/20 will-change-transform bg-[#051320]"
+              className="relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden shadow-2xl border border-white/20 will-change-transform bg-[#051320]"
             >
               <Image
                 src="/images/night_sapphire.jpg"
@@ -83,23 +93,23 @@ export function NightComposition() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#071A2B]/80 via-transparent to-transparent pointer-events-none" />
               
-              <div className="absolute bottom-6 left-6 bg-[#071A2B]/90 text-[#FAF6EE] px-4 py-2 text-[9.5px] font-mono tracking-[0.2em] uppercase border border-white/20">
+              <div className="absolute bottom-4 left-4 bg-[#071A2B]/90 text-[#FAF6EE] px-3.5 py-1.5 text-[8.5px] font-sans tracking-[0.2em] uppercase border border-white/20">
                 MIDNIGHT SAPPHIRE · CELESTIAL SOUNDSCAPES
               </div>
             </div>
           </div>
 
-          {/* Starlight Reflection Narrative */}
-          <div className="col-span-12 lg:col-start-7 lg:col-span-6 relative mt-8 z-30">
-            <div className="p-6 bg-[#071A2B]/90 backdrop-blur-md border border-white/15 shadow-xl">
-              <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-[#0D9488] font-bold block mb-2">
-                NIGHTFALL OBSERVATION
+          {/* Starlight Reflection Note */}
+          <div className="col-span-12 lg:col-start-7 lg:col-span-6 relative mt-6 z-30">
+            <div className="p-6 bg-[#071A2B]/90 backdrop-blur-xs border border-white/15 shadow-xl">
+              <span className="text-[8.5px] font-sans uppercase tracking-[0.22em] text-[#0D9488] font-bold block mb-1.5">
+                NOCTURNAL OBSERVATION
               </span>
-              <p className="font-serif italic text-2xl sm:text-3xl text-[#FAF6EE] leading-snug tracking-tight">
+              <p className="font-serif italic text-xl sm:text-2xl text-[#FAF6EE] leading-snug tracking-tight">
                 "When the world on land falls quiet, the ocean begins its second act."
               </p>
-              <p className="font-sans text-xs sm:text-sm text-white/75 mt-3 leading-relaxed font-light">
-                Under a canopy of coastal stars, curated ambient soundscapes drift across the teak deck. The sea glows in deep sapphire, and the city lights of Malpe flicker in the distance.
+              <p className="font-sans text-xs sm:text-sm text-white/75 mt-2.5 leading-relaxed font-light">
+                Under a canopy of coastal constellations, ambient celestial soundscapes drift across the teak sky lounge while the harbor lights of Malpe glow quietly along the horizon.
               </p>
             </div>
           </div>

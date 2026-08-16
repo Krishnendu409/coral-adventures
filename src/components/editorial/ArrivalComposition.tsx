@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
@@ -17,10 +17,14 @@ if (typeof window !== "undefined") {
 
 export function ArrivalComposition() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const heroStageRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
   const postcardRef = useRef<HTMLDivElement>(null);
   const ticketRef = useRef<HTMLDivElement>(null);
+  const telemetryRef = useRef<HTMLDivElement>(null);
+  const preludeRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     if (!containerRef.current) return;
@@ -28,23 +32,67 @@ export function ArrivalComposition() {
       return;
     }
 
+    // 1. Kinetic Luxury Entrance Timeline on Initial Load
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+    if (telemetryRef.current) {
+      tl.fromTo(
+        telemetryRef.current,
+        { opacity: 0, y: -15 },
+        { opacity: 1, y: 0, duration: 0.9 }
+      );
+    }
+
+    if (wordmarkRef.current) {
+      tl.fromTo(
+        wordmarkRef.current,
+        { opacity: 0, y: 40, scale: 0.98 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "expo.out" },
+        "-=0.6"
+      );
+    }
+
+    if (subtitleRef.current) {
+      tl.fromTo(
+        subtitleRef.current,
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.9 },
+        "-=0.8"
+      );
+    }
+
     if (heroImageRef.current) {
-      gsap.to(heroImageRef.current, {
-        y: 30,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
+      tl.fromTo(
+        heroImageRef.current,
+        { opacity: 0, scale: 0.94, clipPath: "inset(10% 5% 10% 5%)" },
+        { opacity: 1, scale: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "power3.inOut" },
+        "-=1.0"
+      );
     }
 
     if (postcardRef.current) {
-      gsap.to(postcardRef.current, {
-        y: -25,
-        rotate: -6,
+      tl.fromTo(
+        postcardRef.current,
+        { opacity: 0, y: 50, rotate: -10, scale: 0.9 },
+        { opacity: 1, y: 0, rotate: -4, scale: 1, duration: 1.1, ease: "back.out(1.4)" },
+        "-=0.9"
+      );
+    }
+
+    if (ticketRef.current) {
+      tl.fromTo(
+        ticketRef.current,
+        { opacity: 0, y: 40, rotate: 8, scale: 0.9 },
+        { opacity: 1, y: 0, rotate: 2, scale: 1, duration: 1.1, ease: "back.out(1.4)" },
+        "-=0.9"
+      );
+    }
+
+    // 2. Scroll-Driven Cinematic Aperture Parallax into Scene 02
+    if (heroImageRef.current) {
+      gsap.to(heroImageRef.current, {
+        y: 45,
+        scale: 1.04,
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
@@ -55,10 +103,24 @@ export function ArrivalComposition() {
       });
     }
 
+    if (postcardRef.current) {
+      gsap.to(postcardRef.current, {
+        y: -35,
+        rotate: -7,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1.4,
+        },
+      });
+    }
+
     if (ticketRef.current) {
       gsap.to(ticketRef.current, {
-        y: -15,
-        rotate: 4,
+        y: -25,
+        rotate: 5,
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
@@ -70,47 +132,113 @@ export function ArrivalComposition() {
     }
   }, { scope: containerRef });
 
+  // 3. Interactive Multi-Plane Mouse Parallax Effect
+  useEffect(() => {
+    const stage = heroStageRef.current;
+    if (!stage || (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+      return;
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = stage.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width - 0.5;
+      const relY = (e.clientY - rect.top) / rect.height - 0.5;
+
+      if (heroImageRef.current) {
+        gsap.to(heroImageRef.current, {
+          x: relX * 14,
+          y: relY * 10,
+          duration: 0.8,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+
+      if (postcardRef.current) {
+        gsap.to(postcardRef.current, {
+          x: -relX * 24,
+          y: -relY * 18,
+          rotate: -4 + relX * 4,
+          duration: 0.9,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+
+      if (ticketRef.current) {
+        gsap.to(ticketRef.current, {
+          x: -relX * 18,
+          y: -relY * 14,
+          rotate: 2 - relX * 3,
+          duration: 0.9,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+    };
+
+    const handleMouseLeave = () => {
+      if (heroImageRef.current) {
+        gsap.to(heroImageRef.current, { x: 0, y: 0, duration: 1, ease: "power2.out" });
+      }
+      if (postcardRef.current) {
+        gsap.to(postcardRef.current, { x: 0, y: 0, rotate: -4, duration: 1, ease: "power2.out" });
+      }
+      if (ticketRef.current) {
+        gsap.to(ticketRef.current, { x: 0, y: 0, rotate: 2, duration: 1, ease: "power2.out" });
+      }
+    };
+
+    stage.addEventListener("mousemove", handleMouseMove);
+    stage.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      stage.removeEventListener("mousemove", handleMouseMove);
+      stage.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
   return (
     <section
       ref={containerRef}
       id="arrival"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] pt-16 sm:pt-20 pb-28 sm:pb-36 overflow-hidden border-b border-[#E8DFD0]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 overflow-hidden border-b border-[#E2D9C8]"
     >
       <PaperTexture opacity={0.03} />
 
-      {/* 1. Header Telemetry Bar (Matching 01_desktop_hero_1440x900.png) */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-4 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10.5px] font-mono tracking-[0.22em] uppercase border-y border-[#0A2540]/15 py-3">
+      {/* 1. Header Telemetry Bar (Clearance from fixed navbar) */}
+      <div ref={telemetryRef} className="relative w-full px-6 sm:px-10 lg:px-14 mb-5 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-y border-[#0A2540]/12 py-2.5">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E05A36] animate-pulse" />
-            <span className="font-bold text-[#0A2540]">01 / ARRIVAL · MALPE HARBOR</span>
-            <span className="text-[#0A2540]/40">·</span>
-            <span className="text-[#0A2540]/70">{WAYPOINTS.malpeHarbor.coords}</span>
+            <span className="w-2 h-2 rounded-full bg-[#0284C7] animate-pulse" />
+            <span className="font-semibold text-[#0A2540]">01 / ARRIVAL · MALPE HARBOR</span>
+            <span className="text-[#0A2540]/30">·</span>
+            <span className="text-[#0A2540]/70 font-mono">{WAYPOINTS.malpeHarbor.coords}</span>
           </div>
-          <div className="flex items-center gap-4 font-bold">
+          <div className="flex items-center gap-4 font-medium">
             <span className="text-[#1E40AF]">ARABIAN SEA EXPEDITION</span>
-            <span className="text-[#E05A36]">OCT — MAY CALM SEA SEASON</span>
+            <span className="text-[#0284C7] font-semibold">OCT — MAY CALM WINDOW</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Hero Stage: Wordmark IN FRONT of Main Image */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mt-2">
+      {/* 2. Hero Stage: Wordmark & Interactive Multi-Plane Image Canvas */}
+      <div ref={heroStageRef} className="relative w-full px-6 sm:px-10 lg:px-14 mt-3">
         <div className="relative w-full">
 
           {/* Colossal Display Serif Wordmark IN FRONT OF IMAGE (z-30) */}
-          <div className="relative lg:absolute -top-3 left-0 w-full z-30 pointer-events-none mb-4 lg:mb-0">
+          <div className="relative lg:absolute -top-2 left-0 w-full z-30 pointer-events-none mb-4 lg:mb-0">
             <h1
               ref={wordmarkRef}
-              className="font-serif text-[11vw] sm:text-[10vw] lg:text-[9.2vw] text-[#0A2540] leading-[0.8] tracking-[-0.03em] uppercase drop-shadow-sm select-none"
+              className="font-serif text-[11vw] sm:text-[10vw] lg:text-[9.2vw] text-[#0A2540] leading-[0.82] tracking-[-0.03em] uppercase drop-shadow-xs select-none"
             >
               CORAL ADVENTURES
             </h1>
-            <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-[#0A2540]/10 max-w-xl pointer-events-auto">
-              <span className="font-serif text-xl sm:text-2xl text-[#E05A36] italic font-light">
+            <div ref={subtitleRef} className="flex items-center justify-between mt-1 pt-1.5 border-t border-[#0A2540]/10 max-w-xl pointer-events-auto">
+              <span className="font-serif text-xl sm:text-2xl text-[#0284C7] italic font-light">
                 The coast is only the beginning.
               </span>
-              <span className="text-[10px] font-mono tracking-[0.25em] text-[#0A2540]/60 uppercase">
+              <span className="text-[9.5px] font-mono tracking-[0.25em] text-[#0A2540]/60 uppercase">
                 {WAYPOINTS.malpeHarbor.coords}
               </span>
             </div>
@@ -120,7 +248,7 @@ export function ArrivalComposition() {
           <div className="relative w-full lg:w-[78%] lg:ml-auto pt-[2vw] lg:pt-[4.5vw] z-10">
             <div
               ref={heroImageRef}
-              className="relative w-full h-[48vh] sm:h-[60vh] lg:h-[68vh] overflow-hidden postcard-shadow border border-[#E8DFD0] bg-[#F2ECE1]"
+              className="relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden postcard-shadow border border-[#E2D9C8] bg-[#F2ECE1] will-change-transform"
             >
               <Image
                 src="/images/hero_ocean.jpg"
@@ -133,7 +261,7 @@ export function ArrivalComposition() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/25 via-transparent to-transparent pointer-events-none" />
 
               {/* Plate 01.A Caption */}
-              <div className="absolute bottom-4 right-4 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-3.5 py-1.5 text-[9.5px] font-mono tracking-[0.2em] uppercase border border-[#E8DFD0] z-20">
+              <div className="absolute bottom-4 right-4 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-3.5 py-1.5 text-[8.5px] font-sans tracking-[0.2em] uppercase border border-[#E2D9C8] z-20">
                 PLATE 01.A · MALPE HARBOR SHORELINE
               </div>
             </div>
@@ -141,7 +269,7 @@ export function ArrivalComposition() {
             {/* Overlapping Postcard (Bottom Left, z-40) */}
             <div
               ref={postcardRef}
-              className="absolute -bottom-16 -left-4 lg:-left-24 w-[85%] sm:w-[50%] lg:w-[380px] z-40"
+              className="absolute -bottom-14 -left-3 lg:-left-20 w-[85%] sm:w-[50%] lg:w-[370px] z-40 will-change-transform"
             >
               <PostcardPlate
                 imageSrc="/images/shoreline_foam.jpg"
@@ -150,7 +278,7 @@ export function ArrivalComposition() {
                 caption="Where golden sands meet the calm Arabian Sea tide."
                 coords={WAYPOINTS.malpeHarbor.coords}
                 stampLocation="MALPE"
-                stampColor="coral"
+                stampColor="ocean"
                 rotationDeg={-4}
               />
             </div>
@@ -158,7 +286,7 @@ export function ArrivalComposition() {
             {/* Overlapping Boarding Pass Stub (Bottom Right, z-40) */}
             <div
               ref={ticketRef}
-              className="absolute -bottom-12 right-4 lg:right-8 w-[80%] sm:w-[45%] lg:w-[340px] z-40 hidden sm:block"
+              className="absolute -bottom-10 right-4 lg:right-8 w-[80%] sm:w-[45%] lg:w-[330px] z-40 hidden sm:block will-change-transform"
             >
               <BoardingPassStub
                 passNumber="CR-2026-MALPE"
@@ -167,7 +295,7 @@ export function ArrivalComposition() {
                 departureTime="DAILY EXPEDITIONS"
                 vesselName="CORAL EXPLORER · 25.90M"
                 season="OCTOBER — MAY CALM WINDOW"
-                colorTheme="coral"
+                colorTheme="azure"
               />
             </div>
 
@@ -177,31 +305,31 @@ export function ArrivalComposition() {
       </div>
 
       {/* 3. Narrative Prelude Bar */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mt-24 sm:mt-28 z-20">
-        <div className="editorial-grid items-center justify-between border-t border-[#0A2540]/15 pt-8">
+      <div ref={preludeRef} className="relative w-full px-6 sm:px-10 lg:px-14 mt-20 sm:mt-24 z-20">
+        <div className="editorial-grid items-center justify-between border-t border-[#0A2540]/12 pt-8">
           <div className="col-span-12 lg:col-span-7 flex flex-col gap-2">
-            <span className="text-[10px] font-mono tracking-[0.22em] text-[#E05A36] uppercase font-bold">
+            <span className="text-[9px] font-sans tracking-[0.24em] text-[#0284C7] uppercase font-bold">
               EXPEDITION ESSAY · PRELUDE
             </span>
             <p className="font-serif text-2xl sm:text-3xl text-[#0A2540] tracking-tight leading-snug">
               A living dossier of the Arabian Sea.
             </p>
-            <p className="font-sans text-sm sm:text-base text-[#0A2540]/80 font-light leading-relaxed max-w-xl">
+            <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 font-light leading-relaxed max-w-xl">
               Before the open sea unfolds, there is the harbor: the scent of salt air, ancient basalt cliffs rising from turquoise water, and a 25.90M catamaran waiting at the pier.
             </p>
           </div>
 
-          <div className="col-span-12 lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-5 mt-4 lg:mt-0">
+          <div className="col-span-12 lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-4 mt-4 lg:mt-0">
             <Link
               href="#coast"
-              className="inline-flex items-center gap-3 px-6 py-3 bg-[#0A2540] text-[#FAF6EE] font-mono text-[10.5px] uppercase tracking-[0.22em] font-semibold hover:bg-[#E05A36] transition-colors"
+              className="inline-flex items-center gap-2.5 px-6 py-3 bg-[#0A2540] text-[#FAF6EE] font-sans text-[10px] uppercase tracking-[0.22em] font-semibold hover:bg-[#0284C7] transition-colors shadow-xs"
             >
               <span>COMMENCE EXPEDITION</span>
               <span>↓</span>
             </Link>
             <Link
               href="/journey"
-              className="inline-flex items-center gap-3 px-6 py-3 border border-[#0A2540] text-[#0A2540] font-mono text-[10.5px] uppercase tracking-[0.22em] font-semibold hover:bg-[#0A2540] hover:text-[#FAF6EE] transition-colors"
+              className="inline-flex items-center gap-2.5 px-6 py-3 border border-[#0A2540] text-[#0A2540] font-sans text-[10px] uppercase tracking-[0.22em] font-semibold hover:bg-[#0A2540] hover:text-[#FAF6EE] transition-colors"
             >
               <span>3D DIGITAL TWIN</span>
               <span>→</span>
