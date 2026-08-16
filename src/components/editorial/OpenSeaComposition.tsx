@@ -57,11 +57,11 @@ export function OpenSeaComposition() {
         </div>
       </div>
 
-      {/* 2. Layered Stage: Giant Editorial Heading + Breathing Space + Hero Photograph */}
+      {/* 2. Layered Stage: Giant Editorial Heading + Breathing Space (8-12vh) + Hero Photograph */}
       <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-2">
         
         {/* Giant Editorial Title: Fully visible and commanding */}
-        <div className="relative w-full z-10 pointer-events-none select-none mb-6 sm:mb-8 lg:mb-10">
+        <div className="relative w-full z-10 pointer-events-none select-none">
           <h2
             ref={wordmarkRef}
             className="font-serif text-[15vw] sm:text-[14.5vw] lg:text-[13.5vw] text-[#0A2540] leading-[0.8] tracking-[-0.04em] uppercase"
@@ -70,8 +70,8 @@ export function OpenSeaComposition() {
           </h2>
         </div>
 
-        {/* Large Hero Photograph positioned with deliberate breathing space BELOW title */}
-        <div className="relative w-full lg:w-[86%] lg:ml-auto z-20">
+        {/* Large Hero Photograph positioned with deliberate 8-12vh breathing space BELOW title */}
+        <div className="relative w-full lg:w-[86%] lg:ml-auto z-20 mt-[8vh] sm:mt-[10vh] lg:mt-[12vh]">
           <div
             ref={openSeaImgRef}
             className="relative w-full h-[52vh] sm:h-[64vh] lg:h-[72vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform shadow-2xl rounded-xs"
