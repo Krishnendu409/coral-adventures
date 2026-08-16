@@ -138,7 +138,7 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
       return;
     }
 
-    // 1. Scene Setup (Transparent, Zero physical floor geometry)
+    // 1. Scene Setup
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
@@ -146,8 +146,8 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     const isMobile = window.innerWidth < 768;
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
-    const camera = new THREE.PerspectiveCamera(34, width / height, 0.1, 100);
-    camera.position.set(0.3, 0.5, 5.8);
+    const camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 100);
+    camera.position.set(0.2, 0.4, 6.0);
     cameraRef.current = camera;
 
     // 3. Performance-Tuned WebGL Renderer
@@ -189,9 +189,9 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     modelGroupRef.current = modelGroup;
 
     const initialScale = isMobile ? 1.55 : 2.05;
-    modelGroup.position.set(isMobile ? 0.0 : 1.6, -0.15, -0.3);
+    modelGroup.position.set(isMobile ? 0.0 : 1.5, -0.12, -0.2);
     modelGroup.scale.setScalar(initialScale);
-    modelGroup.rotation.set(0.06, 0.38, -0.02);
+    modelGroup.rotation.set(0.05, 0.45, -0.02);
 
     // 6. Fast Async GLTF Ingestion & Early Shader Warmup
     let isDisposed = false;
@@ -201,7 +201,6 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
         if (isDisposed) return;
         modelGroup.add(loadedMesh);
 
-        // Warm up shaders before first scroll frame to prevent compilation stutter
         if (renderer && scene && camera) {
           try {
             renderer.compile(scene, camera);
@@ -216,7 +215,7 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
         console.error("Failed to load catamaran mesh:", err);
       });
 
-    // 7. IntersectionObserver for GPU Saving (Render only when visible or approaching within 300px)
+    // 7. IntersectionObserver for GPU Saving
     let isVisible = true;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -242,7 +241,7 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
 
     window.addEventListener("resize", handleResize, { passive: true });
 
-    // 9. High-Performance Continuous Render Loop with Exponential Damping (60-120 FPS)
+    // 9. Continuous Ultra-Smooth Damped Render Loop (Smooth Sine/Hermite Turn)
     let animationFrameId: number;
     const clock = new THREE.Clock();
     let smoothedProgress = scrollProgressRef.current ?? 0;
@@ -250,76 +249,69 @@ export function CatamaranCanvasHero({ scrollProgressRef }: CatamaranCanvasHeroPr
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      if (!isVisible) return; // Save 100% GPU when out of view
+      if (!isVisible) return;
 
       const delta = Math.min(clock.getDelta(), 0.1);
       const elapsedTime = clock.getElapsedTime();
 
-      // Exponential smooth damping for silky scroll interpolation
+      // Exponential smooth damping for silky smooth scroll interpolation
       const targetP = Math.min(1, Math.max(0, scrollProgressRef.current ?? 0));
-      smoothedProgress += (targetP - smoothedProgress) * (1.0 - Math.exp(-12.0 * delta));
+      smoothedProgress += (targetP - smoothedProgress) * (1.0 - Math.exp(-9.0 * delta));
       const p = smoothedProgress;
 
       if (modelGroupRef.current) {
-        // Subtle idle buoyancy breathing
-        const heave = Math.sin(elapsedTime * 0.7) * 0.02 + Math.sin(elapsedTime * 1.3) * 0.006;
-        const roll = Math.sin(elapsedTime * 0.5 + 0.3) * 0.006;
-        const pitch = Math.cos(elapsedTime * 0.6) * 0.005;
+        // Subtle organic sea buoyancy
+        const heave = Math.sin(elapsedTime * 0.7) * 0.018 + Math.sin(elapsedTime * 1.3) * 0.005;
+        const roll = Math.sin(elapsedTime * 0.5 + 0.3) * 0.005;
+        const pitch = Math.cos(elapsedTime * 0.6) * 0.004;
 
-        // 1. POSITION (Right-biased anchor, expanding toward Left + Down):
+        // 1. POSITION (Glides smoothly across viewport without jerky snapping)
         const currentMobile = window.innerWidth < 768;
-        const startX = currentMobile ? 0.0 : 1.6;
-        const endX = currentMobile ? 0.0 : 0.95;
+        const startX = currentMobile ? 0.0 : 1.5;
+        const endX = currentMobile ? 0.0 : 0.85;
 
-        const targetX = THREE.MathUtils.lerp(startX, endX, Math.pow(p, 0.75));
-        const targetY = THREE.MathUtils.lerp(-0.15, -0.22, p) + heave;
-        const targetZ = THREE.MathUtils.lerp(-0.3, 1.35, Math.pow(p, 0.85));
+        // Smooth cubic ease for position & scale
+        const smoothP = p * p * (3 - 2 * p); // Smoothstep curve
+
+        const targetX = THREE.MathUtils.lerp(startX, endX, smoothP);
+        const targetY = THREE.MathUtils.lerp(-0.12, -0.20, smoothP) + heave;
+        const targetZ = THREE.MathUtils.lerp(-0.2, 1.25, smoothP);
 
         modelGroupRef.current.position.set(targetX, targetY, targetZ);
 
-        // 2. NON-LINEAR ROTATION WITH HERO ANGLE DWELL:
-        let customYaw = 0;
-        if (p < 0.25) {
-          const t = p / 0.25;
-          customYaw = THREE.MathUtils.lerp(0.38, 0.72, t);
-        } else if (p < 0.65) {
-          const t = (p - 0.25) / 0.4;
-          customYaw = THREE.MathUtils.lerp(0.72, 1.45, Math.sin((t * Math.PI) / 2));
-        } else if (p < 0.90) {
-          const t = (p - 0.65) / 0.25;
-          customYaw = THREE.MathUtils.lerp(1.45, 1.75, Math.sin((t * Math.PI) / 2));
-        } else {
-          const t = (p - 0.90) / 0.10;
-          customYaw = THREE.MathUtils.lerp(1.75, 1.88, t);
-        }
+        // 2. CONTINUOUS SMOOTH YAW ROTATION (Turns seamlessly without piecewise angle kinks)
+        const startYaw = 0.45; // 3/4 bow angle (looks fast and sleek)
+        const endYaw = 1.95;   // Full broadside profile
+        const targetYaw = THREE.MathUtils.lerp(startYaw, endYaw, smoothP);
 
-        const targetPitch = THREE.MathUtils.lerp(0.06, 0.10, p) + pitch;
-        const targetRoll = THREE.MathUtils.lerp(-0.02, 0.02, p) + roll;
+        const targetPitch = THREE.MathUtils.lerp(0.05, 0.08, smoothP) + pitch;
+        const targetRoll = THREE.MathUtils.lerp(-0.02, 0.01, smoothP) + roll;
 
-        modelGroupRef.current.rotation.set(targetPitch, customYaw, targetRoll);
+        modelGroupRef.current.rotation.set(targetPitch, targetYaw, targetRoll);
 
-        // 3. SCALE:
+        // 3. SCALE
         const scaleMin = currentMobile ? 1.55 : 2.05;
-        const scaleMax = currentMobile ? 2.45 : 3.25;
-        const targetScale = THREE.MathUtils.lerp(scaleMin, scaleMax, Math.pow(p, 0.75));
+        const scaleMax = currentMobile ? 2.35 : 3.15;
+        const targetScale = THREE.MathUtils.lerp(scaleMin, scaleMax, smoothP);
         modelGroupRef.current.scale.setScalar(targetScale);
       }
 
-      // 4. CAMERA ORBIT & DOLLY:
+      // 4. CAMERA ORBIT & DOLLY
       if (cameraRef.current) {
-        const camX = THREE.MathUtils.lerp(0.3, -0.15, p);
-        const camY = THREE.MathUtils.lerp(0.5, 0.85, p);
-        const camZ = THREE.MathUtils.lerp(5.8, 4.2, p);
+        const smoothP = p * p * (3 - 2 * p);
+        const camX = THREE.MathUtils.lerp(0.2, -0.1, smoothP);
+        const camY = THREE.MathUtils.lerp(0.4, 0.75, smoothP);
+        const camZ = THREE.MathUtils.lerp(6.0, 4.4, smoothP);
         cameraRef.current.position.set(camX, camY, camZ);
-        cameraRef.current.lookAt(0.35, 0.05, 0.1);
+        cameraRef.current.lookAt(0.3, 0.05, 0.1);
       }
 
-      // 5. LIGHTING DYNAMICS:
+      // 5. LIGHTING DYNAMICS
       if (rimLightRef.current) {
-        rimLightRef.current.intensity = THREE.MathUtils.lerp(1.6, 3.4, p);
+        rimLightRef.current.intensity = THREE.MathUtils.lerp(1.6, 3.2, p);
       }
       if (keyLightRef.current) {
-        keyLightRef.current.intensity = THREE.MathUtils.lerp(2.7, 3.6, p);
+        keyLightRef.current.intensity = THREE.MathUtils.lerp(2.7, 3.5, p);
       }
 
       if (renderer) {

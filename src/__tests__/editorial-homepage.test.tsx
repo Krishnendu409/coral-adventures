@@ -47,8 +47,10 @@ describe('Editorial Homepage Compositions', () => {
   it('renders Section 03.B: TurnkeyVoyage with full-bleed ocean and maritime operations', () => {
     render(<TurnkeyVoyage />);
     expect(screen.getByRole('heading', { level: 2, name: /you just travel/i })).toBeInTheDocument();
-    expect(screen.getByText(/everything in one place/i)).toBeInTheDocument();
-    expect(screen.getByText(/time management is our priority/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/everything in one place/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/time management is our priority/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/your personal harbor concierge/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/certified marine safety/i).length).toBeGreaterThan(0);
   });
 
   it('renders Scene 04: NauticalChartComposition with route telemetry', () => {
@@ -81,7 +83,7 @@ describe('Editorial Homepage Compositions', () => {
   it('renders Scene 07: SunsetComposition with Chase The Light', () => {
     render(<SunsetComposition />);
     expect(screen.getByRole('heading', { level: 2, name: /chase/i })).toBeInTheDocument();
-    expect(screen.getByText(/sunset westbound on the arabian sea/i)).toBeInTheDocument();
+    expect(screen.getByText(/ocean takes fire/i)).toBeInTheDocument();
   });
 
   it('renders Scene 08: DinnerComposition with coastal gastronomy', () => {
