@@ -47,8 +47,8 @@ describe('Editorial Homepage Compositions', () => {
   it('renders Section 03.B: TurnkeyVoyage with full-bleed ocean and maritime operations', () => {
     render(<TurnkeyVoyage />);
     expect(screen.getByRole('heading', { level: 2, name: /you just travel/i })).toBeInTheDocument();
-    expect(screen.getByText(/malpe port berth #2/i)).toBeInTheDocument();
-    expect(screen.getByText(/solas safety standard/i)).toBeInTheDocument();
+    expect(screen.getByText(/everything in one place/i)).toBeInTheDocument();
+    expect(screen.getByText(/time management is our priority/i)).toBeInTheDocument();
   });
 
   it('renders Scene 04: NauticalChartComposition with route telemetry', () => {
