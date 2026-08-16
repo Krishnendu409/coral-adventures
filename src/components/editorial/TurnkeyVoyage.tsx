@@ -22,15 +22,15 @@ export function TurnkeyVoyage() {
 
     gsap.fromTo(
       vesselRef.current,
-      { y: 20 },
+      { y: 25 },
       {
-        y: -20,
-        ease: "none",
+        y: -25,
+        ease: "sine.inOut",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 1.4,
         },
       }
     );
@@ -40,9 +40,9 @@ export function TurnkeyVoyage() {
     <section
       ref={sectionRef}
       id="turnkey"
-      className="relative w-full min-h-[960px] bg-gradient-to-b from-[#093540] via-[#0B4A54] to-[#06202B] text-[#FAF6EE] pt-24 sm:pt-32 pb-24 sm:pb-36 overflow-hidden border-b border-white/15"
+      className="relative w-full min-h-[960px] bg-gradient-to-b from-[#0F5A56] via-[#0E4A52] to-[#071E2E] text-[#FAF6EE] pt-24 sm:pt-32 pb-24 sm:pb-36 overflow-hidden border-b border-white/15"
     >
-      {/* 1. Rich Ocean Wave Texture Overlay */}
+      {/* 1. Rich Ocean Wave Surface Texture Overlay */}
       <div className="absolute inset-0 z-0 opacity-25 mix-blend-overlay pointer-events-none">
         <Image
           src="/images/wave_foam_crest.jpg"
@@ -63,7 +63,7 @@ export function TurnkeyVoyage() {
 
       {/* 3. Header Telemetry Bar */}
       <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-sans tracking-[0.26em] uppercase border-b border-white/20 pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10px] font-sans tracking-[0.26em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
             <span className="font-bold text-white tracking-[0.26em]">TURNKEY EXPEDITION STANDARD</span>
@@ -86,14 +86,14 @@ export function TurnkeyVoyage() {
         </p>
       </div>
 
-      {/* 5. Oceanic Spatial Arena with Centered Vessel & 5 Positioned Boxes (Always Visible) */}
+      {/* 5. Oceanic Spatial Arena with Centered Cathedral Arch Vessel & 5 Orbiting Boxes */}
       <div className="relative w-full max-w-6xl mx-auto px-6 sm:px-10 z-10">
         
-        {/* Desktop Layout: Spatial positioning exactly matching attached reference */}
-        <div className="hidden lg:block relative min-h-[760px]">
+        {/* Desktop Layout: Exact spatial arrangement matching reference image */}
+        <div className="hidden lg:block relative min-h-[780px]">
           
           {/* Top-Left Box: (01) */}
-          <div className="absolute top-6 left-4 xl:left-10 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
+          <div className="absolute top-6 left-4 xl:left-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
             <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
               (01)
             </span>
@@ -106,7 +106,7 @@ export function TurnkeyVoyage() {
           </div>
 
           {/* Top-Right Box: (02) */}
-          <div className="absolute top-10 right-4 xl:right-10 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
+          <div className="absolute top-10 right-4 xl:right-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
             <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
               (02)
             </span>
@@ -141,8 +141,8 @@ export function TurnkeyVoyage() {
             </div>
           </div>
 
-          {/* Bottom-Left Box: (03) Matching Screenshot */}
-          <div className="absolute bottom-16 left-4 xl:left-10 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
+          {/* Bottom-Left Box: (03) */}
+          <div className="absolute bottom-16 left-4 xl:left-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
             <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
               (03)
             </span>
@@ -154,8 +154,8 @@ export function TurnkeyVoyage() {
             </p>
           </div>
 
-          {/* Bottom-Right Box: (04) Matching Screenshot */}
-          <div className="absolute bottom-12 right-4 xl:right-10 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
+          {/* Bottom-Right Box: (04) */}
+          <div className="absolute bottom-12 right-4 xl:right-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
             <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
               (04)
             </span>
@@ -167,7 +167,7 @@ export function TurnkeyVoyage() {
             </p>
           </div>
 
-          {/* Center-Bottom Box: (05) Overlapping Bottom of Boat Window Matching Screenshot */}
+          {/* Center-Bottom Box: (05) Overlapping Bottom of Boat Window */}
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 p-6 bg-[#071E2E]/95 backdrop-blur-md border border-white/25 rounded-xs w-full max-w-md shadow-2xl transition-all duration-300 hover:border-white/50">
             <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
               (05)
@@ -182,9 +182,9 @@ export function TurnkeyVoyage() {
 
         </div>
 
-        {/* Mobile & Tablet Responsive Grid (All 5 boxes clearly visible at all times) */}
+        {/* Mobile & Tablet Responsive Layout (All 5 boxes clearly visible at all times) */}
         <div className="lg:hidden flex flex-col items-center gap-8">
-          {/* Centered Window */}
+          {/* Centered Arch Window */}
           <div className="relative w-72 sm:w-80 h-[440px] sm:h-[500px] rounded-t-full rounded-b-xs overflow-hidden border-4 border-white/40 ring-8 ring-white/10 shadow-2xl bg-[#0A2540]">
             <Image
               src="/images/vessel_catamaran.jpg"
@@ -199,7 +199,7 @@ export function TurnkeyVoyage() {
             </div>
           </div>
 
-          {/* 5 Boxes Stacked Grid */}
+          {/* 5 Stacked Boxes */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             <div className="p-5 bg-[#071E2E]/90 border border-dotted border-white/30 rounded-xs">
               <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(01)</span>

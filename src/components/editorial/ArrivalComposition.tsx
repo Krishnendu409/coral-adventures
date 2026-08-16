@@ -31,7 +31,7 @@ export function ArrivalComposition() {
     if (telemetryRef.current) {
       tl.fromTo(
         telemetryRef.current,
-        { opacity: 0, y: -12 },
+        { opacity: 0, y: -10 },
         { opacity: 1, y: 0, duration: 0.8 }
       );
     }
@@ -39,7 +39,7 @@ export function ArrivalComposition() {
     if (wordmarkRef.current) {
       tl.fromTo(
         wordmarkRef.current,
-        { opacity: 0, y: 25 },
+        { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1.0, ease: "expo.out" },
         "-=0.4"
       );
@@ -66,7 +66,7 @@ export function ArrivalComposition() {
     if (postcardRef.current) {
       tl.fromTo(
         postcardRef.current,
-        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 0, y: 25, scale: 0.95 },
         { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.2)" },
         "-=0.7"
       );
@@ -75,7 +75,7 @@ export function ArrivalComposition() {
     if (ticketRef.current) {
       tl.fromTo(
         ticketRef.current,
-        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 0, y: 25, scale: 0.95 },
         { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.2)" },
         "-=0.7"
       );
@@ -84,7 +84,7 @@ export function ArrivalComposition() {
     if (preludeRef.current) {
       tl.fromTo(
         preludeRef.current,
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 15 },
         { opacity: 1, y: 0, duration: 0.8 },
         "-=0.5"
       );
@@ -95,130 +95,134 @@ export function ArrivalComposition() {
     <section
       ref={containerRef}
       id="arrival"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 overflow-hidden border-b border-[#E2D9C8]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] pt-20 sm:pt-24 lg:pt-28 pb-24 sm:pb-32 overflow-hidden border-b border-[#E2D9C8]"
     >
       <PaperTexture opacity={0.03} />
 
       {/* 1. Header Telemetry Bar */}
-      <div ref={telemetryRef} className="relative w-full px-6 sm:px-10 lg:px-14 mb-6 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-sans tracking-[0.26em] uppercase border-y border-[#0A2540]/12 py-3">
+      <div ref={telemetryRef} className="relative w-full px-6 sm:px-10 lg:px-14 mb-4 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-y border-[#0A2540]/12 py-2.5">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7] animate-pulse" />
-            <span className="font-bold text-[#0A2540]">01 / ARRIVAL · MALPE HARBOR</span>
+            <span className="w-2 h-2 rounded-full bg-[#0284C7] animate-pulse" />
+            <span className="font-semibold text-[#0A2540]">01 / ARRIVAL · MALPE HARBOR</span>
             <span className="text-[#0A2540]/30">·</span>
-            <span className="text-[#0A2540]/70 font-mono font-medium">{WAYPOINTS.malpeHarbor.coords}</span>
+            <span className="text-[#0A2540]/70 font-mono">{WAYPOINTS.malpeHarbor.coords}</span>
           </div>
-          <div className="flex items-center gap-4 font-semibold">
+          <div className="flex items-center gap-4 font-medium">
             <span className="text-[#1E40AF]">ARABIAN SEA EXPEDITION</span>
-            <span className="text-[#0284C7]">OCT — MAY CALM WINDOW</span>
+            <span className="text-[#0284C7] font-semibold">OCT — MAY CALM WINDOW</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Hero Headline Stage: Wordmark PROMINENT AT FRONT */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20 mb-6 sm:mb-8">
-        <h1
-          ref={wordmarkRef}
-          className="font-serif text-[12.5vw] sm:text-[12vw] lg:text-[11vw] text-[#0A2540] leading-[0.85] tracking-[-0.035em] uppercase drop-shadow-xs"
-        >
-          CORAL ADVENTURES
-        </h1>
-        <div ref={subtitleRef} className="flex flex-wrap items-center justify-between mt-3 pt-3 border-t border-[#0A2540]/12 gap-2">
-          <span className="font-serif text-2xl sm:text-4xl text-[#0284C7] italic font-normal">
-            The coast is only the beginning.
-          </span>
-          <span className="text-[10.5px] font-mono tracking-[0.25em] text-[#0A2540]/70 uppercase font-medium">
-            {WAYPOINTS.malpeHarbor.coords}
-          </span>
-        </div>
-      </div>
-
-      {/* 3. Hero Visual Arena: Large Landscape Frame with Overlapping Postcard & Ticket */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10">
+      {/* 2. Hero Stage: Wordmark IN FRONT OF IMAGE (z-30) */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-2">
         <div className="relative w-full">
-          
-          <div
-            ref={heroImageRef}
-            className="group relative w-full h-[50vh] sm:h-[62vh] lg:h-[70vh] overflow-hidden postcard-shadow border border-[#E2D9C8] bg-[#F2ECE1]"
-          >
-            <Image
-              src="/images/hero_ocean.jpg"
-              alt="Golden hour coastline in Malpe with soft waves crashing on sandy shores"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-103"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/35 via-transparent to-transparent pointer-events-none" />
 
-            {/* Plate Caption */}
-            <div className="absolute bottom-4 right-4 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-4 py-2 text-[9.5px] font-sans tracking-[0.22em] uppercase font-bold border border-[#E2D9C8] z-20">
-              PLATE 01.A · MALPE HARBOR SHORELINE
+          {/* Colossal Display Serif Wordmark IN FRONT OF IMAGE (z-30) */}
+          <div className="relative lg:absolute -top-2 left-0 w-full z-30 pointer-events-none mb-4 lg:mb-0">
+            <h1
+              ref={wordmarkRef}
+              className="font-serif text-[11vw] sm:text-[10vw] lg:text-[9.2vw] text-[#0A2540] leading-[0.82] tracking-[-0.03em] uppercase drop-shadow-xs select-none"
+            >
+              CORAL ADVENTURES
+            </h1>
+            <div ref={subtitleRef} className="flex items-center justify-between mt-1 pt-1.5 border-t border-[#0A2540]/10 max-w-xl pointer-events-auto">
+              <span className="font-serif text-xl sm:text-2xl text-[#0284C7] italic font-light">
+                The coast is only the beginning.
+              </span>
+              <span className="text-[9.5px] font-mono tracking-[0.25em] text-[#0A2540]/60 uppercase">
+                {WAYPOINTS.malpeHarbor.coords}
+              </span>
             </div>
           </div>
 
-          {/* Overlapping Postcard (Bottom Left, z-40) */}
-          <div
-            ref={postcardRef}
-            className="absolute -bottom-14 -left-3 lg:-left-10 w-[88%] sm:w-[50%] lg:w-[380px] z-40 transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[-2deg] hover:z-50 cursor-pointer"
-          >
-            <PostcardPlate
-              imageSrc="/images/shoreline_foam.jpg"
-              imageAlt="Coastal surf waves and tropical palms at Malpe beach"
-              title="Malpe Shores & Palm Groves"
-              caption="Where golden sands meet the calm Arabian Sea tide."
-              coords={WAYPOINTS.malpeHarbor.coords}
-              stampLocation="MALPE"
-              stampColor="ocean"
-              rotationDeg={-4}
-            />
-          </div>
+          {/* Main Hero Image (Right-aligned 78% width) */}
+          <div className="relative w-full lg:w-[78%] lg:ml-auto pt-[2vw] lg:pt-[4.5vw] z-10">
+            <div
+              ref={heroImageRef}
+              className="group relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden postcard-shadow border border-[#E2D9C8] bg-[#F2ECE1]"
+            >
+              <Image
+                src="/images/hero_ocean.jpg"
+                alt="Golden hour coastline in Malpe with soft waves crashing on sandy shores"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 80vw"
+                className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-103"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/25 via-transparent to-transparent pointer-events-none" />
 
-          {/* Overlapping Boarding Pass Stub (Bottom Right, z-40) */}
-          <div
-            ref={ticketRef}
-            className="absolute -bottom-10 right-4 lg:right-10 w-[82%] sm:w-[46%] lg:w-[340px] z-40 hidden sm:block transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[4deg] hover:z-50 cursor-pointer"
-          >
-            <BoardingPassStub
-              passNumber="CR-2026-MALPE"
-              routeFrom="MALPE PIER"
-              routeTo="ST. MARY'S ARCHIPELAGO"
-              departureTime="DAILY EXPEDITIONS"
-              vesselName="CORAL EXPLORER · 25.90M"
-              season="OCTOBER — MAY CALM WINDOW"
-              colorTheme="azure"
-            />
+              {/* Plate 01.A Caption */}
+              <div className="absolute bottom-4 right-4 bg-[#FAF6EE]/95 backdrop-blur-xs text-[#0A2540] px-3.5 py-1.5 text-[8.5px] font-sans tracking-[0.2em] uppercase border border-[#E2D9C8] z-20">
+                PLATE 01.A · MALPE HARBOR SHORELINE
+              </div>
+            </div>
+
+            {/* Overlapping Postcard (Bottom Left, z-40) */}
+            <div
+              ref={postcardRef}
+              className="absolute -bottom-14 -left-3 lg:-left-20 w-[85%] sm:w-[50%] lg:w-[370px] z-40 transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[-2deg] hover:z-50 cursor-pointer"
+            >
+              <PostcardPlate
+                imageSrc="/images/shoreline_foam.jpg"
+                imageAlt="Coastal surf waves and tropical palms at Malpe beach"
+                title="Malpe Shores & Palm Groves"
+                caption="Where golden sands meet the calm Arabian Sea tide."
+                coords={WAYPOINTS.malpeHarbor.coords}
+                stampLocation="MALPE"
+                stampColor="ocean"
+                rotationDeg={-4}
+              />
+            </div>
+
+            {/* Overlapping Boarding Pass Stub (Bottom Right, z-40) */}
+            <div
+              ref={ticketRef}
+              className="absolute -bottom-10 right-4 lg:right-8 w-[80%] sm:w-[45%] lg:w-[330px] z-40 hidden sm:block transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[4deg] hover:z-50 cursor-pointer"
+            >
+              <BoardingPassStub
+                passNumber="CR-2026-MALPE"
+                routeFrom="MALPE PIER"
+                routeTo="ST. MARY'S ARCHIPELAGO"
+                departureTime="DAILY EXPEDITIONS"
+                vesselName="CORAL EXPLORER · 25.90M"
+                season="OCTOBER — MAY CALM WINDOW"
+                colorTheme="azure"
+              />
+            </div>
+
           </div>
 
         </div>
       </div>
 
-      {/* 4. Narrative Prelude Bar */}
-      <div ref={preludeRef} className="relative w-full px-6 sm:px-10 lg:px-14 mt-24 sm:mt-28 z-20">
-        <div className="editorial-grid items-center justify-between border-t border-[#0A2540]/12 pt-10">
-          <div className="col-span-12 lg:col-span-7 flex flex-col gap-3">
-            <span className="text-[10px] font-sans tracking-[0.26em] text-[#0284C7] uppercase font-bold">
+      {/* 3. Narrative Prelude Bar */}
+      <div ref={preludeRef} className="relative w-full px-6 sm:px-10 lg:px-14 mt-20 sm:mt-24 z-20">
+        <div className="editorial-grid items-center justify-between border-t border-[#0A2540]/12 pt-8">
+          <div className="col-span-12 lg:col-span-7 flex flex-col gap-2">
+            <span className="text-[9px] font-sans tracking-[0.24em] text-[#0284C7] uppercase font-bold">
               EXPEDITION ESSAY · PRELUDE
             </span>
-            <p className="font-serif text-3xl sm:text-4xl text-[#0A2540] tracking-tight leading-snug">
+            <p className="font-serif text-2xl sm:text-3xl text-[#0A2540] tracking-tight leading-snug">
               A living dossier of the Arabian Sea.
             </p>
-            <p className="font-sans text-sm sm:text-base text-[#0A2540]/85 font-normal leading-relaxed max-w-xl">
+            <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 font-light leading-relaxed max-w-xl">
               Before the open sea unfolds, there is the harbor: the scent of salt air, ancient basalt cliffs rising from turquoise water, and a 25.90M catamaran waiting at the pier.
             </p>
           </div>
 
-          <div className="col-span-12 lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-4 mt-6 lg:mt-0">
+          <div className="col-span-12 lg:col-span-5 flex flex-wrap items-center justify-start lg:justify-end gap-4 mt-4 lg:mt-0">
             <Link
               href="#coast"
-              className="inline-flex items-center gap-3 px-7 py-3.5 bg-[#0A2540] text-[#FAF6EE] font-sans text-[11px] uppercase tracking-[0.24em] font-semibold hover:bg-[#0284C7] transition-colors shadow-md"
+              className="inline-flex items-center gap-2.5 px-6 py-3 bg-[#0A2540] text-[#FAF6EE] font-sans text-[10px] uppercase tracking-[0.22em] font-semibold hover:bg-[#0284C7] transition-colors shadow-xs"
             >
               <span>COMMENCE EXPEDITION</span>
               <span>↓</span>
             </Link>
             <Link
               href="/journey"
-              className="inline-flex items-center gap-3 px-7 py-3.5 border border-[#0A2540] text-[#0A2540] font-sans text-[11px] uppercase tracking-[0.24em] font-semibold hover:bg-[#0A2540] hover:text-[#FAF6EE] transition-colors shadow-xs"
+              className="inline-flex items-center gap-2.5 px-6 py-3 border border-[#0A2540] text-[#0A2540] font-sans text-[10px] uppercase tracking-[0.22em] font-semibold hover:bg-[#0A2540] hover:text-[#FAF6EE] transition-colors"
             >
               <span>3D DIGITAL TWIN</span>
               <span>→</span>
