@@ -35,7 +35,7 @@ export function VesselComposition() {
         pin: pinWrapperRef.current,
         start: "top top",
         end: "+=160%",
-        scrub: 1.0,
+        scrub: 0.8,
         onUpdate: (self) => {
           scrollProgressRef.current = self.progress;
         },
@@ -43,13 +43,14 @@ export function VesselComposition() {
 
       if (watermarkRef.current) {
         gsap.to(watermarkRef.current, {
-          x: -30,
+          x: -25,
           ease: "none",
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
             end: "+=160%",
-            scrub: 1,
+            scrub: 0.8,
           },
         });
       }
@@ -62,11 +63,12 @@ export function VesselComposition() {
             opacity: 0.9,
             y: 0,
             ease: "power2.out",
+            force3D: true,
             scrollTrigger: {
               trigger: sectionRef.current,
               start: "top+=40% top",
               end: "top+=70% top",
-              scrub: 1,
+              scrub: 0.8,
             },
           }
         );
@@ -79,7 +81,7 @@ export function VesselComposition() {
         trigger: sectionRef.current,
         start: "top bottom",
         end: "bottom top",
-        scrub: 1.0,
+        scrub: 0.8,
         onUpdate: (self) => {
           scrollProgressRef.current = self.progress;
         },
@@ -140,7 +142,7 @@ export function VesselComposition() {
             ref={textColRef}
             className="max-w-md sm:max-w-xl lg:max-w-2xl pointer-events-auto"
           >
-            <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#FAF6EE] leading-[0.92] tracking-tight uppercase">
+            <h2 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-[#FAF6EE] leading-[0.9] tracking-tight uppercase">
               Built to go
               <br />
               <span className="italic font-light text-[#E06C69]">further.</span>

@@ -26,26 +26,28 @@ export function CoastComposition() {
 
     if (basaltImageRef.current) {
       gsap.to(basaltImageRef.current, {
-        y: 35,
-        ease: "none",
+        y: 25,
+        ease: "power1.out",
+        force3D: true,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1,
+          scrub: 0.8,
         },
       });
     }
 
     if (waveImageRef.current) {
       gsap.to(waveImageRef.current, {
-        y: -30,
-        ease: "none",
+        y: -20,
+        ease: "power1.out",
+        force3D: true,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 1.0,
         },
       });
     }
@@ -55,29 +57,29 @@ export function CoastComposition() {
     <section
       ref={sectionRef}
       id="coast"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-20 sm:py-28 overflow-hidden border-b border-[#E2D9C8]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-24 sm:py-32 overflow-hidden border-b border-[#E2D9C8]"
     >
       {/* 1. Header Telemetry Line */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-[#0A2540]/12 pb-2.5">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.26em] uppercase border-b border-[#0A2540]/12 pb-3">
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#1E5E48]" />
-            <span className="font-semibold text-[#1E5E48]">02 / THE COAST · COLUMNAR BASALT ARCHIPELAGO</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1E5E48]" />
+            <span className="font-bold text-[#1E5E48]">02 / THE COAST · COLUMNAR BASALT ARCHIPELAGO</span>
           </div>
-          <div className="flex items-center gap-4 text-[#0A2540]/70 font-medium">
+          <div className="flex items-center gap-4 text-[#0A2540]/75 font-medium">
             <span>ST. MARY'S ISLES</span>
-            <span>{WAYPOINTS.coconutIsland.coords}</span>
+            <span className="font-mono">{WAYPOINTS.coconutIsland.coords}</span>
           </div>
         </div>
       </div>
 
       {/* 2. Editorial Headline & Introduction */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20 mb-10">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20 mb-14">
         <div className="editorial-grid items-start">
           <div className="col-span-12 lg:col-span-7">
             <h2
               ref={headlineRef}
-              className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#0A2540] leading-[0.95] tracking-tight uppercase"
+              className="font-serif text-5xl sm:text-7xl lg:text-8xl text-[#0A2540] leading-[0.92] tracking-tight uppercase"
             >
               Where the coast
               <br />
@@ -85,7 +87,7 @@ export function CoastComposition() {
             </h2>
           </div>
 
-          <div className="col-span-12 lg:col-span-5 pt-3 lg:pt-1">
+          <div className="col-span-12 lg:col-span-5 pt-3 lg:pt-2">
             <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light max-w-lg">
               Transitioning beyond the Malpe Harbor breakwater toward the 88-million-year-old hexagonal basalt spires of St. Mary's Island—forged during the prehistoric separation of Madagascar from India.
             </p>
@@ -101,7 +103,7 @@ export function CoastComposition() {
           <div className="col-span-12 lg:col-start-3 lg:col-span-10 relative">
             <div
               ref={basaltImageRef}
-              className="relative w-full h-[48vh] sm:h-[58vh] lg:h-[68vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform"
+              className="relative w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform"
             >
               <Image
                 src="/images/malpe_basalt_yacht.jpg"

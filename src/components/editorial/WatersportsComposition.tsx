@@ -25,27 +25,29 @@ export function WatersportsComposition() {
 
     if (waveCrestRef.current) {
       gsap.to(waveCrestRef.current, {
-        y: 25,
-        ease: "none",
+        y: 20,
+        ease: "power1.out",
+        force3D: true,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 0.8,
         },
       });
     }
 
     if (underwaterRef.current) {
       gsap.to(underwaterRef.current, {
-        y: -30,
-        rotate: 1.5,
-        ease: "none",
+        y: -25,
+        rotate: 1.2,
+        ease: "power1.out",
+        force3D: true,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.4,
+          scrub: 0.9,
         },
       });
     }
@@ -55,16 +57,16 @@ export function WatersportsComposition() {
     <section
       ref={sectionRef}
       id="watersports"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-20 sm:py-28 overflow-hidden border-b border-[#E2D9C8]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-24 sm:py-32 overflow-hidden border-b border-[#E2D9C8]"
     >
       {/* 1. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-[#0A2540]/12 pb-2.5">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.26em] uppercase border-b border-[#0A2540]/12 pb-3">
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
-            <span className="font-semibold text-[#0D9488]">03 / THE WATER · ACTIVE EXPEDITION DYNAMICS</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488]" />
+            <span className="font-bold text-[#0D9488]">03 / THE WATER · ACTIVE EXPEDITION DYNAMICS</span>
           </div>
-          <div className="flex items-center gap-4 text-[#0A2540]/70 font-medium">
+          <div className="flex items-center gap-4 text-[#0A2540]/75 font-medium">
             <span>VELOCITY: 24 KNOTS</span>
             <span className="text-[#0D9488]">TURQUOISE SHALLOWS</span>
           </div>
@@ -72,17 +74,17 @@ export function WatersportsComposition() {
       </div>
 
       {/* 2. Editorial Headline & Introduction */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-8">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-12">
         <div className="editorial-grid items-start">
           <div className="col-span-12 lg:col-span-7">
             <h2
               ref={titleWaterRef}
-              className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#0A2540] leading-[0.95] tracking-tight uppercase"
+              className="font-serif text-6xl sm:text-8xl lg:text-9xl text-[#0A2540] leading-[0.9] tracking-tight uppercase"
             >
               Water moves.
             </h2>
           </div>
-          <div className="col-span-12 lg:col-span-5 pt-2">
+          <div className="col-span-12 lg:col-span-5 pt-3 lg:pt-4">
             <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light max-w-lg">
               Beyond the harbor breakwater, the calm lagoon between Malpe and St. Mary’s becomes an active aquatic playground—sheltered shallows for high-speed jet ski runs, parasail tows, and ocean kayaking.
             </p>
@@ -98,7 +100,7 @@ export function WatersportsComposition() {
           <div className="col-span-12 lg:col-start-2 lg:col-span-10 relative">
             <div
               ref={waveCrestRef}
-              className="relative w-full h-[46vh] sm:h-[56vh] lg:h-[64vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform"
+              className="relative w-full h-[50vh] sm:h-[60vh] lg:h-[68vh] overflow-hidden bg-[#F2ECE1] border border-[#E2D9C8] will-change-transform"
             >
               <Image
                 src="/images/wave_foam_crest.jpg"

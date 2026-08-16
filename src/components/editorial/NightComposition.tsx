@@ -22,13 +22,14 @@ export function NightComposition() {
 
     if (nightPhotoRef.current) {
       gsap.to(nightPhotoRef.current, {
-        scale: 1.03,
-        ease: "none",
+        scale: 1.02,
+        ease: "power1.out",
+        force3D: true,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.2,
+          scrub: 0.8,
         },
       });
     }
@@ -38,37 +39,37 @@ export function NightComposition() {
     <section
       ref={sectionRef}
       id="night"
-      className="relative w-full bg-[#071A2B] text-[#FAF6EE] py-20 sm:py-28 overflow-hidden border-b border-white/10"
+      className="relative w-full bg-[#071A2B] text-[#FAF6EE] py-24 sm:py-32 overflow-hidden border-b border-white/10"
     >
       {/* Ambient Starlight Glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0D9488]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-white/15 pb-2.5">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.26em] uppercase border-b border-white/15 pb-3">
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#0D9488]" />
-            <span className="font-semibold text-white/90">09 / MIDNIGHT · DEEP SAPPHIRE SEA UNDER STARS</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488]" />
+            <span className="font-bold text-white/95">09 / MIDNIGHT · DEEP SAPPHIRE SEA UNDER STARS</span>
           </div>
-          <div className="flex items-center gap-4 text-white/70 font-medium">
+          <div className="flex items-center gap-4 text-white/75 font-mono font-medium">
             <span>21:00 — LATE</span>
-            <span>CELESTIAL NAVIGATION</span>
+            <span className="text-[#38BDF8]">CELESTIAL NAVIGATION</span>
           </div>
         </div>
       </div>
 
       {/* 2. Editorial Headline & Introduction */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-8">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10 mb-12">
         <div className="editorial-grid items-start">
           <div className="col-span-12 lg:col-span-7">
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white leading-[0.95] tracking-tight uppercase">
+            <h2 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-white leading-[0.92] tracking-tight uppercase">
               Night belongs
               <br />
               <span className="italic font-light text-[#0D9488]">to the sea.</span>
             </h2>
           </div>
-          <div className="col-span-12 lg:col-span-5 pt-2">
-            <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed font-light max-w-lg">
+          <div className="col-span-12 lg:col-span-5 pt-3 lg:pt-2">
+            <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed font-light max-w-lg">
               When the mainland falls quiet, the Arabian Sea opens its nocturnal theater. Starlight reflects across volcanic basalt cliffs as the catamaran drifts in deep sapphire calm.
             </p>
           </div>
@@ -82,7 +83,7 @@ export function NightComposition() {
           <div className="col-span-12 relative">
             <div
               ref={nightPhotoRef}
-              className="relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden shadow-2xl border border-white/20 will-change-transform bg-[#051320]"
+              className="relative w-full h-[50vh] sm:h-[62vh] lg:h-[70vh] overflow-hidden shadow-2xl border border-white/20 will-change-transform bg-[#051320]"
             >
               <Image
                 src="/images/night_sapphire.jpg"
@@ -99,21 +100,22 @@ export function NightComposition() {
             </div>
           </div>
 
-          {/* Starlight Reflection Note */}
-          <div className="col-span-12 lg:col-start-7 lg:col-span-6 relative mt-6 z-30">
-            <div className="p-6 bg-[#071A2B]/90 backdrop-blur-xs border border-white/15 shadow-xl">
-              <span className="text-[8.5px] font-sans uppercase tracking-[0.22em] text-[#0D9488] font-bold block mb-1.5">
-                NOCTURNAL OBSERVATION
-              </span>
-              <p className="font-serif italic text-xl sm:text-2xl text-[#FAF6EE] leading-snug tracking-tight">
-                "When the world on land falls quiet, the ocean begins its second act."
-              </p>
-              <p className="font-sans text-xs sm:text-sm text-white/75 mt-2.5 leading-relaxed font-light">
-                Under a canopy of coastal constellations, ambient celestial soundscapes drift across the teak sky lounge while the harbor lights of Malpe glow quietly along the horizon.
-              </p>
-            </div>
-          </div>
+        </div>
+      </div>
 
+      {/* 4. Midnight Field Note Narrative Floor */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-16 sm:mt-20 z-20">
+        <div className="editorial-grid items-start border-t border-white/15 pt-8">
+          <div className="col-span-12 lg:col-span-7">
+            <p className="font-serif text-2xl sm:text-4xl text-white tracking-tight leading-snug">
+              &ldquo;Under the new moon, the only illumination is the phosphorescent wake of the twin hulls and the billion stars above.&rdquo;
+            </p>
+          </div>
+          <div className="col-span-12 lg:col-span-5 pt-3 lg:pt-1">
+            <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed font-light">
+              Equipped with low-frequency acoustic engineering and dimmed amber chart lights, the Coral Explorer creates an intimate nocturnal voyage away from all coastal light pollution.
+            </p>
+          </div>
         </div>
       </div>
     </section>

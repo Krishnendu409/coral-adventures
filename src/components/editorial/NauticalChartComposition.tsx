@@ -42,7 +42,7 @@ export function NauticalChartComposition() {
         trigger: sectionRef.current,
         start: "top center",
         end: "bottom center",
-        scrub: 1.5,
+        scrub: 1.0,
       },
     });
 
@@ -55,7 +55,7 @@ export function NauticalChartComposition() {
       tl.to(wakeRef.current, {
         strokeDashoffset: 0,
         ease: "none",
-      }, 0.2);
+      }, 0.15);
     }
   }, { scope: sectionRef });
 
@@ -94,33 +94,33 @@ export function NauticalChartComposition() {
     <section
       ref={sectionRef}
       id="chart"
-      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-20 sm:py-28 overflow-hidden border-b border-[#E2D9C8]"
+      className="relative w-full bg-[#FAF6EE] text-[#0A2540] py-24 sm:py-32 overflow-hidden border-b border-[#E2D9C8]"
     >
       {/* 1. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-[#0A2540]/12 pb-2.5">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-sans tracking-[0.26em] uppercase border-b border-[#0A2540]/12 pb-3">
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#0284C7]" />
-            <span className="font-semibold text-[#0A2540]">04 / THE CHART · NAUTICAL EXPEDITION TRAJECTORY</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0284C7]" />
+            <span className="font-bold text-[#0A2540]">04 / THE CHART · NAUTICAL EXPEDITION TRAJECTORY</span>
           </div>
-          <div className="flex items-center gap-4 text-[#0A2540]/70 font-medium">
+          <div className="flex items-center gap-4 text-[#0A2540]/75 font-medium">
             <span>HYDROGRAPHIC SOUNDINGS</span>
-            <span>CHART 2026-MALPE</span>
+            <span className="font-mono">CHART 2026-MALPE</span>
           </div>
         </div>
       </div>
 
       {/* 2. Editorial Headline & Introduction */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20 mb-8">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20 mb-10">
         <div className="editorial-grid items-start">
           <div className="col-span-12 lg:col-span-8">
-            <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#0A2540] leading-[0.95] tracking-tight uppercase">
+            <h2 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-[#0A2540] leading-[0.92] tracking-tight uppercase">
               The route becomes
               <br />
               <span className="italic font-light text-[#0284C7]">the wake.</span>
             </h2>
           </div>
-          <div className="col-span-12 lg:col-span-4 flex lg:justify-end items-center pt-2">
+          <div className="col-span-12 lg:col-span-4 flex lg:justify-end items-center pt-3 lg:pt-0">
             <ExpeditionStamp location="MALPE CHART" coords="HYDRO 2026" color="azure" />
           </div>
         </div>
@@ -201,50 +201,33 @@ export function NauticalChartComposition() {
           {waypoints.map((wp) => {
             const isSelected = activePoint === wp.key;
             return (
-              <button
+              <div
                 key={wp.key}
-                onClick={() => setActivePoint(wp.key)}
-                className="absolute z-20 -translate-x-1/2 -translate-y-1/2 group focus:outline-hidden cursor-pointer"
                 style={{ left: wp.cx, top: wp.cy }}
-                aria-label={`Select ${wp.data.name}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer"
+                onClick={() => setActivePoint(wp.key)}
               >
-                <div className="relative flex items-center justify-center">
-                  <div
-                    className={`w-5 h-5 sm:w-7 sm:h-7 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
-                      isSelected
-                        ? "border-[#0284C7] bg-[#0284C7] text-white scale-110 shadow-md"
-                        : "border-[#0A2540] bg-[#FAF6EE] text-[#0A2540] group-hover:border-[#0284C7]"
-                    }`}
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                  </div>
-                  
-                  {/* Waypoint Label Tag */}
-                  <div
-                    className={`absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-0.5 whitespace-nowrap text-[8px] font-sans tracking-[0.18em] uppercase transition-all duration-300 ${
-                      isSelected
-                        ? "bg-[#0A2540] text-[#FAF6EE] shadow-md z-30"
-                        : "bg-[#FAF6EE]/95 text-[#0A2540] border border-[#E2D9C8]"
-                    }`}
-                  >
+                <div className={`relative flex items-center justify-center transition-transform duration-300 ${
+                  isSelected ? "scale-125" : "hover:scale-110"
+                }`}>
+                  <div className={`w-3.5 h-3.5 rounded-full border-2 transition-colors ${
+                    isSelected ? "bg-[#0284C7] border-[#FAF6EE] shadow-md" : "bg-[#0A2540] border-[#FAF6EE]"
+                  }`} />
+                  <div className="absolute -top-6 whitespace-nowrap bg-[#0A2540] text-[#FAF6EE] px-2 py-0.5 text-[8px] font-sans tracking-[0.16em] uppercase rounded-xs">
                     {wp.label}
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
 
-          {/* Active Waypoint Detail Drawer */}
-          <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-md bg-[#FAF6EE]/95 backdrop-blur-xs border border-[#E2D9C8] p-4 sm:p-5 z-30 shadow-lg">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8.5px] font-sans tracking-[0.2em] text-[#0284C7] uppercase font-bold">
-                SOUNDING TELEMETRY
-              </span>
-              <span className="text-[8.5px] font-mono text-[#0A2540]/60 uppercase">
-                {WAYPOINTS[activePoint]?.coords}
-              </span>
+          {/* Dynamic Active Waypoint Legend Telemetry Card */}
+          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-30 max-w-xs sm:max-w-sm bg-[#FAF6EE]/95 backdrop-blur-md border border-[#E2D9C8] p-4 shadow-xl">
+            <div className="flex items-center justify-between text-[8px] font-sans tracking-[0.2em] text-[#0284C7] uppercase font-bold mb-1.5">
+              <span>ACTIVE TELEMETRY FIX</span>
+              <span className="font-mono">{WAYPOINTS[activePoint]?.coords}</span>
             </div>
-            <h4 className="font-serif text-lg sm:text-xl text-[#0A2540] tracking-tight mb-1.5">
+            <h4 className="font-serif text-lg text-[#0A2540] mb-1">
               {WAYPOINTS[activePoint]?.name}
             </h4>
             <p className="font-sans text-xs text-[#0A2540]/80 font-light leading-relaxed">

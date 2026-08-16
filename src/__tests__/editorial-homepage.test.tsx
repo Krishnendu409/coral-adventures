@@ -77,19 +77,19 @@ describe('Editorial Homepage Compositions', () => {
   it('renders Scene 06: OpenSeaComposition with horizon quote', () => {
     render(<OpenSeaComposition />);
     expect(screen.getByRole('heading', { level: 2, name: /open sea/i })).toBeInTheDocument();
-    expect(screen.getByText(/no roads\. just horizon/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/sea becomes time itself/i).length).toBeGreaterThan(0);
   });
 
   it('renders Scene 07: SunsetComposition with Chase The Light', () => {
     render(<SunsetComposition />);
-    expect(screen.getByRole('heading', { level: 2, name: /chase/i })).toBeInTheDocument();
-    expect(screen.getByText(/ocean takes fire/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /chase the light/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/molten copper/i).length).toBeGreaterThan(0);
   });
 
   it('renders Scene 08: DinnerComposition with coastal gastronomy', () => {
     render(<DinnerComposition />);
     expect(screen.getByRole('heading', { level: 2, name: /dinner/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/stay out a little longer/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/karavali harvest/i).length).toBeGreaterThan(0);
   });
 
   it('renders Section 08.B: GuestMemoriesScrapbook with authentic field log quotes', () => {

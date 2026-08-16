@@ -26,17 +26,17 @@ const TYPOLOGIES: TypologyItem[] = [
     subtitle: "GOLDEN HOUR HORIZON",
     description: "Chase the light across the Arabian Sea as the sky shifts into burnt amber and lavender twilight.",
     imageSrc: "/images/sunset_catamaran.jpg",
-    imageAlt: "Sunset sailing on catamaran",
+    imageAlt: "Sunset cruise catamaran",
     highlightColor: "text-[#D97706]",
   },
   {
-    id: "geology",
+    id: "basalt",
     number: "02",
     count: "(04)",
     title: "St. Mary's Basalt Discovery",
-    subtitle: "88M-YEAR-OLD MONOLITH",
-    description: "Circumnavigate ancient volcanic hexagonal columnar basalt formations rising straight from turquoise water.",
-    imageSrc: "/images/basalt_island.jpg",
+    subtitle: "GEOLOGICAL ISLES",
+    description: "Navigate hexagonal basalt columns formed 88 million years ago by sub-volcanic activity during Madagascar's rift.",
+    imageSrc: "/images/st_marys_island.jpg",
     imageAlt: "Basalt rock columns",
     highlightColor: "text-[#0D9488]",
   },
@@ -82,44 +82,58 @@ export function ExpeditionTypology() {
   return (
     <section 
       id="typology" 
-      className="relative w-full bg-gradient-to-br from-[#2D7D5F] via-[#1E5E48] to-[#0F3828] text-[#FAF6EE] py-24 sm:py-32 overflow-hidden border-b border-white/15"
+      className="relative w-full text-[#FAF6EE] py-28 sm:py-36 overflow-hidden border-b border-white/15"
+      style={{
+        background: `
+          radial-gradient(ellipse 90% 70% at 75% 45%, #247A65 0%, transparent 60%),
+          radial-gradient(circle at 20% 25%, #1F6654 0%, transparent 55%),
+          linear-gradient(175deg, #164F45 0%, #1F6654 42%, #295F4D 75%, #173F38 100%)
+        `,
+      }}
     >
-      {/* Botanical Sunlight Dapple Effect */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#52B788]/25 via-[#1E5E48]/10 to-transparent blur-2xl pointer-events-none" />
-      <div className="absolute -bottom-20 left-10 w-96 h-96 bg-[#D97706]/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Subtle organic paper grain & sea mist atmospheric texture */}
+      <div 
+        className="absolute inset-0 opacity-[0.035] pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `radial-gradient(#FAF6EE 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
+        }}
+      />
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-[#2DD4BF]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 left-10 w-96 h-96 bg-[#F59E0B]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Telemetry */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/20 pb-3">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10.5px] font-mono tracking-[0.26em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
-            <span className="font-bold text-[#F59E0B]">EXPEDITION MATRIX · CURATED VOYAGES</span>
+            <span className="font-bold text-[#FDE68A]">EXPEDITION MATRIX · CURATED VOYAGES</span>
           </div>
-          <div className="flex items-center gap-4 text-white/80 font-semibold">
+          <div className="flex items-center gap-4 text-white/90 font-semibold">
             <span>MALPE DEPARTURE DESK</span>
-            <span className="text-[#F59E0B]">5 DISTINCT PASSAGES</span>
+            <span className="text-[#FDE68A]">5 DISTINCT PASSAGES</span>
           </div>
         </div>
       </div>
 
       {/* 2. Main Layout Grid */}
-      <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10">
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-10">
         <div className="editorial-grid items-start gap-12 lg:gap-16">
           
           {/* Left Column: Typology Selection Matrix */}
           <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
             <div>
-              <span className="text-[10px] font-mono tracking-[0.25em] text-[#F59E0B] uppercase font-bold block mb-2">
+              <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.25em] text-[#FDE68A] uppercase font-bold block mb-3">
                 PERSONALIZED ITINERARIES
               </span>
-              <h3 className="font-serif text-4xl sm:text-6xl text-white tracking-tight leading-tight mb-8">
+              <h3 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-white tracking-tight leading-[0.92] mb-10">
                 An expedition tailored
                 <br />
                 <span className="italic font-normal text-[#F59E0B]">just for you</span>
               </h3>
             </div>
 
-            {/* Interactive Options List */}
+            {/* Interactive Options List with Enhanced Active/Inactive Contrast */}
             <div className="flex flex-col gap-3">
               {TYPOLOGIES.map((item) => {
                 const isCurrent = item.id === selectedId;
@@ -128,16 +142,16 @@ export function ExpeditionTypology() {
                     key={item.id}
                     onClick={() => setSelectedId(item.id)}
                     className={cn(
-                      "text-left group flex items-baseline justify-between py-3.5 px-4 sm:px-6 transition-all duration-300 rounded-xs cursor-pointer border",
+                      "text-left group flex items-baseline justify-between py-4 px-5 sm:px-7 transition-all duration-300 rounded-xs cursor-pointer border",
                       isCurrent
-                        ? "bg-[#FAF6EE] text-[#0A2540] postcard-shadow border-white translate-x-2"
-                        : "border-white/10 hover:bg-white/10 text-white/80 hover:text-white hover:translate-x-1"
+                        ? "bg-[#FAF6EE] text-[#0A2540] shadow-2xl border-white translate-x-2"
+                        : "border-white/15 bg-[#0F3931]/60 hover:bg-[#0F3931]/90 text-white/90 hover:text-white hover:translate-x-1 backdrop-blur-xs"
                     )}
                   >
                     <div className="flex items-baseline gap-4 sm:gap-6">
                       <span className={cn(
                         "text-xs font-mono font-bold",
-                        isCurrent ? "text-[#0A2540]/50" : "text-white/40"
+                        isCurrent ? "text-[#0A2540]/60" : "text-white/50"
                       )}>
                         {item.number}
                       </span>
@@ -152,7 +166,7 @@ export function ExpeditionTypology() {
                     </div>
                     <span className={cn(
                       "text-xs font-mono tracking-widest shrink-0 ml-4",
-                      isCurrent ? "text-[#0A2540]/60" : "text-white/50"
+                      isCurrent ? "text-[#0A2540]/70 font-semibold" : "text-white/60"
                     )}>
                       {item.count}
                     </span>
@@ -162,15 +176,15 @@ export function ExpeditionTypology() {
             </div>
           </div>
 
-          {/* Right Column: Tilted Polaroid Preview & Narrative Plate */}
+          {/* Right Column: Physical Editorial Print on Green Surface */}
           <div className="col-span-12 lg:col-span-5 relative mt-8 lg:mt-0">
             {/* Masking Tape Visual Detail */}
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#EFE8D8]/95 border border-[#D5CBB9] rotate-[-2deg] z-30 shadow-md pointer-events-none backdrop-blur-xs" />
 
-            <div className="relative w-full bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-8 postcard-shadow border border-white rotate-[2deg] transition-all duration-500">
+            <div className="relative w-full bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-8 shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/90 rotate-[2deg] transition-all duration-500 rounded-xs">
               
               {/* Photo Frame */}
-              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F2ECE1] border border-[#0A2540]/10">
+              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F2ECE1] border border-[#0A2540]/10 shadow-inner">
                 <Image
                   src={selected.imageSrc}
                   alt={selected.imageAlt}
@@ -205,8 +219,8 @@ export function ExpeditionTypology() {
 
             </div>
 
-            {/* Pinned Note on Green Botanical Canvas */}
-            <div className="mt-6 p-4 bg-black/25 border-l-2 border-[#F59E0B] text-[11px] font-mono text-white/90 tracking-wide backdrop-blur-xs">
+            {/* Pinned Note on Coastal Botanical Canvas */}
+            <div className="mt-6 p-4 bg-[#0F3931]/75 border-l-2 border-[#F59E0B] text-[11px] font-mono text-white/95 tracking-wide backdrop-blur-xs shadow-lg">
               "A tailored voyage means no waiting, no tourist crowds, and complete privacy on the water."
             </div>
 
