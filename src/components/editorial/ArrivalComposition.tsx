@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { WAYPOINTS } from "@/lib/expeditionData";
 import { PostcardPlate } from "./ephemera/PostcardPlate";
 import { BoardingPassStub } from "./ephemera/BoardingPassStub";
 import { PaperTexture } from "./ephemera/PaperTexture";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
 export function ArrivalComposition() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const heroStageRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
   const wordmarkRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
@@ -32,171 +26,71 @@ export function ArrivalComposition() {
       return;
     }
 
-    // 1. Kinetic Luxury Entrance Timeline on Initial Load
-    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    // Kinetic Luxury Entrance Timeline on Initial Load
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
     if (telemetryRef.current) {
       tl.fromTo(
         telemetryRef.current,
-        { opacity: 0, y: -15 },
-        { opacity: 1, y: 0, duration: 0.9 }
+        { opacity: 0, y: -12 },
+        { opacity: 1, y: 0, duration: 0.8 }
       );
     }
 
     if (wordmarkRef.current) {
       tl.fromTo(
         wordmarkRef.current,
-        { opacity: 0, y: 40, scale: 0.98 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "expo.out" },
-        "-=0.6"
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, duration: 1.0, ease: "expo.out" },
+        "-=0.5"
       );
     }
 
     if (subtitleRef.current) {
       tl.fromTo(
         subtitleRef.current,
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 0.9 },
-        "-=0.8"
+        { opacity: 0, x: -15 },
+        { opacity: 1, x: 0, duration: 0.8 },
+        "-=0.7"
       );
     }
 
     if (heroImageRef.current) {
       tl.fromTo(
         heroImageRef.current,
-        { opacity: 0, scale: 0.94, clipPath: "inset(10% 5% 10% 5%)" },
-        { opacity: 1, scale: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.4, ease: "power3.inOut" },
-        "-=1.0"
+        { opacity: 0, scale: 0.96 },
+        { opacity: 1, scale: 1, duration: 1.1, ease: "power2.out" },
+        "-=0.7"
       );
     }
 
     if (postcardRef.current) {
       tl.fromTo(
         postcardRef.current,
-        { opacity: 0, y: 50, rotate: -10, scale: 0.9 },
-        { opacity: 1, y: 0, rotate: -4, scale: 1, duration: 1.1, ease: "back.out(1.4)" },
-        "-=0.9"
+        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.2)" },
+        "-=0.7"
       );
     }
 
     if (ticketRef.current) {
       tl.fromTo(
         ticketRef.current,
-        { opacity: 0, y: 40, rotate: 8, scale: 0.9 },
-        { opacity: 1, y: 0, rotate: 2, scale: 1, duration: 1.1, ease: "back.out(1.4)" },
-        "-=0.9"
+        { opacity: 0, y: 30, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.2)" },
+        "-=0.7"
       );
     }
 
-    // 2. Scroll-Driven Cinematic Aperture Parallax into Scene 02
-    if (heroImageRef.current) {
-      gsap.to(heroImageRef.current, {
-        y: 45,
-        scale: 1.04,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      });
-    }
-
-    if (postcardRef.current) {
-      gsap.to(postcardRef.current, {
-        y: -35,
-        rotate: -7,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.4,
-        },
-      });
-    }
-
-    if (ticketRef.current) {
-      gsap.to(ticketRef.current, {
-        y: -25,
-        rotate: 5,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
+    if (preludeRef.current) {
+      tl.fromTo(
+        preludeRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8 },
+        "-=0.5"
+      );
     }
   }, { scope: containerRef });
-
-  // 3. Interactive Multi-Plane Mouse Parallax Effect
-  useEffect(() => {
-    const stage = heroStageRef.current;
-    if (!stage || (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
-      return;
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = stage.getBoundingClientRect();
-      const relX = (e.clientX - rect.left) / rect.width - 0.5;
-      const relY = (e.clientY - rect.top) / rect.height - 0.5;
-
-      if (heroImageRef.current) {
-        gsap.to(heroImageRef.current, {
-          x: relX * 14,
-          y: relY * 10,
-          duration: 0.8,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-
-      if (postcardRef.current) {
-        gsap.to(postcardRef.current, {
-          x: -relX * 24,
-          y: -relY * 18,
-          rotate: -4 + relX * 4,
-          duration: 0.9,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-
-      if (ticketRef.current) {
-        gsap.to(ticketRef.current, {
-          x: -relX * 18,
-          y: -relY * 14,
-          rotate: 2 - relX * 3,
-          duration: 0.9,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      }
-    };
-
-    const handleMouseLeave = () => {
-      if (heroImageRef.current) {
-        gsap.to(heroImageRef.current, { x: 0, y: 0, duration: 1, ease: "power2.out" });
-      }
-      if (postcardRef.current) {
-        gsap.to(postcardRef.current, { x: 0, y: 0, rotate: -4, duration: 1, ease: "power2.out" });
-      }
-      if (ticketRef.current) {
-        gsap.to(ticketRef.current, { x: 0, y: 0, rotate: 2, duration: 1, ease: "power2.out" });
-      }
-    };
-
-    stage.addEventListener("mousemove", handleMouseMove);
-    stage.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      stage.removeEventListener("mousemove", handleMouseMove);
-      stage.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, []);
 
   return (
     <section
@@ -222,8 +116,8 @@ export function ArrivalComposition() {
         </div>
       </div>
 
-      {/* 2. Hero Stage: Wordmark & Interactive Multi-Plane Image Canvas */}
-      <div ref={heroStageRef} className="relative w-full px-6 sm:px-10 lg:px-14 mt-3">
+      {/* 2. Hero Stage: Wordmark & Multi-Plane Image Canvas */}
+      <div className="relative w-full px-6 sm:px-10 lg:px-14 mt-3">
         <div className="relative w-full">
 
           {/* Colossal Display Serif Wordmark IN FRONT OF IMAGE (z-30) */}
@@ -248,7 +142,7 @@ export function ArrivalComposition() {
           <div className="relative w-full lg:w-[78%] lg:ml-auto pt-[2vw] lg:pt-[4.5vw] z-10">
             <div
               ref={heroImageRef}
-              className="relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden postcard-shadow border border-[#E2D9C8] bg-[#F2ECE1] will-change-transform"
+              className="group relative w-full h-[46vh] sm:h-[58vh] lg:h-[66vh] overflow-hidden postcard-shadow border border-[#E2D9C8] bg-[#F2ECE1]"
             >
               <Image
                 src="/images/hero_ocean.jpg"
@@ -256,7 +150,7 @@ export function ArrivalComposition() {
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 80vw"
-                className="object-cover object-center"
+                className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-103"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/25 via-transparent to-transparent pointer-events-none" />
 
@@ -269,7 +163,7 @@ export function ArrivalComposition() {
             {/* Overlapping Postcard (Bottom Left, z-40) */}
             <div
               ref={postcardRef}
-              className="absolute -bottom-14 -left-3 lg:-left-20 w-[85%] sm:w-[50%] lg:w-[370px] z-40 will-change-transform"
+              className="absolute -bottom-14 -left-3 lg:-left-20 w-[85%] sm:w-[50%] lg:w-[370px] z-40 transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[-2deg] hover:z-50 cursor-pointer"
             >
               <PostcardPlate
                 imageSrc="/images/shoreline_foam.jpg"
@@ -286,7 +180,7 @@ export function ArrivalComposition() {
             {/* Overlapping Boarding Pass Stub (Bottom Right, z-40) */}
             <div
               ref={ticketRef}
-              className="absolute -bottom-10 right-4 lg:right-8 w-[80%] sm:w-[45%] lg:w-[330px] z-40 hidden sm:block will-change-transform"
+              className="absolute -bottom-10 right-4 lg:right-8 w-[80%] sm:w-[45%] lg:w-[330px] z-40 hidden sm:block transition-transform duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:rotate-[4deg] hover:z-50 cursor-pointer"
             >
               <BoardingPassStub
                 passNumber="CR-2026-MALPE"
