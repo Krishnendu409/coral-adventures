@@ -33,15 +33,14 @@ describe('Editorial Homepage Compositions', () => {
 
   it('renders Section 02.B: ExpeditionTypology matrix with interactive passages', () => {
     render(<ExpeditionTypology />);
-    expect(screen.getByRole('heading', { level: 2, name: /choose your sea passage/i })).toBeInTheDocument();
-    expect(screen.getAllByText(/coastal dawn & estuary drift/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/st. mary's basalt monolith cruise/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/sunset catamaran & golden hour horizon/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { level: 3, name: /an expedition tailored/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/sunset westbound voyage/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/private catamaran charter/i).length).toBeGreaterThan(0);
   });
 
   it('renders Scene 03: WatersportsComposition with active energy', () => {
     render(<WatersportsComposition />);
-    expect(screen.getByRole('heading', { level: 2, name: /water.*moves/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /water moves/i })).toBeInTheDocument();
     expect(screen.getByText(/active expedition dynamics/i)).toBeInTheDocument();
   });
 

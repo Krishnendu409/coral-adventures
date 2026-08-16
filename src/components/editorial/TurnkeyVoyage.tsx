@@ -10,6 +10,39 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const CALLOUTS = [
+  {
+    number: "01",
+    title: "Everything in one place",
+    description: "Itinerary, custom provisions, marine permissions, and safety briefing organized seamlessly before boarding.",
+    pos: "top-8 left-4 lg:left-12",
+  },
+  {
+    number: "02",
+    title: "Time management is our priority",
+    description: "We optimize each voyage for smooth tidal passage, calm water anchorages, and perfect sunset timing.",
+    pos: "top-12 right-4 lg:right-12",
+  },
+  {
+    number: "03",
+    title: "Your personal harbor concierge",
+    description: "One dedicated contact in Malpe who coordinates transfers, bespoke dining preferences, and water activities.",
+    pos: "bottom-44 left-4 lg:left-16",
+  },
+  {
+    number: "04",
+    title: "Certified marine safety",
+    description: "Licensed ocean-certified captains, real-time weather radar, high-seas safety gear, and licensed tenders.",
+    pos: "bottom-40 right-4 lg:right-16",
+  },
+  {
+    number: "05",
+    title: "Service that exceeds expectations",
+    description: "We anticipate your needs before you voice them — from chilled deck refreshments to private island landings.",
+    pos: "bottom-6 left-1/2 -translate-x-1/2 max-w-md text-center",
+  },
+];
+
 export function TurnkeyVoyage() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const vesselRef = useRef<HTMLDivElement>(null);
@@ -22,15 +55,16 @@ export function TurnkeyVoyage() {
 
     gsap.fromTo(
       vesselRef.current,
-      { y: 25 },
+      { y: 40, scale: 0.96 },
       {
-        y: -25,
+        y: -30,
+        scale: 1.02,
         ease: "sine.inOut",
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.4,
+          scrub: 1.5,
         },
       }
     );
@@ -40,196 +74,118 @@ export function TurnkeyVoyage() {
     <section
       ref={sectionRef}
       id="turnkey"
-      className="relative w-full min-h-[960px] bg-gradient-to-b from-[#0F5A56] via-[#0E4A52] to-[#071E2E] text-[#FAF6EE] pt-24 sm:pt-32 pb-24 sm:pb-36 overflow-hidden border-b border-white/15"
+      className="relative w-full min-h-[900px] bg-[#0A2540] text-[#FAF6EE] py-28 sm:py-36 overflow-hidden border-b border-white/15"
     >
-      {/* 1. Rich Ocean Wave Surface Texture Overlay */}
-      <div className="absolute inset-0 z-0 opacity-25 mix-blend-overlay pointer-events-none">
+      {/* 1. Rich Ocean Photography & Liquid Turquoise Atmosphere */}
+      <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
         <Image
           src="/images/wave_foam_crest.jpg"
-          alt="Ocean surface water flow"
+          alt="Turquoise ocean waves surface"
           fill
           className="object-cover object-center"
         />
       </div>
+      
+      {/* Turquoise to Deep Ocean Gradient Overlay */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#0D9488]/85 via-[#0A2540]/90 to-[#0A2540] pointer-events-none" />
+      <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#FAF6EE_1px,transparent_1px)] [background-size:24px_24px]" />
 
-      {/* 2. Cartographic Dot Matrix Grid Overlay */}
-      <div 
-        className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.4) 1.2px, transparent 1.2px)',
-          backgroundSize: '32px 32px'
-        }}
-      />
-
-      {/* 3. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10px] font-sans tracking-[0.26em] uppercase border-b border-white/20 pb-3">
+      {/* 2. Header Telemetry */}
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-10 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
-            <span className="font-bold text-white tracking-[0.26em]">TURNKEY EXPEDITION STANDARD</span>
+            <span className="font-bold text-[#F59E0B]">TURNKEY EXPEDITION STANDARD</span>
           </div>
-          <div className="flex items-center gap-4 text-white/85 font-medium">
+          <div className="flex items-center gap-4 text-white/80 font-semibold">
             <span>FULL CONCIERGE MARITIME MANAGEMENT</span>
-            <span className="text-[#38BDF8] font-bold">MALPE HARBOR</span>
+            <span className="text-[#38BDF8]">MALPE HARBOR</span>
           </div>
         </div>
       </div>
 
-      {/* 4. Main Centered Editorial Headline */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 text-center z-20 mb-14 sm:mb-20">
-        <h2 className="font-serif text-5xl sm:text-7xl lg:text-8xl text-white tracking-tight leading-[0.94] max-w-4xl mx-auto">
-          <span className="italic font-light block mb-1">You just travel.</span>
-          <span className="font-normal text-[#EAB308] block">We'll handle the rest.</span>
+      {/* 3. Main Centered Editorial Headline */}
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 text-center z-20 mb-14">
+        <h2 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-white tracking-tight leading-tight max-w-4xl mx-auto">
+          <span className="italic font-light text-white block mb-1">You just travel.</span>
+          <span className="text-[#F59E0B]">We'll handle the rest.</span>
         </h2>
-        <p className="font-sans text-sm sm:text-base text-white/90 leading-relaxed font-normal max-w-xl mx-auto mt-4">
+        <p className="font-sans text-xs sm:text-sm text-white/85 max-w-lg mx-auto mt-4 leading-relaxed font-light">
           From private transfer coordination at Malpe pier to custom dietary curations and certified navigation across the Arabian Sea.
         </p>
       </div>
 
-      {/* 5. Oceanic Spatial Arena with Centered Cathedral Arch Vessel & 5 Orbiting Boxes */}
-      <div className="relative w-full max-w-6xl mx-auto px-6 sm:px-10 z-10">
+      {/* 4. Oceanic Arena with Center Catamaran Vessel & Orbiting Dotted Callouts */}
+      <div className="relative w-full max-w-6xl mx-auto min-h-[750px] sm:min-h-[850px] px-4 flex items-center justify-center z-10">
         
-        {/* Desktop Layout: Exact spatial arrangement matching reference image */}
-        <div className="hidden lg:block relative min-h-[780px]">
+        {/* Centered Top-Down Vessel Frame */}
+        <div
+          ref={vesselRef}
+          className="relative z-10 w-64 sm:w-80 lg:w-96 aspect-[1/2] flex items-center justify-center will-change-transform"
+        >
+          {/* Hydrodynamic Wake Halo */}
+          <div className="absolute inset-0 bg-[#38BDF8]/25 rounded-full blur-3xl pointer-events-none scale-125 animate-pulse" />
           
-          {/* Top-Left Box: (01) */}
-          <div className="absolute top-6 left-4 xl:left-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
-            <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
-              (01)
-            </span>
-            <h4 className="font-serif text-xl text-white tracking-tight leading-snug mb-2">
-              Everything in one place
-            </h4>
-            <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
-              Itinerary, custom provisions, marine permissions, and safety briefing organized seamlessly before boarding.
-            </p>
-          </div>
-
-          {/* Top-Right Box: (02) */}
-          <div className="absolute top-10 right-4 xl:right-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
-            <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
-              (02)
-            </span>
-            <h4 className="font-serif text-xl text-white tracking-tight leading-snug mb-2">
-              Time management is our priority
-            </h4>
-            <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
-              We optimize each voyage for smooth tidal passage, calm water anchorages, and perfect sunset timing.
-            </p>
-          </div>
-
-          {/* Center Cathedral Arch Vessel Window */}
-          <div
-            ref={vesselRef}
-            className="absolute left-1/2 -translate-x-1/2 top-0 z-10 w-80 xl:w-96 h-[540px] xl:h-[580px] flex items-center justify-center will-change-transform"
-          >
-            <div className="absolute inset-0 bg-[#38BDF8]/20 rounded-t-full rounded-b-xs blur-3xl pointer-events-none scale-110" />
-            
-            <div className="relative w-full h-full overflow-hidden rounded-t-full rounded-b-xs border-4 border-white/40 ring-8 ring-white/10 shadow-2xl bg-[#0A2540] group">
-              <Image
-                src="/images/vessel_catamaran.jpg"
-                alt="25.90M Catamaran flagship sailing on Arabian Sea"
-                fill
-                sizes="400px"
-                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#061A24]/75 via-transparent to-transparent pointer-events-none" />
-            </div>
-
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-[#FAF6EE] text-[#0A2540] px-5 py-2 rounded-full font-sans text-[9px] uppercase tracking-[0.22em] font-bold shadow-2xl whitespace-nowrap border border-[#E2D9C8] z-20">
-              CORAL EXPLORER · 25.90M CATAMARAN
-            </div>
-          </div>
-
-          {/* Bottom-Left Box: (03) */}
-          <div className="absolute bottom-16 left-4 xl:left-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
-            <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
-              (03)
-            </span>
-            <h4 className="font-serif text-xl text-white tracking-tight leading-snug mb-2">
-              Your personal harbor concierge
-            </h4>
-            <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
-              One dedicated contact in Malpe who coordinates transfers, bespoke dining preferences, and water activities.
-            </p>
-          </div>
-
-          {/* Bottom-Right Box: (04) */}
-          <div className="absolute bottom-12 right-4 xl:right-8 z-20 p-6 bg-[#071E2E]/90 backdrop-blur-md border border-dotted border-white/30 rounded-xs max-w-xs shadow-2xl transition-all duration-300 hover:border-white/60">
-            <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
-              (04)
-            </span>
-            <h4 className="font-serif text-xl text-white tracking-tight leading-snug mb-2">
-              Certified marine safety
-            </h4>
-            <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
-              Licensed ocean-certified Master Mariners, hydrographic charts, high-seas safety gear, and 24/7 shoreward tracking.
-            </p>
-          </div>
-
-          {/* Center-Bottom Box: (05) Overlapping Bottom of Boat Window */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 p-6 bg-[#071E2E]/95 backdrop-blur-md border border-white/25 rounded-xs w-full max-w-md shadow-2xl transition-all duration-300 hover:border-white/50">
-            <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1.5">
-              (05)
-            </span>
-            <h4 className="font-serif text-xl text-white tracking-tight leading-snug mb-2">
-              Seven-foot meals experience
-            </h4>
-            <p className="font-sans text-xs text-white/85 leading-relaxed font-light">
-              We orchestrate 25.90M master chef preparations — from ancient spice pairings to private sunset cocktail saloons.
-            </p>
-          </div>
-
-        </div>
-
-        {/* Mobile & Tablet Responsive Layout (All 5 boxes clearly visible at all times) */}
-        <div className="lg:hidden flex flex-col items-center gap-8">
-          {/* Centered Arch Window */}
-          <div className="relative w-72 sm:w-80 h-[440px] sm:h-[500px] rounded-t-full rounded-b-xs overflow-hidden border-4 border-white/40 ring-8 ring-white/10 shadow-2xl bg-[#0A2540]">
+          <div className="relative w-full h-full overflow-hidden postcard-shadow border border-white/30 rounded-full p-2.5 bg-[#0A2540]/70 backdrop-blur-md">
             <Image
               src="/images/vessel_catamaran.jpg"
-              alt="25.90M Catamaran flagship sailing on Arabian Sea"
+              alt="Architectural catamaran cutting through turquoise waters"
               fill
-              sizes="340px"
-              className="object-cover object-center"
+              sizes="(max-width: 768px) 80vw, 400px"
+              className="object-cover object-center rounded-full"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#061A24]/75 via-transparent to-transparent pointer-events-none" />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#FAF6EE] text-[#0A2540] px-4 py-1.5 rounded-full font-sans text-[8.5px] uppercase tracking-[0.2em] font-bold shadow-xl whitespace-nowrap border border-[#E2D9C8]">
-              CORAL EXPLORER · 25.90M
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2540]/60 via-transparent to-transparent" />
           </div>
 
-          {/* 5 Stacked Boxes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-            <div className="p-5 bg-[#071E2E]/90 border border-dotted border-white/30 rounded-xs">
-              <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(01)</span>
-              <h4 className="font-serif text-lg text-white mb-1.5">Everything in one place</h4>
-              <p className="font-sans text-xs text-white/80 leading-relaxed font-light">Itinerary, custom provisions, marine permissions, and safety briefing organized seamlessly.</p>
-            </div>
-            <div className="p-5 bg-[#071E2E]/90 border border-dotted border-white/30 rounded-xs">
-              <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(02)</span>
-              <h4 className="font-serif text-lg text-white mb-1.5">Time management is our priority</h4>
-              <p className="font-sans text-xs text-white/80 leading-relaxed font-light">We optimize each voyage for smooth tidal passage, calm water anchorages, and sunset timing.</p>
-            </div>
-            <div className="p-5 bg-[#071E2E]/90 border border-dotted border-white/30 rounded-xs">
-              <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(03)</span>
-              <h4 className="font-serif text-lg text-white mb-1.5">Your personal harbor concierge</h4>
-              <p className="font-sans text-xs text-white/80 leading-relaxed font-light">One dedicated contact in Malpe who coordinates transfers, dining, and activities.</p>
-            </div>
-            <div className="p-5 bg-[#071E2E]/90 border border-dotted border-white/30 rounded-xs">
-              <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(04)</span>
-              <h4 className="font-serif text-lg text-white mb-1.5">Certified marine safety</h4>
-              <p className="font-sans text-xs text-white/80 leading-relaxed font-light">Licensed Master Mariners, hydrographic charts, safety gear, and 24/7 tracking.</p>
-            </div>
-            <div className="p-5 bg-[#071E2E]/95 border border-white/25 rounded-xs sm:col-span-2">
-              <span className="font-mono text-xs font-bold text-[#F59E0B] uppercase tracking-[0.2em] block mb-1">(05)</span>
-              <h4 className="font-serif text-lg text-white mb-1.5">Seven-foot meals experience</h4>
-              <p className="font-sans text-xs text-white/85 leading-relaxed font-light">We orchestrate 25.90M master chef preparations — from spice pairings to sunset saloons.</p>
-            </div>
+          <div className="absolute -bottom-4 bg-[#FAF6EE] text-[#0A2540] px-4 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] font-bold shadow-xl whitespace-nowrap border border-[#E2D9C8]">
+            CORAL EXPLORER · 25.90M CATAMARAN
           </div>
+        </div>
+
+        {/* Orbiting Dashed Annotation Callout Cards (Desktop Spatial) */}
+        <div className="hidden lg:block">
+          {CALLOUTS.map((callout, idx) => (
+            <div
+              key={idx}
+              className={`absolute ${callout.pos} z-20 p-4 sm:p-5 bg-[#0A2540]/80 border border-dashed border-white/30 backdrop-blur-md max-w-xs shadow-2xl transition-transform duration-300 hover:scale-105 hover:border-[#F59E0B]`}
+            >
+              <span className="text-[10px] font-mono font-bold text-[#F59E0B] tracking-widest block mb-1">
+                ({callout.number})
+              </span>
+              <h4 className="font-serif text-lg sm:text-xl text-white tracking-tight leading-snug mb-1.5">
+                {callout.title}
+              </h4>
+              <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
+                {callout.description}
+              </p>
+            </div>
+          ))}
         </div>
 
       </div>
+
+      {/* Mobile Stack: Callouts Grid (Always Visible) */}
+      <div className="lg:hidden px-4 sm:px-8 mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-20 max-w-4xl mx-auto">
+        {CALLOUTS.map((callout, idx) => (
+          <div
+            key={idx}
+            className={`p-4 bg-[#0A2540]/85 border border-dashed border-white/30 backdrop-blur-md rounded-xs ${
+              idx === 4 ? "sm:col-span-2 text-center" : ""
+            }`}
+          >
+            <span className="text-[10px] font-mono font-bold text-[#F59E0B] tracking-widest block mb-1">
+              ({callout.number})
+            </span>
+            <h4 className="font-serif text-lg text-white tracking-tight leading-snug mb-1">
+              {callout.title}
+            </h4>
+            <p className="font-sans text-xs text-white/80 leading-relaxed font-light">
+              {callout.description}
+            </p>
+          </div>
+        ))}
+      </div>
+
     </section>
   );
 }

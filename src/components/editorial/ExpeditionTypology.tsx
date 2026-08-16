@@ -2,229 +2,214 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { WashiTape } from "./ephemera/WashiTape";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export interface ExpeditionPassage {
+interface TypologyItem {
   id: string;
+  number: string;
+  count: string;
   title: string;
-  duration: string;
-  capacity: string;
-  summary: string;
-  bestFor: string;
-  bearing: string;
-  rate: string;
+  subtitle: string;
+  description: string;
   imageSrc: string;
   imageAlt: string;
+  highlightColor: string;
 }
 
-export const EXPEDITION_PASSAGES: ExpeditionPassage[] = [
+const TYPOLOGIES: TypologyItem[] = [
   {
-    id: "coastal-dawn",
-    title: "Coastal Dawn & Estuary Drift",
-    duration: "06:30 — 09:00",
-    capacity: "Up to 170 Guests",
-    summary: "Gentle morning departure along Malpe rivermouth, watching local fishing fleets and early Brahminy kite thermals.",
-    bestFor: "Birdwatching & Sunrise Coffee",
-    bearing: "270° DUE WEST",
-    rate: "CHARTER INQUIRY",
-    imageSrc: "/images/hero_ocean.jpg",
-    imageAlt: "Morning sunlight touching coastal waters of Malpe",
-  },
-  {
-    id: "basalt-monolith",
-    title: "St. Mary's Basalt Monolith Cruise",
-    duration: "10:00 — 13:00",
-    capacity: "Up to 170 Guests",
-    summary: "Direct passage to the 88-million-year-old columnar basalt formations with guided geological narrative.",
-    bestFor: "Geological Exploration & Island Views",
-    bearing: "284° WNW",
-    rate: "SCHEDULED & PRIVATE",
-    imageSrc: "/images/basalt_island.jpg",
-    imageAlt: "Hexagonal volcanic basalt columns of St. Mary's Island",
-  },
-  {
-    id: "aquatic-safari",
-    title: "Aquatic Safari & Coral Bay Anchor",
-    duration: "14:00 — 17:00",
-    capacity: "Up to 120 Guests",
-    summary: "Anchor in sheltered turquoise coves for swimming, stand-up paddleboarding, and snorkeling with certified safety guides.",
-    bestFor: "Watersports & Lagoon Swimming",
-    bearing: "292° NW",
-    rate: "PREMIUM PASSAGE",
-    imageSrc: "/images/watersports_action.jpg",
-    imageAlt: "Water adventures and turquoise lagoon in Malpe",
-  },
-  {
-    id: "sunset-catamaran",
-    title: "Sunset Catamaran & Golden Hour Horizon",
-    duration: "17:30 — 19:30",
-    capacity: "Up to 170 Guests",
-    summary: "Chase the sinking equatorial sun into the open Arabian Sea with live ambient acoustic music and chilled refreshments.",
-    bestFor: "Couples & Sunset Photography",
-    bearing: "284° WNW",
-    rate: "SIGNATURE PASSAGE",
+    id: "sunset",
+    number: "01",
+    count: "(04)",
+    title: "Sunset Westbound Voyage",
+    subtitle: "GOLDEN HOUR HORIZON",
+    description: "Chase the light across the Arabian Sea as the sky shifts into burnt amber and lavender twilight.",
     imageSrc: "/images/sunset_catamaran.jpg",
-    imageAlt: "Catamaran sailing towards golden sunset on Arabian Sea",
+    imageAlt: "Sunset sailing on catamaran",
+    highlightColor: "text-[#D97706]",
   },
   {
-    id: "twilight-gastronomy",
-    title: "Twilight Gastronomy & Starlit Sea",
-    duration: "19:30 — 22:30",
-    capacity: "Up to 100 Guests",
-    summary: "Full four-course Karavali coastal feast served under the open stars on our illuminated weathered teak sky lounge.",
-    bestFor: "Fine Dining & Milestone Celebrations",
-    bearing: "270° EXPEDITION LOOP",
-    rate: "BESPOKE PRIVATE",
-    imageSrc: "/images/dinner_deck.jpg",
-    imageAlt: "Candlelit teak dining experience on open water",
+    id: "geology",
+    number: "02",
+    count: "(04)",
+    title: "St. Mary's Basalt Discovery",
+    subtitle: "88M-YEAR-OLD MONOLITH",
+    description: "Circumnavigate ancient volcanic hexagonal columnar basalt formations rising straight from turquoise water.",
+    imageSrc: "/images/basalt_island.jpg",
+    imageAlt: "Basalt rock columns",
+    highlightColor: "text-[#0D9488]",
+  },
+  {
+    id: "charter",
+    number: "03",
+    count: "(08)",
+    title: "Private Catamaran Charter",
+    subtitle: "EXCLUSIVE PASSAGE",
+    description: "The entire 25.90M vessel reserved exclusively for your private party, family reunion, or milestone celebration.",
+    imageSrc: "/images/vessel_catamaran.jpg",
+    imageAlt: "Private luxury catamaran",
+    highlightColor: "text-[#C2410C]",
+  },
+  {
+    id: "watersports",
+    number: "04",
+    count: "(12)",
+    title: "Active Watersports & Tender",
+    subtitle: "HIGH-VELOCITY SEA",
+    description: "Speed tender launches, parasailing over turquoise waters, and sea kayaking around sheltered island coves.",
+    imageSrc: "/images/wave_foam_crest.jpg",
+    imageAlt: "Active wave crest and spray",
+    highlightColor: "text-[#0D9488]",
+  },
+  {
+    id: "dinner",
+    number: "05",
+    count: "(06)",
+    title: "Open Teak Twilight Gastronomy",
+    subtitle: "CANDLELIT TEAK DECK",
+    description: "Fresh coastal seafood and artisanal pairings served under twilight on open teak tables with no walls.",
+    imageSrc: "/images/dining_deck.jpg",
+    imageAlt: "Candlelit teak dining at sea",
+    highlightColor: "text-[#C2410C]",
   },
 ];
 
 export function ExpeditionTypology() {
-  const [activeIdx, setActiveIdx] = useState<number>(0);
-  const activePassage = EXPEDITION_PASSAGES[activeIdx] || EXPEDITION_PASSAGES[0];
+  const [selectedId, setSelectedId] = useState<string>("charter");
+  const selected = TYPOLOGIES.find((t) => t.id === selectedId) || TYPOLOGIES[2];
 
   return (
-    <section
-      id="typology"
-      className="relative w-full bg-gradient-to-b from-[#184E3B] via-[#123E2F] to-[#0A261D] text-[#FAF6EE] py-20 sm:py-28 overflow-hidden border-b border-white/15"
+    <section 
+      id="typology" 
+      className="relative w-full bg-gradient-to-br from-[#2D7D5F] via-[#1E5E48] to-[#0F3828] text-[#FAF6EE] py-24 sm:py-32 overflow-hidden border-b border-white/15"
     >
-      {/* 1. Subtle Cartographic Grid Pattern */}
-      <div 
-        className="absolute inset-0 z-0 opacity-15 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px)',
-          backgroundSize: '28px 28px'
-        }}
-      />
+      {/* Botanical Sunlight Dapple Effect */}
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#52B788]/25 via-[#1E5E48]/10 to-transparent blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-20 left-10 w-96 h-96 bg-[#D97706]/15 rounded-full blur-3xl pointer-events-none" />
 
-      {/* 2. Header Telemetry Bar */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-8 z-20">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] sm:text-[10px] font-sans tracking-[0.24em] uppercase border-b border-white/20 pb-2.5">
+      {/* 1. Header Telemetry */}
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 mb-8 z-20">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-[10px] sm:text-[11px] font-mono tracking-[0.25em] uppercase border-b border-white/20 pb-3">
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-[#EAB308] animate-pulse" />
-            <span className="font-bold text-white tracking-[0.24em]">02.B / EXPEDITION MATRIX · FIVE CURATED PASSAGES</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] animate-pulse" />
+            <span className="font-bold text-[#F59E0B]">EXPEDITION MATRIX · CURATED VOYAGES</span>
           </div>
-          <div className="flex items-center gap-4 text-white/80 font-medium">
-            <span>SEASON: OCT — MAY</span>
-            <span className="text-[#EAB308]">5 VOYAGE CLASSES</span>
+          <div className="flex items-center gap-4 text-white/80 font-semibold">
+            <span>MALPE DEPARTURE DESK</span>
+            <span className="text-[#F59E0B]">5 DISTINCT PASSAGES</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Section Headline */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 mb-10 z-20">
-        <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight max-w-2xl">
-          Choose your sea passage.
-        </h2>
-        <p className="font-sans text-xs sm:text-sm text-white/85 max-w-xl mt-3 font-light leading-relaxed">
-          From tranquil morning coastal excursions to multi-hour open-sea expeditions, each itinerary is calibrated to tide and light.
-        </p>
-      </div>
-
-      {/* 4. Interactive Matrix & Pinned Polaroid Preview */}
-      <div className="relative w-full px-6 sm:px-10 lg:px-14 z-20">
-        <div className="editorial-grid items-start gap-8 lg:gap-12">
+      {/* 2. Main Layout Grid */}
+      <div className="relative w-full px-4 sm:px-8 lg:px-14 z-10">
+        <div className="editorial-grid items-start gap-12 lg:gap-16">
           
-          {/* Left Column: 5 Selectable Passage Cards */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col gap-3">
-            {EXPEDITION_PASSAGES.map((passage, idx) => {
-              const isSelected = idx === activeIdx;
-              return (
-                <button
-                  key={passage.id}
-                  onClick={() => setActiveIdx(idx)}
-                  className={`text-left p-5 sm:p-6 transition-all duration-300 rounded-xs border text-left cursor-pointer ${
-                    isSelected
-                      ? "bg-white/15 border-[#EAB308] shadow-xl translate-x-2"
-                      : "bg-white/5 border-white/15 hover:bg-white/10 hover:border-white/30"
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-                    <span className={`text-[9px] font-sans tracking-[0.2em] uppercase font-bold ${
-                      isSelected ? "text-[#EAB308]" : "text-white/70"
-                    }`}>
-                      PASSAGE 0{idx + 1} · {passage.duration}
+          {/* Left Column: Typology Selection Matrix */}
+          <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
+            <div>
+              <span className="text-[10px] font-mono tracking-[0.25em] text-[#F59E0B] uppercase font-bold block mb-2">
+                PERSONALIZED ITINERARIES
+              </span>
+              <h3 className="font-serif text-4xl sm:text-6xl text-white tracking-tight leading-tight mb-8">
+                An expedition tailored
+                <br />
+                <span className="italic font-normal text-[#F59E0B]">just for you</span>
+              </h3>
+            </div>
+
+            {/* Interactive Options List */}
+            <div className="flex flex-col gap-3">
+              {TYPOLOGIES.map((item) => {
+                const isCurrent = item.id === selectedId;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setSelectedId(item.id)}
+                    className={cn(
+                      "text-left group flex items-baseline justify-between py-3.5 px-4 sm:px-6 transition-all duration-300 rounded-xs cursor-pointer border",
+                      isCurrent
+                        ? "bg-[#FAF6EE] text-[#0A2540] postcard-shadow border-white translate-x-2"
+                        : "border-white/10 hover:bg-white/10 text-white/80 hover:text-white hover:translate-x-1"
+                    )}
+                  >
+                    <div className="flex items-baseline gap-4 sm:gap-6">
+                      <span className={cn(
+                        "text-xs font-mono font-bold",
+                        isCurrent ? "text-[#0A2540]/50" : "text-white/40"
+                      )}>
+                        {item.number}
+                      </span>
+                      <span
+                        className={cn(
+                          "font-serif text-2xl sm:text-4xl tracking-tight transition-colors",
+                          isCurrent ? item.highlightColor : "group-hover:text-white"
+                        )}
+                      >
+                        {item.title}
+                      </span>
+                    </div>
+                    <span className={cn(
+                      "text-xs font-mono tracking-widest shrink-0 ml-4",
+                      isCurrent ? "text-[#0A2540]/60" : "text-white/50"
+                    )}>
+                      {item.count}
                     </span>
-                    <span className="text-[9px] font-mono tracking-[0.18em] text-white/60 uppercase">
-                      CAPACITY: {passage.capacity}
-                    </span>
-                  </div>
-
-                  <h3 className="font-serif text-xl sm:text-2xl text-white tracking-tight mb-2">
-                    {passage.title}
-                  </h3>
-
-                  <p className="font-sans text-xs sm:text-sm text-white/80 font-light leading-relaxed mb-3">
-                    {passage.summary}
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-4 text-[9.5px] font-mono text-white/75 pt-2 border-t border-white/10">
-                    <span>BEST: {passage.bestFor}</span>
-                    <span className="text-white/30">|</span>
-                    <span>BEARING: {passage.bearing}</span>
-                    <span className="text-white/30">|</span>
-                    <span className="text-[#EAB308] font-bold">RATE: {passage.rate}</span>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Right Column: Dynamic Taped Polaroid Preview */}
-          <div className="col-span-12 lg:col-span-5 relative lg:sticky lg:top-28">
-            <div className="relative bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-7 postcard-shadow border border-[#E2D9C8] transition-all duration-500 hover:rotate-0 rotate-1 select-none">
-              <WashiTape angle={-2} className="-top-3 left-6" color="teal" />
+          {/* Right Column: Tilted Polaroid Preview & Narrative Plate */}
+          <div className="col-span-12 lg:col-span-5 relative mt-8 lg:mt-0">
+            {/* Masking Tape Visual Detail */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#EFE8D8]/95 border border-[#D5CBB9] rotate-[-2deg] z-30 shadow-md pointer-events-none backdrop-blur-xs" />
+
+            <div className="relative w-full bg-[#FAF6EE] text-[#0A2540] p-4 sm:p-5 pb-8 postcard-shadow border border-white rotate-[2deg] transition-all duration-500">
               
-              <div className="relative w-full h-[300px] sm:h-[360px] overflow-hidden bg-[#0A2540] mb-4 border border-[#E2D9C8]">
+              {/* Photo Frame */}
+              <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#F2ECE1] border border-[#0A2540]/10">
                 <Image
-                  src={activePassage.imageSrc}
-                  alt={activePassage.imageAlt}
+                  src={selected.imageSrc}
+                  alt={selected.imageAlt}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 420px"
-                  className="object-cover object-center transition-transform duration-700 hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                  className="object-cover object-center transition-all duration-700"
                 />
-                <div className="absolute top-3 right-3 bg-[#FAF6EE]/95 px-3 py-1 text-[8.5px] font-sans tracking-[0.2em] uppercase font-bold text-[#0A2540] border border-[#E2D9C8]">
-                  {activePassage.duration}
+                <div className="absolute top-3 right-3 bg-[#FAF6EE]/95 px-2.5 py-1 text-[8.5px] font-mono tracking-widest text-[#0A2540] uppercase border border-[#0A2540]/15 shadow-xs">
+                  PASSAGE {selected.number}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-b border-[#0A2540]/10 pb-2 mb-2">
-                <span className="text-[9px] font-sans tracking-[0.22em] uppercase text-[#184E3B] font-bold">
-                  EXPEDITION FIELD DOSSIER
+              {/* Dynamic Description */}
+              <div className="mt-4 px-1">
+                <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#C2410C] font-bold block mb-1">
+                  {selected.subtitle}
                 </span>
-                <span className="text-[9px] font-mono text-[#0A2540]/60">
-                  REF-{activePassage.id.toUpperCase()}
-                </span>
-              </div>
-
-              <h4 className="font-serif text-2xl text-[#0A2540] tracking-tight mb-2">
-                {activePassage.title}
-              </h4>
-              <p className="font-sans text-xs text-[#0A2540]/80 font-light leading-relaxed mb-4">
-                {activePassage.summary}
-              </p>
-
-              <div className="flex items-center justify-between pt-2 border-t border-[#0A2540]/10">
-                <span className="font-mono text-xs font-bold text-[#184E3B]">
-                  {activePassage.rate}
-                </span>
-                <a
+                <h4 className="font-serif text-2xl text-[#0A2540] tracking-tight leading-snug mb-2">
+                  {selected.title}
+                </h4>
+                <p className="font-sans text-xs sm:text-sm text-[#0A2540]/80 leading-relaxed font-light mb-4">
+                  {selected.description}
+                </p>
+                <Link
                   href="#concierge"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#184E3B] text-[#FAF6EE] font-sans text-[9.5px] uppercase tracking-[0.2em] font-semibold hover:bg-[#0A2540] transition-colors"
+                  className="inline-flex items-center gap-2 text-[10.5px] font-mono uppercase tracking-[0.22em] text-[#0A2540] font-bold hover:text-[#C2410C] transition-colors"
                 >
-                  <span>INQUIRE PASSAGE</span>
+                  <span>INQUIRE THIS PASSAGE</span>
                   <span>→</span>
-                </a>
+                </Link>
               </div>
+
             </div>
 
-            {/* Bottom Quote Box */}
-            <div className="mt-6 p-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xs">
-              <p className="font-serif italic text-sm text-white/90 leading-relaxed">
-                &ldquo;Every voyage is private, chartered exclusively for your party, with certified crew and bespoke provisions.&rdquo;
-              </p>
+            {/* Pinned Note on Green Botanical Canvas */}
+            <div className="mt-6 p-4 bg-black/25 border-l-2 border-[#F59E0B] text-[11px] font-mono text-white/90 tracking-wide backdrop-blur-xs">
+              "A tailored voyage means no waiting, no tourist crowds, and complete privacy on the water."
             </div>
+
           </div>
 
         </div>
