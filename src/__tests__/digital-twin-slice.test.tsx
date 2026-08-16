@@ -2,13 +2,18 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Zone01Experience } from '../components/journey/zone01/Zone01Experience';
+import { resourceManager } from '../lib/three/ResourceManager';
 import '@testing-library/jest-dom';
 
 describe('Digital Twin Slice (Zone01Experience)', () => {
   beforeEach(() => {
-    // Mock audio context
-    window.AudioContext = vi.fn().mockImplementation(() => ({
-      createGain: vi.fn(() => ({
+    // Prevent unhandled remote DRACO / network fetches in headless tests
+    vi.spyOn(resourceManager, 'loadModel').mockResolvedValue(null as any);
+    vi.spyOn(resourceManager, 'loadTexture').mockResolvedValue(null as any);
+
+    // Mock audio context constructor function
+    const MockAudioContext = vi.fn().mockImplementation(function (this: any) {
+      this.createGain = vi.fn(() => ({
         gain: { 
           setTargetAtTime: vi.fn(), 
           value: 0,
@@ -16,39 +21,42 @@ describe('Digital Twin Slice (Zone01Experience)', () => {
           exponentialRampToValueAtTime: vi.fn()
         },
         connect: vi.fn()
-      })),
-      createBufferSource: vi.fn(() => ({
+      }));
+      this.createBufferSource = vi.fn(() => ({
         connect: vi.fn(),
         start: vi.fn(),
         buffer: {},
         loop: false
-      })),
-      createBiquadFilter: vi.fn(() => ({
+      }));
+      this.createBiquadFilter = vi.fn(() => ({
         frequency: { value: 0, setValueAtTime: vi.fn() },
         connect: vi.fn(),
         type: 'lowpass'
-      })),
-      createOscillator: vi.fn(() => ({
+      }));
+      this.createOscillator = vi.fn(() => ({
         frequency: { value: 0, setValueAtTime: vi.fn() },
         connect: vi.fn(),
         start: vi.fn(),
         type: 'sine'
-      })),
-      createBuffer: vi.fn((channels, size, sampleRate) => ({
+      }));
+      this.createBuffer = vi.fn((channels, size, sampleRate) => ({
         getChannelData: vi.fn(() => new Float32Array(size || 100))
-      })),
-      destination: {},
-      currentTime: 0,
-      state: 'running',
-      sampleRate: 44100,
-      resume: vi.fn(),
-      suspend: vi.fn(),
-      close: vi.fn()
-    })) as any;
+      }));
+      this.destination = {};
+      this.currentTime = 0;
+      this.state = 'running';
+      this.sampleRate = 44100;
+      this.resume = vi.fn().mockResolvedValue(undefined);
+      this.suspend = vi.fn().mockResolvedValue(undefined);
+      this.close = vi.fn().mockResolvedValue(undefined);
+    });
+
+    window.AudioContext = MockAudioContext as any;
+    (window as any).webkitAudioContext = MockAudioContext as any;
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('mounts without crashing and shows initial landmark', () => {

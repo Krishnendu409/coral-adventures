@@ -84,14 +84,13 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
 
   const isDark = themeState === "dark";
   const isTransparent = themeState === "transparent";
-  const isLightText = isDark || isTransparent;
 
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out",
         isTransparent
-          ? "bg-gradient-to-b from-[#0A2540]/70 via-[#0A2540]/25 to-transparent py-4 sm:py-5 text-[#FAF6EE] border-b border-transparent"
+          ? "bg-[#FAF7F0]/80 backdrop-blur-xs py-4 sm:py-5 text-[#0A2540] border-b border-[#0A2540]/10"
           : isDark
             ? "bg-[#0A2540]/94 backdrop-blur-lg border-b border-white/15 py-3 sm:py-3.5 shadow-xl text-[#FAF6EE]"
             : "bg-[#FAF6EE]/94 backdrop-blur-lg border-b border-[#E8DFD0] py-3 sm:py-3.5 shadow-md text-[#0A2540]"
@@ -118,13 +117,13 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
           <div className="flex flex-col">
             <span className={cn(
               "font-serif text-base sm:text-lg md:text-xl font-normal tracking-wide transition-colors",
-              isLightText ? "text-[#FAF6EE]" : "text-[#0A2540] group-hover:text-[#E05A36]"
+              isDark ? "text-[#FAF6EE]" : "text-[#0A2540] group-hover:text-[#E05A36]"
             )}>
               CORAL ADVENTURES
             </span>
             <span className={cn(
               "text-[8px] sm:text-[9px] font-mono tracking-[0.22em] uppercase transition-colors",
-              isLightText ? "text-[#E05A36] font-bold" : "text-[#E05A36] font-semibold"
+              isDark ? "text-[#FAF6EE]/75" : "text-[#E05A36] font-semibold"
             )}>
               MALPE · ARABIAN SEA
             </span>
@@ -139,8 +138,8 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
               href={link.href}
               className={cn(
                 "relative py-1 transition-colors duration-200 uppercase focus-visible:ring-2 focus-visible:ring-[#E05A36] focus-visible:outline-hidden",
-                isLightText 
-                  ? "text-[#FAF6EE]/85 hover:text-[#E05A36]" 
+                isDark 
+                  ? "text-[#FAF6EE]/80 hover:text-[#FBBF24]" 
                   : "text-[#0A2540]/80 hover:text-[#E05A36]"
               )}
             >
@@ -156,7 +155,7 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
             href="/storyboard"
             className={cn(
               "hidden md:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
-              isLightText
+              isDark
                 ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-[#F87171] hover:text-[#F87171] hover:bg-white/10"
                 : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#E05A36] hover:text-[#E05A36] hover:bg-[#E05A36]/5"
             )}
@@ -170,8 +169,8 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
             href="/journey"
             className={cn(
               "hidden sm:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
-              isLightText
-                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-[#38BDF8] hover:text-[#38BDF8] hover:bg-white/10"
+              isDark
+                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-[#FBBF24] hover:text-[#FBBF24] hover:bg-white/10"
                 : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0A2540] hover:text-[#0A2540] hover:bg-[#0A2540]/5"
             )}
           >
@@ -184,9 +183,9 @@ export function Navigation({ onOpenJourney }: NavigationProps) {
             href="#book"
             className={cn(
               "hidden lg:inline-flex items-center gap-1.5 px-3.5 h-8 rounded-[2px] font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium border transition-all duration-200 active:scale-95",
-              isLightText
-                ? "border-[#E05A36] bg-[#E05A36] text-white hover:bg-[#D9532F]"
-                : "border-[#0A2540] bg-[#0A2540] text-[#FAF6EE] hover:bg-[#E05A36] hover:border-[#E05A36]"
+              isDark
+                ? "border-white/25 bg-white/5 text-[#FAF6EE]/90 hover:border-white hover:bg-white hover:text-[#0A2540]"
+                : "border-[#0A2540]/25 bg-[#0A2540]/[0.03] text-[#0A2540]/85 hover:border-[#0A2540] hover:bg-[#0A2540] hover:text-[#FAF6EE]"
             )}
           >
             <span>RESERVE</span>
